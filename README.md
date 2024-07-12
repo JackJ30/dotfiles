@@ -10,5 +10,7 @@ Dependencies:
 - Kitty
 
 ## TODO
-- [ ] Lock keybind
-- [ ] Screenshot keybind
+- [x] Lock keybind
+- [x] Screenshot keybind
+- [ ] Reconfigure waybar (better styling + date)
+- [ ] Settings app
