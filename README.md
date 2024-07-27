@@ -12,5 +12,9 @@ Dependencies:
 ## TODO
 - [x] Lock keybind
 - [x] Screenshot keybind
-- [ ] Reconfigure waybar (better styling + date)
+- [ ] Reconfigure waybar (better styling + date + battery + working buttons)
 - [ ] Settings app
+- [ ] Wallpaper
+- [ ] Monitor scaling for laptop
+- [ ] Reconfigure hyprlock, wofi, kitty
+
