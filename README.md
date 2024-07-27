@@ -17,4 +17,4 @@ Dependencies:
 - [ ] Wallpaper
 - [ ] Monitor scaling for laptop
 - [ ] Reconfigure hyprlock, wofi, kitty
-
+- [ ] System monitor
