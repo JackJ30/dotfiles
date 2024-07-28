@@ -18,4 +18,4 @@ Dependencies:
 - [ ] Monitor scaling for laptop
 - [ ] Reconfigure hyprlock, wofi, kitty
 - [ ] System monitor
-- [ ] Laptop backlight + battery indicator + volume control buttons
+- [ ] Laptop backlight + auto suspend + battery indicator + volume control buttons
