@@ -8,6 +8,7 @@ Dependencies:
 - Hypridle
 - Nemo
 - Kitty
+- Brightnessctl
 
 ## TODO
 - [x] Lock keybind
