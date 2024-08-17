@@ -21,3 +21,7 @@ Dependencies:
 - [ ] System monitor
 - [ ] Laptop backlight + auto suspend + volume control buttons
 - [ ] Cachy browser settings
+
+## FIXES
+- [ ] Discord push to talk
+- [ ] Hyprshot keybind broken
