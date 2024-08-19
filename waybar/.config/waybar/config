@@ -14,14 +14,12 @@
     "hyprland/window"
   ],
   "modules-right": [
-    "temperature",
     "memory",
     "cpu",
     "pulseaudio",
     "battery",
     "network",
-    "custom/separator",
-    "custom/powermenu"
+    "custom/separ"
   ],
   "custom/separator": {
     "exec": "echo \"|\"",

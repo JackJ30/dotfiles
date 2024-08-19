@@ -9,3 +9,4 @@ stow kitty --adopt
 stow wofi --adopt
 
 # do other stuff (TODO)
+git config --global core.editor "micro"
