@@ -1,6 +1,7 @@
 {
   "layer": "top",
   "position": "top",
+  "mode": "dock",
   "margin-bottom": 0,
   "modules-left": [
     "clock",
@@ -31,12 +32,10 @@
     "spacing": 8
   },
   "clock": {
-    // 24 hour
-    // "format": " {:%H:%M} ",
-    // 12 hour
     "format": " 󰸗 {:%I:%M %p} ",
     "interval": 60,
     "tooltip": true,
+    "on-click": "kitty -e calcurse",
     "tooltip-format": "{:%d %B %H:%M}"
   },
   "hyprland/workspaces": {
@@ -98,8 +97,9 @@
   },
   "network": {
     "format": " 󰖩",
-    // "tooltip": "{ifname}",
+    "tooltip": "{ifname}",
     "tooltip-format": "{essid}",
+    "on-click": "kitty nmtui",
     "interval": 2
   },
   "temperature": {
@@ -123,7 +123,7 @@
   "pulseaudio": {
     "format": " {volume}%",
     "scroll-step": 1,
-    "on-click": "pulseaudio"
+    "on-click": "pavucontrol"
   },
   "battery": {
     "format": "{capacity}% {icon}",
@@ -136,7 +136,7 @@
     ]
   },
   "custom/powermenu": {
-    "format": "  ",
+    "format": " Power ",
     "tooltip": false,
     "on-click": "exec wlogout -p layer-shell"
   }
