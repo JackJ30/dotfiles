@@ -25,3 +25,4 @@ Dependencies:
 ## FIXES
 - [ ] Discord push to talk
 - [ ] Hyprshot keybind broken
+- [ ] Go through env vars
