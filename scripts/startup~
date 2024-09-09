@@ -1,0 +1,10 @@
+#!/bin/sh
+backlightctrl -set 10
+gpgconf -K gpg-agent
+restartsearxng &
+restartemacs >/dev/null &
+pipewire &
+mpd &
+dunst &
+waybar &
+gpg-agent --daemon

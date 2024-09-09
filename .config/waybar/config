@@ -1,142 +1,64 @@
 {
   "layer": "top",
-  "position": "top",
-  "mode": "dock",
-  "margin-bottom": 0,
-  "modules-left": [
-    "clock",
-    "custom/separator",
-    "hyprland/workspaces",
-    "custom/separator",
-    "tray"
-  ],
-  "modules-center": [
-    "hyprland/window"
-  ],
-  "modules-right": [
-    "memory",
-    "cpu",
-    "pulseaudio",
-    "battery",
-    "network",
-    "custom/separ"
-  ],
-  "custom/separator": {
-    "exec": "echo \"|\"",
-    "format": "{}"
-  },
-  "tray": {
-    "icon-size": 16,
-    "spacing": 8
-  },
-  "clock": {
-    "format": " 󰸗 {:%I:%M %p} ",
-    "interval": 60,
-    "tooltip": true,
-    "on-click": "kitty -e calcurse",
-    "tooltip-format": "{:%d %B %H:%M}"
-  },
+  "height": 15,
+  "margin": "10 25 -15 25",
+
+  "modules-left": ["hyprland/workspaces", "custom/separator", "tray"],
+  "modules-center": ["hyprland/window"],
+  "modules-right": ["wireplumber", "custom/brightness", "battery", "cpu", "memory", "network", "clock"],
+
   "hyprland/workspaces": {
-    "format": "{icon}",
-    "separate-outputs": false,
-    "active-only": false,
-    // turn on true to show same all workspaces on each monitor
-    "all-outputs": false,
-    "format-icons": {
-      // 1-10
-      "1": "1",
-      "2": "2",
-      "3": "3",
-      "4": "4",
-      "5": "5",
-      "6": "6",
-      "7": "7",
-      "8": "8",
-      "9": "9",
-      "10": "10",
-      // 11-10
-      "11": "1",
-      "12": "2",
-      "13": "3",
-      "14": "4",
-      "15": "5",
-      "16": "6",
-      "17": "7",
-      "18": "8",
-      "19": "9",
-      "110": "10"
-      
-      // // 1-10
-      // "1": "一",
-      // "2": "二",
-      // "3": "三",
-      // "4": "四",
-      // "5": "五",
-      // "6": "六",
-      // "7": "七",
-      // "8": "八",
-      // "9": "九",
-      // "10": "十",
-      // // 11-10
-      // "11": "一",
-      // "12": "二",
-      // "13": "三",
-      // "14": "四",
-      // "15": "五",
-      // "16": "六",
-      // "17": "七",
-      // "18": "八",
-      // "19": "九",
-      // "110": "十"
-	  }
+    "format": "{id}",
   },
-  "hyprland/window": {
+  "custom/separator": {
+    "exec": "echo \" | \"",
     "format": "{}"
   },
   "network": {
-    "format": " 󰖩",
-    "tooltip": "{ifname}",
-    "tooltip-format": "{essid}",
-    "on-click": "kitty nmtui",
-    "interval": 2
+    "format-wifi": "{essid} {signalStrength}% ",
+    "format-ethernet": "{ipaddr}/{cidr}",
+    "format-disconnected": "Disconnected ",
+    "tooltip-format": "{ifname}: {gwaddr}",
+    "format": "{ifname}: {essid}"
   },
-  "temperature": {
-    "format": "{icon} {temperatureC}°C ",
-    "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
-    "critical-threshold": 80,
-    "format-icons": [
-      "",
-      "",
-      ""
-    ]
-  },
-  "memory": {
-    "format": "󰫗 {}% ",
-    "tooltip": "false"
+  "hyprland/window": {
+    "format": "{title}",
   },
   "cpu": {
-    "format": " {usage}% ",
-    "tooltip": "false"
+    "format": "{usage}% ",
+    "interval": 1,
   },
-  "pulseaudio": {
-    "format": " {volume}%",
-    "scroll-step": 1,
-    "on-click": "pavucontrol"
+  "memory": {
+    "format": "{percentage}% ",
+    "interval": 1,
+  },
+  "clock": {
+    // "timezone": "America/New_York",
+    "format": "{:%r}",
+    "tooltip-format": "{:%d %B %Y}",
+    "interval": 1,
+  },
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8,
+  },
+  "wireplumber": {
+    "format": "{volume}% {icon}",
+    "format-muted": "",
+    "tooltip-format": "{volume}% {node_name}",
+    "scroll-step": 0,
+    "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "on-click-right": "helvum",
+    "format-icons": ["", "", ""]
   },
   "battery": {
+    "bat": "BAT0",
+    "interval": 0,
+    "format-charging": "{capacity}% 󰂄",
+    "format-not charging": "{capacity}% 󰂃",
+    "format-discharging": "{capacity}% {icon}",
     "format": "{capacity}% {icon}",
-    "format-icons": [
-      "",
-      "",
-      "",
-      "",
-      ""
-    ]
+    "format-icons": ["󱊡", "󱊢", "󱊣"],
+    "interval": 1,
   },
-  "custom/powermenu": {
-    "format": " Power ",
-    "tooltip": false,
-    "on-click": "exec wlogout -p layer-shell"
-  }
 }
-

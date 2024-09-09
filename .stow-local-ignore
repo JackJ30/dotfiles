@@ -1,0 +1,9 @@
+/files
+/scripts
+.*~undo-tree~
+/.git
+.gitignore
+README.md
+install.sh
+/wallpapers
+#.*#

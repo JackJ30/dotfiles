@@ -1,68 +1,77 @@
+
+
 * {
-  font-family: "Fira Code";
+    font-family: "DejaVu Sans Mono", "Symbols Nerd Font";
+    font-size: 14px;
 }
 
-#waybar {
-  background: #171717;
-  color: #fff;
-}
-
-#clock {
-  color: #fff;
-}
-
-#tray {
-  padding-left: 4px;
-}
-
-#workspaces button:hover {
-  background-color: transparent;
-}
-
-#workspaces button {
-  color: #737373;
-  padding-left: 4px;
-  padding-right: 4px;
-  border-radius: 0px;
-}
-
-#workspaces button:hover {
-  background-color: #262626;
-}
-
-#workspaces button.active {
-  color: #84cc16;
+window#waybar {
+    background-color: rgba(13, 27, 42, 0.5);
+    color: rgba(228, 228, 239, 1);
+    border: 1px solid rgba(238, 171, 196, 0.8);
+    border-radius: 10px;
 }
 
 #window {
-  color: #fff;
+    margin: 0 10px;
 }
 
-#network {
-  color: #3b82f6;
-  margin-right: 8px;
+.modules-right:last-child {
+    /* background-color: rgba(51, 102, 0, 0.5); */
+    /* margin: 0 2px 0 0; */
+    margin-right: 10px;
+    /* padding: 0 3px; */
 }
 
-#pulseaudio {
-  color: #14b8a6;
-  margin-right: 4px;
+.modules-center {
+    /* background-color: #1d1f21; */
+    /* background-color: #2a3f38; */
+    /* background-color: rgba(51, 102, 0, 0.5); */
+    /* margin: 0 0 0 0; */
+    /* padding: 0 3px; */
 }
 
-#cpu {
-  color: #0ea5e9;
-  margin-right: 4px;
+.modules-left {
+    /* background-color: #1d1f21; */
+    /* background-color: #2a3f38; */
+    /* background-color: rgba(51, 102, 0, 0.5); */
+    /* margin: 0 0 0 2px; */
+    /* padding: 0 3px 0 0; */
 }
 
-#temperature {
-  color: #eab308;
-  margin-right: 4px;
+tooltip {
+    background-color: rgba(13, 27, 42, 1);
+    color: rgba(228, 228, 239, 1);
+    border: 1px solid rgba(238, 171, 196, 0.8);
+    border-radius: 10px;
 }
 
-#memory {
-  color: #d946ef;
-  margin-right: 4px;
+#workspaces button {
+    color: rgba(228, 228, 239, 1);
+    /* padding: 0 3px; */
 }
 
-#custom-powermenu {
-  color: #f43f5e;
+#workspaces button.focused {
+    color: rgba(238, 171, 196, 0.8);
+}
+
+#workspaces button.active {
+    color: rgba(238, 171, 196, 0.8);
+}
+
+#workspaces button:hover {
+    background: transparent;
+    border-color: rgba(238, 171, 196, 0.8);
+    box-shadow: none;
+    text-shadow: none;
+}
+
+#network,
+#wireplumber,
+#custom-brightness,
+#battery,
+#cpu,
+#memory,
+#clock {
+    padding: 0 10px;
 }

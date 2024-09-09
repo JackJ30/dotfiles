@@ -1,0 +1,65 @@
+source=binds.conf
+source=monitors.conf
+source=style.conf
+source=windowrules.conf
+
+# Slow app launch fix
+exec-once = systemctl --user import-environment &
+exec-once = hash dbus-update-activation-environment 2>/dev/null &
+exec-once = dbus-update-activation-environment --systemd &
+#exec-once = xdg-desktop-portal-hyprland &
+
+exec-once = hyprctl setcursor HyprBibataModernClassicSVG 24
+exec-once = hyprctl dispatch workspace 1
+exec-once = xrandr --output XWAYLAND0 --primary
+exec-once = gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Classic"
+exec-once = gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
+exec-once = gsettings set org.gnome.desktop.interface gtk-theme Adwaita
+exec-once = hyprpaper
+exec-once = waybar
+
+# Some default env vars.
+env = QT_QPA_PLATFORMTHEME,qt6ct # change to qt6ct if you have that 
+env = XDG_SESSION_TYPE,wayland
+env = XDG_SESSION_DESKTOP,Hyprland
+env = XCURSOR_THEME,"Bibata-Modern-Classic"
+env = XCURSOR_SIZE,24
+env = HYPRCURSOR_THEME,HyprBibataModernClassicSVG
+env = HYPRCURSOR_SIZE,64
+env = LIBVA_DRIVER_NAME,nvidia
+env = GBM_BACKEND,nvidia-drm
+env = __GLX_VENDOR_LIBRARY_NAME,nvidia
+
+# For all categories, see https://wiki.hyprland.org/Configuring/Variables/
+input {
+  kb_layout = us
+  kb_variant =
+  kb_model =
+  kb_options = ctrl:nocaps
+  kb_rules =
+
+  follow_mouse = 1
+
+  repeat_delay = 300
+  repeat_rate = 30
+
+  touchpad {
+    natural_scroll = no
+  }
+
+  sensitivity = 0 # -1.0 - 1.0, 0 means no modification.
+}
+
+general {
+  layout = dwindle
+  #layout = master
+
+  # Please see https://wiki.hyprland.org/Configuring/Tearing/ before you turn this on
+  allow_tearing = false
+}
+
+windowrulev2 = opacity 0.0 override 0.0 override,class:^(xwaylandvideobridge)$
+windowrulev2 = noanim,class:^(xwaylandvideobridge)$
+windowrulev2 = noinitialfocus,class:^(xwaylandvideobridge)$
+windowrulev2 = maxsize 1 1,class:^(xwaylandvideobridge)$
+windowrulev2 = noblur,class:^(xwaylandvideobridge)$

@@ -1,0 +1,9 @@
+#!/bin/sh
+out=$(git branch --show-current)
+if [ -z "$out" ] then
+     out-""
+else 
+     out="($out)"
+fi
+echo -n "($out)"
+   

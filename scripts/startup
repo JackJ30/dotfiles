@@ -1,0 +1,8 @@
+#!/bin/sh
+gpgconf -K gpg-agent
+restartemacs >/dev/null &
+pipewire &
+mpd &
+dunst &
+waybar &
+gpg-agent --daemon
