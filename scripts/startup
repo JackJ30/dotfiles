@@ -5,4 +5,5 @@ pipewire &
 mpd &
 dunst &
 waybar &
+hyprpaper &
 gpg-agent --daemon

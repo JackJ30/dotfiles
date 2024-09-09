@@ -1,0 +1,5 @@
+#!/bin/bash
+brightness=$(cat /sys/class/backlight/amdgpu_bl1/brightness)
+max_brightness=$(cat /sys/class/backlight/amdgpu_bl1/max_brightness)
+brightness_percentage=$(( $brightness * 100 / $max_brightness ))
+echo "$brightness_percentage%"
