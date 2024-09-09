@@ -16,6 +16,7 @@
   },
   "custom/brightness": {
   	"exec": "get-brightness-percentage",
+  	"interval": 1,
   	"format": "{} 󰃝",
   },
   "network": {
