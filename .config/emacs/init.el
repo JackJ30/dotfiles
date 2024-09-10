@@ -89,8 +89,8 @@
 
 (elpaca elpaca-use-package
   ;; Enable use-package :ensure support for Elpaca.
-	(elpaca-use-package-mode)
-	(setq elpaca-use-package-by-default t))
+  (elpaca-use-package-mode)
+  (setq elpaca-use-package-by-default t))
 
 (elpaca-wait)
 
@@ -249,10 +249,67 @@
   ;; stop littering with *.~undo-tree~ files everywhere
   (setq undo-tree-history-directory-alist `(("." . ,--undo-history-directory))))
 
+(use-package avy)
+(use-package move-text)
 
-;; Keybinds
+(use-package org
+  :diminish org-mode
+  :config
+  (setq org-ellipsis " ▾")
+  (add-hook 'org-mode-hook '(lambda () (whitespace-mode -1)))
+
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("py" . "src python"))
+  (add-to-list 'org-structure-template-alist '("cpp" . "src c++"))
+  (setq org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s%:T ")
+                                   (todo . " %i %-12:c")
+                                   (tags . " %i %-12:c%:T ")
+                                   (search . " %i %-12:c%:T ")))
+  (setq org-agenda-hide-tags-regexp ".*")
+  (setq org-babel-default-header-args:emacs-lisp '((:lexical . "no") (:tangle . "./init.el")))
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (python . t))))
+
+(use-package org-superstar
+  :diminish org-superstar-mode
+  :after org
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+  (setq org-hide-leading-stars t)
+  (require 'org-tempo))
+
+(defun org-babel-tangle-config ()
+  (when (string-equal (buffer-file-name) (expand-file-name "~/.dotfiles/.config/emacs/Emacs.org"))
+    ;; Dynamic scoping to the rescue
+    (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle))))
+
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'org-babel-tangle-config)))
+
+(use-package ace-window
+  :config
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+        aw-scope 'frame))
+
+(use-package tree-sitter
+  :diminish tree-sitter-mode
+  :config
+  (global-tree-sitter-mode 1))
+(use-package tree-sitter-langs)
+
+(use-package highlight-quoted
+  :diminish highlight-quoted-mode
+  :hook (emacs-lisp-mode . highlight-quoted-mode))
 
 (global-unset-key (kbd "C-z"))
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 (global-set-key (kbd "C-/") #'undo-tree-undo)
 (global-set-key (kbd "M-/") #'undo-tree-redo)
+(global-set-key (kbd "C-c v") #'avy-goto-char-timer)
+(global-set-key (kbd "M-p") #'move-text-up)
+(global-set-key (kbd "M-n") #'move-text-down)
