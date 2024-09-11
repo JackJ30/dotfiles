@@ -295,6 +295,7 @@
   :config
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
         aw-scope 'frame))
+(elpaca-wait)
 
 (use-package tree-sitter
   :diminish tree-sitter-mode
@@ -306,6 +307,12 @@
   :diminish highlight-quoted-mode
   :hook (emacs-lisp-mode . highlight-quoted-mode))
 
+(use-package transient)
+(use-package magit
+  :bind (("C-x g" . magit-status))
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
 (global-unset-key (kbd "C-z"))
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
 (global-set-key (kbd "C-/") #'undo-tree-undo)
@@ -313,3 +320,103 @@
 (global-set-key (kbd "C-c v") #'avy-goto-char-timer)
 (global-set-key (kbd "M-p") #'move-text-up)
 (global-set-key (kbd "M-n") #'move-text-down)
+
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l"
+        lsp-headerline-breadcrumb-enable nil
+        lsp-headerline-breadcrumb-icons-enable nil
+        lsp-keep-workspace-alive nil
+        lsp-enable-snippet nil
+        lsp-lens-enable nil)
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (c-mode . lsp)
+         (c++-mode . lsp)
+         (python-mode . lsp-deferred)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+
+
+(use-package consult-lsp
+  :after lsp)
+
+(defun my-c-mode-common-hook ()
+  ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
+  (c-set-offset 'substatement-open 0)
+  ;; other customizations can go here
+
+  (setq c++-tab-always-indent t)
+  (setq c-basic-offset 4)                  ;; Default is 2
+  (setq c-indent-level 4)                  ;; Default is 2
+
+  (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60))
+  (setq tab-width 4)
+  (setq indent-tabs-mode t)  ; use spaces only if nil
+  )
+
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+(use-package lsp-ui
+  :after lsp
+  :diminish lsp-lens-mode
+  :config
+  (setq lsp-ui-sideline-update-mode 'point)
+  (setq lsp-ui-sideline-show-diagnostics t)
+  (setq lsp-ui-sideline-ignore-duplicate t))
+
+(use-package hydra)
+
+(use-package lsp-treemacs
+  :ensure t
+  :commands lsp-treemacs-errors-list)
+
+;; company
+(use-package company
+  :ensure t
+  :config
+  (setq company-show-numbers            t
+   	company-minimum-prefix-length   1
+   	company-idle-delay              0.5
+   	company-backends
+   	'((company-files          ; files & directory
+   	   company-keywords       ; keywords
+   	   company-capf           ; what is this?
+   	   company-yasnippet)
+   	  (company-abbrev company-dabbrev)))
+  (global-company-mode +1))
+
+(use-package company-box
+  :ensure t
+  :after company
+  :hook (company-mode . company-box-mode))
+
+;; flycheck
+(use-package flycheck
+  :diminish flycheck-mode
+  :config
+  (setq flycheck-error-message-buffer " *Flycheck error messages*")
+  (setq-default flycheck-emacs-lisp-load-path 'inherit)
+  (global-flycheck-mode 1))
+
+(use-package flycheck-pos-tip
+  :ensure t
+  :after flycheck
+  :config
+  (flycheck-pos-tip-mode))
+
+(use-package ccls
+  :ensure t
+  :config
+  :hook ((c-mode c++-mode objc-mode cuda-mode) .
+         (lambda () (require 'ccls) (lsp)))
+  (setq ccls-executable "/usr/local/bin/ccls")
+  (setq ccls-initialization-options
+   	'(:index (:comments 2) :completion (:detailedLabel t))))
+
+(use-package srefactor
+  :ensure t
+  :config
+  (semantic-mode 1)
+  (define-key c-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
+  (define-key c++-mode-map (kbd "M-RET") 'srefactor-refactor-at-point))

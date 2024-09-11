@@ -39,7 +39,7 @@
     "interval": 1,
   },
   "clock": {
-    // "timezone": "America/New_York",
+    "timezone": "America/New_York",
     "format": "{:%r}",
     "tooltip-format": "{:%d %B %Y}",
     "interval": 1,
