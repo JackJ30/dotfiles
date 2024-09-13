@@ -285,7 +285,7 @@
 
 (defun org-babel-tangle-config ()
   (when (string-equal (buffer-file-name) (expand-file-name "~/.dotfiles/.config/emacs/Emacs.org"))
-    ;; Dynamic scoping to the rescue
+    ;; Dynamic scoping to the rescuennnn
     (let ((org-confirm-babel-evaluate nil))
       (org-babel-tangle))))
 
@@ -371,23 +371,32 @@
   :ensure t
   :commands lsp-treemacs-errors-list)
 
+(use-package expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+
 ;; company
 (use-package company
   :ensure t
+  :diminish
   :config
   (setq company-show-numbers            t
-   	company-minimum-prefix-length   1
-   	company-idle-delay              0.5
-   	company-backends
-   	'((company-files          ; files & directory
-   	   company-keywords       ; keywords
-   	   company-capf           ; what is this?
-   	   company-yasnippet)
-   	  (company-abbrev company-dabbrev)))
+     	company-minimum-prefix-length   1
+     	company-idle-delay              0
+     	company-backends
+     	'((company-files          
+     	   company-keywords       
+     	   company-capf           
+     	   company-yasnippet)
+     	  (company-abbrev company-dabbrev)))
   (global-company-mode +1))
+
+(use-package clang-format)
+(use-package clang-format+)
+
 
 (use-package company-box
   :ensure t
+  :diminish
   :after company
   :hook (company-mode . company-box-mode))
 
@@ -412,7 +421,7 @@
          (lambda () (require 'ccls) (lsp)))
   (setq ccls-executable "/usr/local/bin/ccls")
   (setq ccls-initialization-options
-   	'(:index (:comments 2) :completion (:detailedLabel t))))
+     	'(:index (:comments 2) :completion (:detailedLabel t))))
 
 (use-package srefactor
   :ensure t
@@ -420,3 +429,11 @@
   (semantic-mode 1)
   (define-key c-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
   (define-key c++-mode-map (kbd "M-RET") 'srefactor-refactor-at-point))
+
+(use-package multiple-cursors
+  :bind (:map global-map
+              ("C->" . 'mc/mark-next-like-this)
+              ("C-<" . 'mc/mark-previous-like-this)
+              ("C-c C->" . 'mc/mark-all-like-this)
+              :map mc/keymap
+              ("<return>" . nil)))
