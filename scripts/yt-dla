@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo "$1"
+if [ -z "$1" ] ; then
+    echo "usage: $0 [url of youtube video]"
+    exit 1
+fi
+yt-dlp -x --audio-format mp3 --audio-quality 0 "$1"

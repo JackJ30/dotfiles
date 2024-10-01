@@ -1,5 +1,6 @@
 (setq make-backup-files nil
       create-lockfiles nil
+      erc-join-buffer 'window
       confirm-kill-processes nil)
 
 (setq inhibit-startup-message t
@@ -333,6 +334,7 @@
          (c-mode . lsp)
          (c++-mode . lsp)
          (python-mode . lsp-deferred)
+	 (csharp-mode . lsp)
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
@@ -381,7 +383,7 @@
   :config
   (setq company-show-numbers            t
      	company-minimum-prefix-length   1
-     	company-idle-delay              0
+     	company-idle-delay              0.2
      	company-backends
      	'((company-files          
      	   company-keywords       
@@ -437,3 +439,17 @@
               ("C-c C->" . 'mc/mark-all-like-this)
               :map mc/keymap
               ("<return>" . nil)))
+
+(use-package dired
+  :ensure nil
+  :ensure nil
+  :commands (dired dired-jump)
+  :bind (:map dired-mode-map ("SPC" . dired-single-buffer))
+  :config
+  (setq dired-dwim-target t)
+  (evil-collection-define-key 'normal 'dired-mode-map
+    "h" 'dired-single-up-directory
+    "l" 'dired-single-buffer))
+
+(use-package dired-single
+  :commands (dired dired-jump))

@@ -5,7 +5,7 @@
 
   "modules-left": ["hyprland/workspaces", "custom/separator", "tray"],
   "modules-center": ["hyprland/window"],
-  "modules-right": ["wireplumber", "custom/brightness", "battery", "cpu", "memory", "network", "custom/separator", "clock"],
+  "modules-right": ["wireplumber", "custom/brightness", "battery", "cpu", "memory", "custom/separator", "network", "custom/separator", "clock"],
 
   "hyprland/workspaces": {
     "format": "{id}",
