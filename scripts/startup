@@ -7,4 +7,5 @@ mpd &
 dunst &
 waybar &
 hyprpaper &
+hypridle &
 gpg-agent --daemon
