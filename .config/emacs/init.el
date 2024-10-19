@@ -322,6 +322,14 @@
 (global-set-key (kbd "M-p") #'move-text-up)
 (global-set-key (kbd "M-n") #'move-text-down)
 
+(defun next-word (p)
+  "Move point to the beginning of the next word, past any spaces"
+  (interactive "d")
+  (forward-word)
+  (forward-word)
+  (backward-word))
+(global-set-key "\M-f" 'next-word)
+
 (use-package lsp-mode
   :init
   (setq lsp-keymap-prefix "C-c l"
@@ -448,8 +456,8 @@
   :config
   (setq dired-dwim-target t)
   (evil-collection-define-key 'normal 'dired-mode-map
-    "h" 'dired-single-up-directory
-    "l" 'dired-single-buffer))
+			      "h" 'dired-single-up-directory
+			      "l" 'dired-single-buffer))
 
 (use-package dired-single
   :commands (dired dired-jump))
