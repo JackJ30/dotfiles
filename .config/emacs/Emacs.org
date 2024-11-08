@@ -480,7 +480,8 @@ best git frontend ever
     (define-key c-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
     (define-key c++-mode-map (kbd "M-RET") 'srefactor-refactor-at-point))
 
-
+(use-package tagedit)
+  
 #+end_src
 
 ** multiple cursors

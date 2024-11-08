@@ -1,3 +1,4 @@
 /.config/emacs/recentf
 /.config/emacs/undotreefiles/
 /.config/emacs/elpa/
+.config/emacs/init.el
