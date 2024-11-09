@@ -364,6 +364,9 @@ best git frontend ever
     (backward-word))
   (global-set-key "\M-f" 'next-word)
 
+  (use-package expand-region)
+  (global-set-key (kbd "C-=") 'er/expand-region)
+
 
 #+end_src
 
@@ -420,9 +423,6 @@ best git frontend ever
   (use-package lsp-treemacs
     :ensure t
     :commands lsp-treemacs-errors-list)
-
-  (use-package expand-region)
-  (global-set-key (kbd "C-=") 'er/expand-region)
 
   ;; company
   (use-package company

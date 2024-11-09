@@ -330,6 +330,9 @@
   (backward-word))
 (global-set-key "\M-f" 'next-word)
 
+(use-package expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+
 (use-package lsp-mode
     :init
     (setq lsp-keymap-prefix "C-c l"
@@ -380,9 +383,6 @@
   (use-package lsp-treemacs
     :ensure t
     :commands lsp-treemacs-errors-list)
-
-  (use-package expand-region)
-  (global-set-key (kbd "C-=") 'er/expand-region)
 
   ;; company
   (use-package company
