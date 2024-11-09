@@ -1,0 +1,70 @@
+{
+  "layer": "top",
+  "height": 15,
+  "margin": "10 25 -15 25",
+
+  "modules-left": ["hyprland/workspaces", "custom/separator", "tray"],
+  "modules-center": ["hyprland/window"],
+  "modules-right": ["wireplumber", "custom/brightness", "battery", "cpu", "memory", "custom/separator", "network", "custom/separator", "clock"],
+
+  "hyprland/workspaces": {
+    "format": "{id}",
+  },
+  "custom/separator": {
+    "exec": "echo \" | \"",
+    "format": "{}"
+  },
+  "custom/brightness": {
+  	"exec": "get-brightness-percentage",
+  	"interval": 1,
+  	"format": "{} 󰃝",
+  },
+  "network": {
+    "format-wifi": "{essid} {signalStrength}% ",
+    "format-ethernet": "{ipaddr}/{cidr}",
+    "format-disconnected": "Disconnected ",
+    "tooltip-format": "{ifname}: {gwaddr}",
+    "format": "{ifname}: {essid}",
+    "on-click": "alacritty -e nmtui",
+  },
+  "hyprland/window": {
+    "format": "{title}",
+  },
+  "cpu": {
+    "format": "{usage}% ",
+    "interval": 1,
+  },
+  "memory": {
+    "format": "{percentage}% ",
+    "interval": 1,
+  },
+  "clock": {
+    "timezone": "America/New_York",
+    "format": "{:%r}",
+    "tooltip-format": "{:%d %B %Y}",
+    "interval": 1,
+  },
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8,
+  },
+  "wireplumber": {
+    "format": "{volume}% {icon}",
+    "format-muted": "",
+    "tooltip-format": "{volume}% {node_name}",
+    "scroll-step": 0,
+    "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "on-click-right": "helvum",
+    "format-icons": ["", "", ""]
+  },
+  "battery": {
+    "bat": "BAT0",
+    "interval": 0,
+    "format-charging": "{capacity}% 󰂄",
+    "format-not charging": "{capacity}% 󰂃",
+    "format-discharging": "{capacity}% {icon}",
+    "format": "{capacity}% {icon}",
+    "format-icons": ["󱊡", "󱊢", "󱊣"],
+    "interval": 1,
+  },
+}
