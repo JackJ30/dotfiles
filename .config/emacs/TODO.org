@@ -1,4 +1,6 @@
-- [ ] development
+- [ ] development (lsp for elisp, c++, typescript, html tags)
+- [ ] corfu completion
+- [ ] lsp peeking, finding definitions, all that bs
 - [ ] better search
 - [ ] project management
 - [ ] Org tangling
