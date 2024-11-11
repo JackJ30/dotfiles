@@ -1,0 +1,5 @@
+- [ ] Go through old.org
+- [ ] go through emacs from scratch
+- [ ] better search
+- [ ] Org tangling
+- [ ] project management

@@ -1,22 +1,51 @@
 ;; package setup
-(require 'package)
+(defvar elpaca-installer-version 0.7)
+(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+                              :ref nil :depth 1
+                              :files (:defaults "elpaca-test.el" (:exclude "extensions"))
+                              :build (:not elpaca--activate-package)))
+(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+       (build (expand-file-name "elpaca/" elpaca-builds-directory))
+       (order (cdr elpaca-order))
+       (default-directory repo))
+  (add-to-list 'load-path (if (file-exists-p build) build repo))
+  (unless (file-exists-p repo)
+    (make-directory repo t)
+    (when (< emacs-major-version 28) (require 'subr-x))
+    (condition-case-unless-debug err
+        (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                 ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
+                                                 ,@(when-let ((depth (plist-get order :depth)))
+                                                     (list (format "--depth=%d" depth) "--no-single-branch"))
+                                                 ,(plist-get order :repo) ,repo))))
+                 ((zerop (call-process "git" nil buffer t "checkout"
+                                       (or (plist-get order :ref) "--"))))
+                 (emacs (concat invocation-directory invocation-name))
+                 ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                                       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                 ((require 'elpaca))
+                 ((elpaca-generate-autoloads "elpaca" repo)))
+            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+          (error "%s" (with-current-buffer buffer (buffer-string))))
+      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+  (unless (require 'elpaca-autoloads nil t)
+    (require 'elpaca)
+    (elpaca-generate-autoloads "elpaca" repo)
+    (load "./elpaca-autoloads")))
+(add-hook 'after-init-hook #'elpaca-process-queues)
+(elpaca `(,@elpaca-order))
 
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")))
+(elpaca elpaca-use-package
+  ;; Enable use-package :ensure support for Elpaca.
+  (elpaca-use-package-mode)
+  (setq elpaca-use-package-by-default t))
 
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
+(elpaca-wait)
 
-;; Initialize use-package on non-Linux platforms
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-
-(require 'use-package)
-(setq use-package-always-ensure t)
-
-;; interface
+;; basic interface
 
 (setq make-backup-files nil
       create-lockfiles nil
@@ -34,7 +63,7 @@
 (setq scroll-up-aggressively nil
       scroll-down-aggressively nil
       scroll-conservatively 101
-      display-line-numbers-type 'relative)
+      display-line-numbers-type t)
 
 (setq scroll-step 1)
 (setq scroll-margin 8)
@@ -78,7 +107,7 @@
   :config
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
-  (load-theme 'doom-vibrant t)
+  (load-theme 'doom-snazzy t)
   (doom-themes-org-config))
 
 (custom-set-variables
@@ -94,6 +123,129 @@
  ;; If there is more than one, they won't work right.
  )
 
+;; misc changes
+(use-package diminish)
+
+(diminish 'abbrev-mode)
+(auto-revert-mode 1)
+(diminish 'auto-revert-mode)
+(diminish 'eldoc-mode)
+(diminish 'isearch-mode)
+(diminish 'abbrev-mode)
+
+;; interface packages
+;; - vertico and completion
+(use-package vertico
+  :ensure (vertico :files (:defaults "extensions/*"))
+  :diminish vertico-mode
+  :bind (:map vertico-map
+	      ("C-n" . vertico-next)
+	      ("C-p" . vertico-previous))
+  :init
+  (vertico-mode 1)
+  ;; (vertico-flat-mode 1)
+  (setq vertico-count 15))
+
+(use-package vertico-directory
+  :after vertico
+  :ensure nil
+  ;; More convenient directory navigation commands
+  :bind (:map vertico-map
+	      ("RET" . vertico-directory-enter)
+	      ("DEL" . vertico-directory-delete-char)
+	      ("M-DEL" . vertico-directory-delete-word))
+  ;; Tidy shadowed file names
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 3))
+
+(use-package marginalia
+  :diminish marginalia-mode
+  :after vertico
+  :custom
+  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+  :config
+  (marginalia-mode))
+
+(use-package consult
+  :config
+  (setq completion-in-region-function
+	(lambda (&rest args)
+	  (apply (if vertico-mode
+		     #'consult-completion-in-region
+		   #'completion--in-region)
+		 args)))
+  (consult-customize consult-buffer :preview-key "M-."))
+
+(use-package orderless
+  :config
+  (setq completion-styles '(orderless)
+	completion-category-defaults nil
+	completion-category-overrides '((file (styles . (partial-completion))))))
+
+;; - icons
+(use-package nerd-icons)
+(use-package all-the-icons)
+
+(use-package all-the-icons-dired
+  :hook (dired-mode . all-the-icons-dired-mode))
+
+;; text editing packages
+(use-package rainbow-delimiters
+  :diminish rainbow-delimiters-mode
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+;; directory changes and packages
+(recentf-mode 1)
+
+(use-package no-littering
+  :config
+  (add-to-list 'recentf-exclude
+	       (recentf-expand-file-name no-littering-var-directory))
+  (add-to-list 'recentf-exclude
+	       (recentf-expand-file-name no-littering-etc-directory))
+  (setq custom-file (no-littering-expand-etc-file-name "custom.el")))
+
+(use-package gcmh
+  :diminish gcmh-mode
+  :init
+  (gcmh-mode 1))
+
+(use-package savehist
+  :ensure nil
+  :diminish savehist-mode
+  :init
+  (savehist-mode 1))
+
+;; - dired
+
+(setf dired-kill-when-opening-new-dired-buffer t)
+
+(use-package dired-open
+  :config
+  ;; Doesn't work as expected!
+  (add-to-list 'dired-open-functions #'dired-open-xdg t)
+
+;; - embark
+(use-package embark
+  :bind
+  (("C-." . embark-act)
+   ("C-;" . embark-dwim))
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command)
+  :config
+  (setq embark--minimal-indicator-overlay nil)
+  (setq embark-indicators (delq 'embark-mixed-indicator embark-indicators))
+  (add-to-list 'embark-indicators #'embark-minimal-indicator))
+
+(use-package embark-consult
+  :config
+  (define-key embark-file-map (kbd "S") 'sudo-find-file))
+
 ;; development
 ;; - magit
 (use-package transient)
@@ -101,6 +253,9 @@
   :bind (("C-x g" . magit-status))
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+;; - projectile
+
 
 ;; keybinds
 
