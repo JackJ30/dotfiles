@@ -133,6 +133,13 @@
 (diminish 'isearch-mode)
 (diminish 'abbrev-mode)
 
+(use-package helpful
+  :bind
+  ([remap describe-command] . helpful-command)
+  ([remap describe-function] . helpful-callable)
+  ([remap describe-variable] . helpful-variable)
+  ([remap describe-key] . helpful-key))
+
 ;; interface packages
 ;; - vertico and completion
 (use-package vertico
@@ -194,12 +201,42 @@
 (use-package all-the-icons-dired
   :hook (dired-mode . all-the-icons-dired-mode))
 
+(use-package emojify
+  :hook (after-init . global-emojify-mode)
+  :config
+  (add-hook 'prog-mode-hook #'(lambda () (emojify-mode -1))))
+
 ;; text editing packages
 (use-package rainbow-delimiters
   :diminish rainbow-delimiters-mode
   :hook (prog-mode . rainbow-delimiters-mode))
 
+(use-package highlight-quoted
+  :diminish highlight-quoted-mode
+  :hook (emacs-lisp-mode . highlight-quoted-mode))
+
+;; - flyspell
+(use-package flyspell
+  :ensure nil
+  ;; :diminish flyspell-mode
+  )
+
+(use-package flyspell-correct
+  :after flyspell)
+
+(use-package consult-flyspell
+  :ensure (consult-flyspell :host gitlab :repo "OlMon/consult-flyspell" :branch "master")
+  :config
+  ;; default settings
+  (setq consult-flyspell-select-function (lambda () (flyspell-correct-at-point) (consult-flyspell))
+	consult-flyspell-set-point-after-word t
+	consult-flyspell-always-check-buffer nil))
+
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
 ;; directory changes and packages
+
 (recentf-mode 1)
 
 (use-package no-littering
@@ -225,10 +262,20 @@
 
 (setf dired-kill-when-opening-new-dired-buffer t)
 
-(use-package dired-open
+;; -- undo tree
+(use-package undo-tree
+  :diminish undo-tree-mode
   :config
-  ;; Doesn't work as expected!
-  (add-to-list 'dired-open-functions #'dired-open-xdg t)
+  (global-undo-tree-mode)
+  (add-hook 'authinfo-mode-hook #'(lambda () (setq-local undo-tree-auto-save-history nil)))
+  (defvar --undo-history-directory (concat user-emacs-directory "undotreefiles/")
+    "Directory to save undo history files.")
+  (unless (file-exists-p --undo-history-directory)
+    (make-directory --undo-history-directory t))
+  ;; stop littering with *.~undo-tree~ files everywhere
+  (setq undo-tree-history-directory-alist `(("." . ,--undo-history-directory))))
+(global-set-key (kbd "C-/") #'undo-tree-undo)
+(global-set-key (kbd "M-/") #'undo-tree-redo)
 
 ;; - embark
 (use-package embark
@@ -256,8 +303,56 @@
 
 ;; - projectile
 
+;; - tree sitter
+(use-package tree-sitter
+    :diminish tree-sitter-mode
+    :config
+    (global-tree-sitter-mode 1))
+(use-package tree-sitter-langs)
+
+;; - LSP mode
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :init
+  (setq lsp-keymap-prefix "C-c l"
+	lsp-headerline-breadcrumb-enable t
+	lsp-headerline-breadcrumb-icons-enable t
+	lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode)
+  :config
+  (lsp-enable-which-key-integration t))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode))
+(setq lsp-ui-doc-position 'bottom)
+
+(use-package consult-lsp
+  :after lsp)
+
+(use-package lsp-treemacs
+  :after lsp)
+
+;; - misc
+(use-package evil-nerd-commenter
+  :bind ("M-;" . evilnc-comment-or-uncomment-lines))
 
 ;; keybinds
 
 (global-unset-key (kbd "C-z"))
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
+
+(use-package move-text)
+(global-set-key (kbd "M-p") #'move-text-up)
+(global-set-key (kbd "M-n") #'move-text-down)
+
+(use-package expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+
+(use-package multiple-cursors
+  :bind (:map global-map
+              ("C->" . 'mc/mark-next-like-this)
+              ("C-<" . 'mc/mark-previous-like-this)
+              ("C-c C->" . 'mc/mark-all-like-this)
+              :map mc/keymap
+              ("<return>" . nil)))

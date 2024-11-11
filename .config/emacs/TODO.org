@@ -1,5 +1,6 @@
-- [ ] Go through old.org
-- [ ] go through emacs from scratch
+- [ ] development
 - [ ] better search
-- [ ] Org tangling
 - [ ] project management
+- [ ] Org tangling
+- [ ] splash screen
+- [ ] dap mode 
