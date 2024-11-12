@@ -6,7 +6,7 @@
 (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
                               :ref nil :depth 1
                               :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-                              :build (:not elpaca--activate-package)))
+			      :build (:not elpaca--activate-package)))
 (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
        (build (expand-file-name "elpaca/" elpaca-builds-directory))
        (order (cdr elpaca-order))
@@ -318,20 +318,87 @@
   (setq lsp-keymap-prefix "C-c l"
 	lsp-headerline-breadcrumb-enable t
 	lsp-headerline-breadcrumb-icons-enable t
-	lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+	lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols)
+	lsp-lens-enable nil)
   (lsp-headerline-breadcrumb-mode)
   :config
-  (lsp-enable-which-key-integration t))
+  (lsp-enable-which-key-integration t)
+  :hook (
+	 (c-mode . lsp)
+	 (c++-mode . lsp)
+	 (python-mode . lsp)
+	 (csharp-mode . lsp)
+	 )
+  :custom
+  (lsp-completion-provider :none) ; corfu
+  )
 
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode))
 (setq lsp-ui-doc-position 'bottom)
+
+;; - - hooks
+(defun my-c-mode-common-hook ()
+  ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
+  (c-set-offset 'substatement-open 0)
+  ;; other customizations can go here
+
+  (setq c++-tab-always-indent t)
+  (setq c-basic-offset 4)                  ;; Default is 2
+  (setq c-indent-level 4)                  ;; Default is 2
+
+  (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60))
+  (setq tab-width 4)
+  (setq indent-tabs-mode t))
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+;; - - additional packages
 
 (use-package consult-lsp
   :after lsp)
 
 (use-package lsp-treemacs
   :after lsp)
+
+;; - completion
+(use-package corfu
+  :ensure t
+  :custom
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-auto-prefix 2)
+  (corfu-auto-delay 0)
+  (corfu-popupinfo-delay '(0.3 . 0.1))
+  (corfu-preview-current 'insert)
+  (corfu-preselect 'first)
+  (corfu-on-exact-match nil)
+  :bind (:map corfu-map
+              ("C-g" . corfu-quit))
+  :init
+  (global-corfu-mode)
+  (corfu-history-mode)
+  (corfu-popupinfo-mode))
+
+(use-package cape
+  ;; Bind prefix keymap providing all Cape commands under a mnemonic key.
+  ;; Press C-c p ? to for help.
+  :bind ("C-c p" . cape-prefix-map) ;; Alternative keys: M-p, M-+, ...
+  ;; Alternatively bind Cape commands individually.
+  ;; :bind (("C-c p d" . cape-dabbrev)
+  ;;        ("C-c p h" . cape-history)
+  ;;        ("C-c p f" . cape-file)
+  ;;        ...)
+  :init
+  ;; Add to the global default value of `completion-at-point-functions' which is
+  ;; used by `completion-at-point'.  The order of the functions matters, the
+  ;; first function returning a result wins.  Note that the list of buffer-local
+  ;; completion functions takes precedence over the global list.
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'completion-at-point-functions #'cape-elisp-block)
+  ;; (add-hook 'completion-at-point-functions #'cape-history)
+  ;; ...
+  )
 
 ;; - misc
 (use-package evil-nerd-commenter

@@ -1,5 +1,8 @@
-- [ ] development (lsp for elisp, c++, typescript, html tags)
-- [ ] corfu completion
+- [x] development lsps
+- [x] bettter configure corfu
+- [ ] configure flycheck + argument completion + snippets
+- [ ] C-c macros for development
+- [ ] JS lsp setup
 - [ ] lsp peeking, finding definitions, all that bs
 - [ ] better search
 - [ ] project management
