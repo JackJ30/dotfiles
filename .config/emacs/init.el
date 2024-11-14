@@ -168,7 +168,7 @@
   :init (which-key-mode)
   :diminish which-key-mode
   :config
-  (setq which-key-idle-delay 0.2))
+  (setq which-key-idle-delay 0.5))
 
 (use-package marginalia
   :diminish marginalia-mode
@@ -261,6 +261,7 @@
 ;; - dired
 
 (setf dired-kill-when-opening-new-dired-buffer t)
+(setq dired-dwim-target t)
 
 ;; -- undo tree
 (use-package undo-tree
@@ -317,7 +318,6 @@
   :init
   (setq lsp-keymap-prefix "C-c l"
 	lsp-headerline-breadcrumb-enable t
-	lsp-headerline-breadcrumb-icons-enable t
 	lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols)
 	lsp-lens-enable nil)
   (lsp-headerline-breadcrumb-mode)
@@ -325,8 +325,8 @@
   (lsp-enable-which-key-integration t)
   :hook (
 	 (c-mode . lsp)
-	 (c++-mode . lsp)
-	 (python-mode . lsp)
+	 (c++-mode . lsp-deferred)
+	 (python-mode . lsp-deferred)
 	 (csharp-mode . lsp)
 	 )
   :custom
@@ -367,8 +367,8 @@
   (corfu-cycle t)
   (corfu-auto t)
   (corfu-auto-prefix 2)
-  (corfu-auto-delay 0)
-  (corfu-popupinfo-delay '(0.3 . 0.1))
+  (corfu-auto-delay 0.2)
+  (corfu-popupinfo-delay '(0.3 . 0.2))
   (corfu-preview-current 'insert)
   (corfu-preselect 'first)
   (corfu-on-exact-match nil)

@@ -6,8 +6,7 @@ Dependencies:
 - Hyprpaper
 - Hyprlock
 - Hypridle
-- Nemo
-- Kitty
+- Alacritty
 - Brightnessctl
-- Calcurse
 - Pipewire
+- Emacs lsp booster
