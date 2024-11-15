@@ -1,3 +1,5 @@
+(setq gc-cons-threshold 200000000)
+
 ;; package setup
 (defvar elpaca-installer-version 0.7)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
@@ -42,6 +44,10 @@
   ;; Enable use-package :ensure support for Elpaca.
   (elpaca-use-package-mode)
   (setq elpaca-use-package-by-default t))
+
+(unless (package-installed-p 'vc-use-package)
+  (package-vc-install "https://github.com/slotThe/vc-use-package"))
+(require 'vc-use-package)
 
 (elpaca-wait)
 
@@ -107,8 +113,13 @@
   :config
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
-  (load-theme 'doom-snazzy t)
+  ;(load-theme 'doom-snazzy t)
   (doom-themes-org-config))
+
+(use-package miasma-theme
+  :vc (:fetcher github :repo daut/miasma-theme.el)
+  :config
+  (load-theme 'miasma t))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -215,25 +226,27 @@
   :diminish highlight-quoted-mode
   :hook (emacs-lisp-mode . highlight-quoted-mode))
 
-;; - flyspell
-(use-package flyspell
-  :ensure nil
-  ;; :diminish flyspell-mode
-  )
+;; - flyspell ( still working on perfect config )
+;; (use-package flyspell
+;;   :ensure nil
+;;   ;; :diminish flyspell-mode
+;;   )
 
-(use-package flyspell-correct
-  :after flyspell)
+;; (setq flyspell-prog-text-faces '(font-lock-doc-face))
 
-(use-package consult-flyspell
-  :ensure (consult-flyspell :host gitlab :repo "OlMon/consult-flyspell" :branch "master")
-  :config
-  ;; default settings
-  (setq consult-flyspell-select-function (lambda () (flyspell-correct-at-point) (consult-flyspell))
-	consult-flyspell-set-point-after-word t
-	consult-flyspell-always-check-buffer nil))
+;; (use-package flyspell-correct
+;;   :after flyspell)
 
-(add-hook 'text-mode-hook 'flyspell-mode)
-(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+;; (use-package consult-flyspell
+;;   :ensure (consult-flyspell :host gitlab :repo "OlMon/consult-flyspell" :branch "master")
+;;   :config
+;;   ;; default settings
+;;   (setq consult-flyspell-select-function (lambda () (flyspell-correct-at-point) (consult-flyspell))
+;; 	consult-flyspell-set-point-after-word t
+;; 	consult-flyspell-always-check-buffer nil))
+
+;; (add-hook 'text-mode-hook 'flyspell-mode)
+;; (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
 ;; directory changes and packages
 
@@ -246,11 +259,6 @@
   (add-to-list 'recentf-exclude
 	       (recentf-expand-file-name no-littering-etc-directory))
   (setq custom-file (no-littering-expand-etc-file-name "custom.el")))
-
-(use-package gcmh
-  :diminish gcmh-mode
-  :init
-  (gcmh-mode 1))
 
 (use-package savehist
   :ensure nil
@@ -337,6 +345,38 @@
   :hook (lsp-mode . lsp-ui-mode))
 (setq lsp-ui-doc-position 'bottom)
 
+;; - - lsp booster
+(defun lsp-booster--advice-json-parse (old-fn &rest args)
+  "Try to parse bytecode instead of json."
+  (or
+   (when (equal (following-char) ?#)
+     (let ((bytecode (read (current-buffer))))
+       (when (byte-code-function-p bytecode)
+         (funcall bytecode))))
+   (apply old-fn args)))
+(advice-add (if (progn (require 'json)
+                       (fboundp 'json-parse-buffer))
+                'json-parse-buffer
+              'json-read)
+            :around
+            #'lsp-booster--advice-json-parse)
+
+(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+  "Prepend emacs-lsp-booster command to lsp CMD."
+  (let ((orig-result (funcall old-fn cmd test?)))
+    (if (and (not test?)                             ;; for check lsp-server-present?
+             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+             lsp-use-plists
+             (not (functionp 'json-rpc-connection))  ;; native json-rpc
+             (executable-find "emacs-lsp-booster"))
+        (progn
+          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+            (setcar orig-result command-from-exec-path))
+          (message "Using emacs-lsp-booster for %s!" orig-result)
+          (cons "emacs-lsp-booster" orig-result))
+      orig-result)))
+(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+
 ;; - - hooks
 (defun my-c-mode-common-hook ()
   ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
@@ -408,6 +448,7 @@
 
 (global-unset-key (kbd "C-z"))
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
+(global-set-key (kbd "C-c f") #'consult-line)
 
 (use-package move-text)
 (global-set-key (kbd "M-p") #'move-text-up)
