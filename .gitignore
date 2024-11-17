@@ -2,3 +2,6 @@
 /.config/emacs/undotreefiles/
 /.config/emacs/elpa/
 .config/emacs/init.el
+/.config/emacs/elpaca/
+/.config/emacs/transient/
+/.config/emacs/var/

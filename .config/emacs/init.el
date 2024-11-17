@@ -121,28 +121,10 @@
   :config
   (load-theme 'miasma t))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages '(magit doom-themes ivy doom-modeline command-log-mode)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
 ;; misc changes
 (use-package diminish)
 
-(diminish 'abbrev-mode)
 (auto-revert-mode 1)
-(diminish 'auto-revert-mode)
-(diminish 'eldoc-mode)
-(diminish 'isearch-mode)
-(diminish 'abbrev-mode)
 
 (use-package helpful
   :bind
@@ -319,16 +301,21 @@
     (global-tree-sitter-mode 1))
 (use-package tree-sitter-langs)
 
+;; - snippet
+(use-package yasnippet
+  :config
+  (yas-global-mode 1))
+
 ;; - LSP mode
 
 (use-package lsp-mode
   :commands (lsp lsp-deferred)
   :init
   (setq lsp-keymap-prefix "C-c l"
-	lsp-headerline-breadcrumb-enable t
-	lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols)
+	lsp-headerline-breadcrumb-enable f
+	;lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols)
 	lsp-lens-enable nil)
-  (lsp-headerline-breadcrumb-mode)
+  ;(lsp-headerline-breadcrumb-mode)
   :config
   (lsp-enable-which-key-integration t)
   :hook (
