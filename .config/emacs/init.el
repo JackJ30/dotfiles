@@ -312,10 +312,10 @@
   :commands (lsp lsp-deferred)
   :init
   (setq lsp-keymap-prefix "C-c l"
-	lsp-headerline-breadcrumb-enable f
-	;lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols)
+	lsp-headerline-breadcrumb-enable t
+	lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols)
 	lsp-lens-enable nil)
-  ;(lsp-headerline-breadcrumb-mode)
+  (lsp-headerline-breadcrumb-mode)
   :config
   (lsp-enable-which-key-integration t)
   :hook (
@@ -363,6 +363,20 @@
           (cons "emacs-lsp-booster" orig-result))
       orig-result)))
 (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+
+;; flycheck
+(use-package flycheck
+  :diminish flycheck-mode
+  :config
+  (setq flycheck-error-message-buffer " *Flycheck error messages*")
+  (setq-default flycheck-emacs-lisp-load-path 'inherit)
+  (global-flycheck-mode 1))
+
+(use-package flycheck-pos-tip
+  :ensure t
+  :after flycheck
+  :config
+  (flycheck-pos-tip-mode))
 
 ;; - - hooks
 (defun my-c-mode-common-hook ()

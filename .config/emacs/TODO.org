@@ -1,12 +1,15 @@
 - [x] development lsps
 - [x] bettter configure corfu
+- [x] speed up lsp
 - [ ] configure flycheck + argument completion + snippets
-- [ ] JS lsp setup + lsp improvements
+- [ ] JS lsp setup
 - [ ] C-c macros for development and consult
 - [ ] lsp peeking, finding definitions, all that bs
+- [ ] grab shit from other lsp config
 - [ ] no corfu in org mode holy shit
 - [ ] better search
 - [ ] project management
+- [ ] ido
 - [ ] Org tangling
 - [ ] splash screen
 - [ ] dap mode 
