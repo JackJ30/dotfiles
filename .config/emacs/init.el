@@ -107,19 +107,20 @@
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 15)))
+  :custom ((doom-modeline-height 25)))
 
 (use-package doom-themes
   :config
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
-  ;(load-theme 'doom-snazzy t)
+  (load-theme 'doom-dracula t)
   (doom-themes-org-config))
 
 (use-package miasma-theme
   :vc (:fetcher github :repo daut/miasma-theme.el)
   :config
-  (load-theme 'miasma t))
+  ;(load-theme 'miasma t)
+  )
 
 ;; misc changes
 (use-package diminish)
@@ -409,7 +410,7 @@
   (corfu-auto t)
   (corfu-auto-prefix 2)
   (corfu-auto-delay 0.2)
-  (corfu-popupinfo-delay '(0.3 . 0.2))
+  (corfu-popupinfo-delay '(0.2 . 0.1))
   (corfu-preview-current 'insert)
   (corfu-preselect 'first)
   (corfu-on-exact-match nil)
@@ -419,6 +420,15 @@
   (global-corfu-mode)
   (corfu-history-mode)
   (corfu-popupinfo-mode))
+
+(use-package kind-icon
+  :ensure t
+  :after corfu
+  ;:custom
+  ; (kind-icon-blend-background t)
+  ; (kind-icon-default-face 'corfu-default) ; only needed with blend-background
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package cape
   ;; Bind prefix keymap providing all Cape commands under a mnemonic key.

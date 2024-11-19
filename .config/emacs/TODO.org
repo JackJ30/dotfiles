@@ -1,7 +1,7 @@
 - [x] development lsps
 - [x] bettter configure corfu
 - [x] speed up lsp
-- [ ] configure flycheck + argument completion + snippets
+- [x] configure flycheck + argument completion + snippets
 - [ ] JS lsp setup
 - [ ] C-c macros for development and consult
 - [ ] lsp peeking, finding definitions, all that bs
