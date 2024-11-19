@@ -5,3 +5,5 @@
 /.config/emacs/elpaca/
 /.config/emacs/transient/
 /.config/emacs/var/
+/.config/emacs/auto-save-list/
+/.config/emacs/tree-sitter/
