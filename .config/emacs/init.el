@@ -364,7 +364,9 @@
 ;; - snippet
 (use-package yasnippet
   :config
-  (yas-global-mode 1))
+  (yas-global-mode 1)
+  :bind (("C-M-n" . yas-next-field )
+	 ("C-M-p" . yas-prev-field )))
 
 ;; - LSP mode
 
@@ -389,6 +391,7 @@
 	 )
   :custom
   (lsp-completion-provider :none) ; corfu
+  (lsp-idle-delay 0.5)
   )
 
 (use-package lsp-ui
