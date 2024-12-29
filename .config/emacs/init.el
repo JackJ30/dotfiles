@@ -391,7 +391,7 @@
 	 )
   :custom
   (lsp-completion-provider :none) ; corfu
-  (lsp-idle-delay 0.5)
+  (lsp-idle-delay 1.0)
   )
 
 (use-package lsp-ui
@@ -456,8 +456,15 @@
 
   (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60))
   (setq tab-width 4)
-  (setq indent-tabs-mode t))
+  (setq indent-tabs-mode nil))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+(defun my-cmake-mode-setup ()
+  "Switch to cmake-mode when opening a CMakeLists.txt file."
+  (when (string-match "CMakeLists\\.txt\\'" (buffer-name))
+    (cmake-ts-mode)))
+
+(add-hook 'find-file-hook 'my-cmake-mode-setup)
 
 ;; - - additional packages
 
@@ -474,7 +481,7 @@
   (corfu-cycle t)
   (corfu-auto t)
   (corfu-auto-prefix 2)
-  (corfu-auto-delay 0.2)
+  (corfu-auto-delay 0.4)
   (corfu-popupinfo-delay '(0.2 . 0.1))
   (corfu-preview-current 'insert)
   (corfu-preselect 'first)
