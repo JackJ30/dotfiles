@@ -17,3 +17,4 @@ Possible Improvements:
 - Built in debugging
 - Built in git merging
 - Code collapsing
+- Counsel-mark-ring, goto last change, or some way to mark positions and jump back reliably
