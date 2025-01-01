@@ -1,54 +1,6 @@
-(setq make-backup-files nil
-      create-lockfiles nil
-      erc-join-buffer 'window
-      confirm-kill-processes nil)
+(setq gc-cons-threshold 200000000)
 
-(setq inhibit-startup-message t
-      backup-inhibited t)
-
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
-(tooltip-mode -1)
-(menu-bar-mode -1)
-
-(setq scroll-up-aggressively nil
-      scroll-down-aggressively nil
-      scroll-conservatively 101
-      display-line-numbers-type 'relative)
-
-(setq scroll-step 1)
-(setq scroll-margin 8)
-
-(column-number-mode +1)
-(global-display-line-numbers-mode t)
-(setq-default fill-column 80)
-
-(electric-pair-mode +1)
-
-(dolist (mode '(org-mode-hook
-                term-mode-hook
-                vterm-mode-hook
-                shell-mode-hook
-                eshell-mode-hook
-                mu4e-main-mode-hook
-                mu4e-headers-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers-mode 0))))
-
-(set-frame-parameter (selected-frame) 'alpha '(90 . 90))
-(add-to-list 'default-frame-alist '(alpha . (90 . 90)))
-
-(set-face-attribute 'default nil
-                    :font "DejaVu Sans Mono"
-                    :family "Monospace"
-                    :height 97)
-(set-face-attribute 'variable-pitch nil
-                    :font "DejaVu Sans"
-                    :height 97)
-(set-face-attribute 'fixed-pitch nil
-                    :font "DejaVu Sans Mono"
-                    :family "Monospace"
-                    :height 97)
-
+;; package setup
 (defvar elpaca-installer-version 0.7)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
@@ -56,7 +8,7 @@
 (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
                               :ref nil :depth 1
                               :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-                              :build (:not elpaca--activate-package)))
+			      :build (:not elpaca--activate-package)))
 (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
        (build (expand-file-name "elpaca/" elpaca-builds-directory))
        (order (cdr elpaca-order))
@@ -93,45 +45,103 @@
   (elpaca-use-package-mode)
   (setq elpaca-use-package-by-default t))
 
+(unless (package-installed-p 'vc-use-package)
+  (package-vc-install "https://github.com/slotThe/vc-use-package"))
+(require 'vc-use-package)
+
 (elpaca-wait)
 
+;; basic interface
+
+(setq make-backup-files nil
+      create-lockfiles nil
+      erc-join-buffer 'window
+      confirm-kill-processes nil)
+
+(setq inhibit-startup-message t
+      backup-inhibited t)
+
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(tooltip-mode -1)
+(menu-bar-mode -1)
+
+(setq scroll-up-aggressively nil
+      scroll-down-aggressively nil
+      scroll-conservatively 101
+      display-line-numbers-type t)
+
+(setq scroll-step 1)
+(setq scroll-margin 8)
+
+(column-number-mode +1)
+(global-display-line-numbers-mode t)
+(setq-default fill-column 80)
+
+(electric-pair-mode +1)
+
+(dolist (mode '(org-mode-hook
+                term-mode-hook
+                vterm-mode-hook
+                shell-mode-hook
+                eshell-mode-hook
+                mu4e-main-mode-hook
+                mu4e-headers-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+(set-frame-parameter (selected-frame) 'alpha '(90 . 90))
+(add-to-list 'default-frame-alist '(alpha . (90 . 90)))
+
+(set-face-attribute 'default nil
+                    :font "DejaVu Sans Mono"
+                    :family "Monospace"
+                    :height 97)
+(set-face-attribute 'variable-pitch nil
+                    :font "DejaVu Sans"
+                    :height 97)
+(set-face-attribute 'fixed-pitch nil
+                    :font "DejaVu Sans Mono"
+                    :family "Monospace"
+                    :height 97)
+
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 25)))
+
+(use-package doom-themes
+  :config
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t)
+  (load-theme 'doom-dracula t)
+  (doom-themes-org-config))
+
+(use-package miasma-theme
+  :vc (:fetcher github :repo daut/miasma-theme.el)
+  :config
+  ;(load-theme 'miasma t)
+  )
+
+;; misc changes
 (use-package diminish)
-(elpaca-wait)
 
-(diminish 'abbrev-mode)
 (auto-revert-mode 1)
-(diminish 'auto-revert-mode)
-(diminish 'eldoc-mode)
-(diminish 'isearch-mode)
-(diminish 'abbrev-mode)
 
-(recentf-mode 1)
+(use-package helpful
+  :bind
+  ([remap describe-command] . helpful-command)
+  ([remap describe-function] . helpful-callable)
+  ([remap describe-variable] . helpful-variable)
+  ([remap describe-key] . helpful-key))
 
-(use-package no-littering
-  :config
-  (add-to-list 'recentf-exclude
-               (recentf-expand-file-name no-littering-var-directory))
-  (add-to-list 'recentf-exclude
-               (recentf-expand-file-name no-littering-etc-directory))
-  (setq custom-file (no-littering-expand-etc-file-name "custom.el")))
-
-(use-package gcmh
-  :diminish gcmh-mode
-  :init
-  (gcmh-mode 1))
-
-(use-package which-key
-  :init (which-key-mode)
-  :diminish which-key-mode
-  :config
-  (setq which-key-idle-delay 3))
-
+;; interface packages
+;; - vertico and completion
 (use-package vertico
   :ensure (vertico :files (:defaults "extensions/*"))
   :diminish vertico-mode
   :bind (:map vertico-map
-              ("C-n" . vertico-next)
-              ("C-p" . vertico-previous))
+	      ("C-n" . vertico-next)
+	      ("C-p" . vertico-previous))
   :init
   (vertico-mode 1)
   ;; (vertico-flat-mode 1)
@@ -142,17 +152,17 @@
   :ensure nil
   ;; More convenient directory navigation commands
   :bind (:map vertico-map
-              ("RET" . vertico-directory-enter)
-              ("DEL" . vertico-directory-delete-char)
-              ("M-DEL" . vertico-directory-delete-word))
+	      ("RET" . vertico-directory-enter)
+	      ("DEL" . vertico-directory-delete-char)
+	      ("M-DEL" . vertico-directory-delete-word))
   ;; Tidy shadowed file names
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
-(use-package savehist
-  :ensure nil
-  :diminish savehist-mode
-  :init
-  (savehist-mode 1))
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.5))
 
 (use-package marginalia
   :diminish marginalia-mode
@@ -165,26 +175,101 @@
 (use-package consult
   :config
   (setq completion-in-region-function
-        (lambda (&rest args)
-          (apply (if vertico-mode
-                     #'consult-completion-in-region
-                   #'completion--in-region)
-                 args)))
+	(lambda (&rest args)
+	  (apply (if vertico-mode
+		     #'consult-completion-in-region
+		   #'completion--in-region)
+		 args)))
   (consult-customize consult-buffer :preview-key "M-."))
 
 (use-package orderless
   :config
   (setq completion-styles '(orderless)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles . (partial-completion))))))
+	completion-category-defaults nil
+	completion-category-overrides '((file (styles . (partial-completion))))))
 
-(use-package doom-themes
+;; - icons
+(use-package nerd-icons)
+(use-package all-the-icons)
+
+(use-package all-the-icons-dired
+  :hook (dired-mode . all-the-icons-dired-mode))
+
+(use-package emojify
+  :hook (after-init . global-emojify-mode)
   :config
-  (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t)
-  (load-theme 'doom-vibrant t)
-  (doom-themes-org-config))
+  (add-hook 'prog-mode-hook #'(lambda () (emojify-mode -1))))
 
+;; text editing packages
+(use-package rainbow-delimiters
+  :diminish rainbow-delimiters-mode
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package highlight-quoted
+  :diminish highlight-quoted-mode
+  :hook (emacs-lisp-mode . highlight-quoted-mode))
+
+;; - flyspell ( still working on perfect config )
+;; (use-package flyspell
+;;   :ensure nil
+;;   ;; :diminish flyspell-mode
+;;   )
+
+;; (setq flyspell-prog-text-faces '(font-lock-doc-face))
+
+;; (use-package flyspell-correct
+;;   :after flyspell)
+
+;; (use-package consult-flyspell
+;;   :ensure (consult-flyspell :host gitlab :repo "OlMon/consult-flyspell" :branch "master")
+;;   :config
+;;   ;; default settings
+;;   (setq consult-flyspell-select-function (lambda () (flyspell-correct-at-point) (consult-flyspell))
+;; 	consult-flyspell-set-point-after-word t
+;; 	consult-flyspell-always-check-buffer nil))
+
+;; (add-hook 'text-mode-hook 'flyspell-mode)
+;; (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+;; directory changes and packages
+
+(recentf-mode 1)
+
+(use-package no-littering
+  :config
+  (add-to-list 'recentf-exclude
+	       (recentf-expand-file-name no-littering-var-directory))
+  (add-to-list 'recentf-exclude
+	       (recentf-expand-file-name no-littering-etc-directory))
+  (setq custom-file (no-littering-expand-etc-file-name "custom.el")))
+
+(use-package savehist
+  :ensure nil
+  :diminish savehist-mode
+  :init
+  (savehist-mode 1))
+
+;; - dired
+
+(setf dired-kill-when-opening-new-dired-buffer t)
+(setq dired-dwim-target t)
+
+;; -- undo tree
+(use-package undo-tree
+  :diminish undo-tree-mode
+  :config
+  (global-undo-tree-mode)
+  (add-hook 'authinfo-mode-hook #'(lambda () (setq-local undo-tree-auto-save-history nil)))
+  (defvar --undo-history-directory (concat user-emacs-directory "undotreefiles/")
+    "Directory to save undo history files.")
+  (unless (file-exists-p --undo-history-directory)
+    (make-directory --undo-history-directory t))
+  ;; stop littering with *.~undo-tree~ files everywhere
+  (setq undo-tree-history-directory-alist `(("." . ,--undo-history-directory))))
+(global-set-key (kbd "C-/") #'undo-tree-undo)
+(global-set-key (kbd "M-/") #'undo-tree-redo)
+
+;; - embark
 (use-package embark
   :bind
   (("C-." . embark-act)
@@ -200,247 +285,260 @@
   :config
   (define-key embark-file-map (kbd "S") 'sudo-find-file))
 
-(use-package nerd-icons)
-(use-package all-the-icons)
-
-(use-package flyspell
-  :ensure nil
-  ;; :diminish flyspell-mode
-  )
-
-(use-package flyspell-correct
-  :after flyspell)
-
-(use-package consult-flyspell
-  :ensure (consult-flyspell :host gitlab :repo "OlMon/consult-flyspell" :branch "master")
-  :config
-  ;; default settings
-  (setq consult-flyspell-select-function (lambda () (flyspell-correct-at-point) (consult-flyspell))
-        consult-flyspell-set-point-after-word t
-        consult-flyspell-always-check-buffer nil))
-
-(use-package rainbow-delimiters
-  :diminish rainbow-delimiters-mode
-  :hook (prog-mode . rainbow-delimiters-mode))
-
-(use-package emojify
-  :hook (after-init . global-emojify-mode)
-  :config
-  (add-hook 'prog-mode-hook #'(lambda () (emojify-mode -1))))
-
-(use-package helpful
-  :bind
-  ([remap describe-command] . helpful-command)
-  ([remap describe-function] . helpful-callable)
-  ([remap describe-variable] . helpful-variable)
-  ([remap describe-key] . helpful-key))
-
-(use-package writeroom-mode
-  :diminish)
-
-(use-package undo-tree
-  :diminish undo-tree-mode
-  :config
-  (global-undo-tree-mode)
-  (add-hook 'authinfo-mode-hook #'(lambda () (setq-local undo-tree-auto-save-history nil)))
-  (defvar --undo-history-directory (concat user-emacs-directory "undotreefiles/")
-    "Directory to save undo history files.")
-  (unless (file-exists-p --undo-history-directory)
-    (make-directory --undo-history-directory t))
-  ;; stop littering with *.~undo-tree~ files everywhere
-  (setq undo-tree-history-directory-alist `(("." . ,--undo-history-directory))))
-
-(use-package avy)
-(use-package move-text)
-
-(use-package org
-  :diminish org-mode
-  :config
-  (setq org-ellipsis " ▾")
-  (add-hook 'org-mode-hook '(lambda () (whitespace-mode -1)))
-
-  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
-  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-  (add-to-list 'org-structure-template-alist '("py" . "src python"))
-  (add-to-list 'org-structure-template-alist '("cpp" . "src c++"))
-  (setq org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s%:T ")
-                                   (todo . " %i %-12:c")
-                                   (tags . " %i %-12:c%:T ")
-                                   (search . " %i %-12:c%:T ")))
-  (setq org-agenda-hide-tags-regexp ".*")
-  (setq org-babel-default-header-args:emacs-lisp '((:lexical . "no") (:tangle . "./init.el")))
-
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     (python . t))))
-
-(use-package org-superstar
-  :diminish org-superstar-mode
-  :after org
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
-  (setq org-hide-leading-stars t)
-  (require 'org-tempo))
-
-(defun org-babel-tangle-config ()
-  (when (string-equal (buffer-file-name) (expand-file-name "~/.dotfiles/.config/emacs/Emacs.org"))
-    ;; Dynamic scoping to the rescuennnn
-    (let ((org-confirm-babel-evaluate nil))
-      (org-babel-tangle))))
-
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'org-babel-tangle-config)))
-
-(use-package ace-window
-  :config
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-        aw-scope 'frame))
-(elpaca-wait)
-
-(use-package tree-sitter
-  :diminish tree-sitter-mode
-  :config
-  (global-tree-sitter-mode 1))
-(use-package tree-sitter-langs)
-
-(use-package highlight-quoted
-  :diminish highlight-quoted-mode
-  :hook (emacs-lisp-mode . highlight-quoted-mode))
-
+;; development
+;; - magit
 (use-package transient)
 (use-package magit
   :bind (("C-x g" . magit-status))
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
+;; - projectile
+
+;; - tree sitter
+(use-package treesit
+  :elpaca nil
+  :mode (("\\.tsx\\'" . tsx-ts-mode)
+         ("\\.js\\'"  . typescript-ts-mode)
+         ("\\.mjs\\'" . typescript-ts-mode)
+         ("\\.mts\\'" . typescript-ts-mode)
+         ("\\.cjs\\'" . typescript-ts-mode)
+         ("\\.ts\\'"  . typescript-ts-mode)
+         ("\\.jsx\\'" . tsx-ts-mode)
+         ("\\.json\\'" .  json-ts-mode)
+         ("\\.Dockerfile\\'" . dockerfile-ts-mode)
+         ("\\.prisma\\'" . prisma-ts-mode)
+         ;; More modes defined here...
+         )
+  :preface
+  (defun os/setup-install-grammars ()
+    "Install Tree-sitter grammars if they are absent."
+    (interactive)
+    (dolist (grammar
+             '((css . ("https://github.com/tree-sitter/tree-sitter-css" "v0.20.0"))
+               (bash "https://github.com/tree-sitter/tree-sitter-bash")
+               (html . ("https://github.com/tree-sitter/tree-sitter-html" "v0.20.1"))
+               (javascript . ("https://github.com/tree-sitter/tree-sitter-javascript" "v0.21.2" "src"))
+               (json . ("https://github.com/tree-sitter/tree-sitter-json" "v0.20.2"))
+               (python . ("https://github.com/tree-sitter/tree-sitter-python" "v0.20.4"))
+               (go "https://github.com/tree-sitter/tree-sitter-go" "v0.20.0")
+               (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+               (make "https://github.com/alemuller/tree-sitter-make")
+               (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+               (cmake "https://github.com/uyha/tree-sitter-cmake")
+               (c "https://github.com/tree-sitter/tree-sitter-c")
+               (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+               (toml "https://github.com/tree-sitter/tree-sitter-toml")
+               (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "tsx/src"))
+               (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "v0.20.3" "typescript/src"))
+               (yaml . ("https://github.com/ikatyang/tree-sitter-yaml" "v0.5.0"))
+               (prisma "https://github.com/victorhqc/tree-sitter-prisma")))
+      (add-to-list 'treesit-language-source-alist grammar)
+      ;; Only install `grammar' if we don't already have it
+      ;; installed. However, if you want to *update* a grammar then
+      ;; this obviously prevents that from happening.
+      (unless (treesit-language-available-p (car grammar))
+        (treesit-install-language-grammar (car grammar)))))
+
+  ;; Optional, but recommended. Tree-sitter enabled major modes are
+  ;; distinct from their ordinary counterparts.
+  ;;
+  ;; You can remap major modes with `major-mode-remap-alist'. Note
+  ;; that this does *not* extend to hooks! Make sure you migrate them
+  ;; also
+  (dolist (mapping
+           '((css-mode . css-ts-mode)
+             (typescript-mode . typescript-ts-mode)
+             (js-mode . typescript-ts-mode)
+             (js2-mode . typescript-ts-mode)
+             (json-mode . json-ts-mode)
+             (js-json-mode . json-ts-mode)))
+    (add-to-list 'major-mode-remap-alist mapping))
+  :config
+  (os/setup-install-grammars))
+
+(use-package tree-sitter-langs)
+
+;; - combobulate
+
+;; - snippet
+(use-package yasnippet
+  :config
+  (yas-global-mode 1)
+  :bind (("C-M-n" . yas-next-field )
+	 ("C-M-p" . yas-prev-field )))
+
+;; - LSP mode
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :init
+  (setq lsp-keymap-prefix "C-c l"
+	lsp-headerline-breadcrumb-enable t
+	lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols)
+	lsp-lens-enable nil)
+  (lsp-headerline-breadcrumb-mode)
+  :config
+  (lsp-enable-which-key-integration t)
+  :hook (
+	 (c-mode . lsp)
+	 (c++-mode . lsp-deferred)
+	 (python-mode . lsp-deferred)
+	 (csharp-mode . lsp)
+	 ((tsx-ts-mode
+               typescript-ts-mode
+               js-ts-mode) . lsp-deferred)
+	 )
+  :custom
+  (lsp-completion-provider :none) ; corfu
+  (lsp-idle-delay 1.0)
+  )
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode))
+(setq lsp-ui-doc-position 'bottom)
+
+;; - - lsp booster
+(defun lsp-booster--advice-json-parse (old-fn &rest args)
+  "Try to parse bytecode instead of json."
+  (or
+   (when (equal (following-char) ?#)
+     (let ((bytecode (read (current-buffer))))
+       (when (byte-code-function-p bytecode)
+         (funcall bytecode))))
+   (apply old-fn args)))
+(advice-add (if (progn (require 'json)
+                       (fboundp 'json-parse-buffer))
+                'json-parse-buffer
+              'json-read)
+            :around
+            #'lsp-booster--advice-json-parse)
+
+(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+  "Prepend emacs-lsp-booster command to lsp CMD."
+  (let ((orig-result (funcall old-fn cmd test?)))
+    (if (and (not test?)                             ;; for check lsp-server-present?
+             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+             lsp-use-plists
+             (not (functionp 'json-rpc-connection))  ;; native json-rpc
+             (executable-find "emacs-lsp-booster"))
+        (progn
+          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+            (setcar orig-result command-from-exec-path))
+          (message "Using emacs-lsp-booster for %s!" orig-result)
+          (cons "emacs-lsp-booster" orig-result))
+      orig-result)))
+(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+
+;; flycheck
+(use-package flycheck
+  :diminish flycheck-mode
+  :config
+  (setq flycheck-error-message-buffer " *Flycheck error messages*")
+  (setq-default flycheck-emacs-lisp-load-path 'inherit)
+  (global-flycheck-mode 1))
+
+(use-package flycheck-pos-tip
+  :ensure t
+  :after flycheck
+  :config
+  (flycheck-pos-tip-mode))
+
+;; - - hooks
+(defun my-c-mode-common-hook ()
+  ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
+  (c-set-offset 'substatement-open 0)
+  ;; other customizations can go here
+
+  (setq c++-tab-always-indent t)
+  (setq c-basic-offset 4)                  ;; Default is 2
+  (setq c-indent-level 4)                  ;; Default is 2
+
+  (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60))
+  (setq tab-width 4)
+  (setq indent-tabs-mode nil))
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+(defun my-cmake-mode-setup ()
+  "Switch to cmake-mode when opening a CMakeLists.txt file."
+  (when (string-match "CMakeLists\\.txt\\'" (buffer-name))
+    (cmake-ts-mode)))
+
+(add-hook 'find-file-hook 'my-cmake-mode-setup)
+
+;; - - additional packages
+
+(use-package consult-lsp
+  :after lsp)
+
+(use-package lsp-treemacs
+  :after lsp)
+
+;; - completion
+(use-package corfu
+  :ensure t
+  :custom
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-auto-prefix 2)
+  (corfu-auto-delay 0.4)
+  (corfu-popupinfo-delay '(0.2 . 0.1))
+  (corfu-preview-current 'insert)
+  (corfu-preselect 'first)
+  (corfu-on-exact-match nil)
+  :bind (:map corfu-map
+              ("C-g" . corfu-quit))
+  :init
+  (global-corfu-mode)
+  (corfu-history-mode)
+  (corfu-popupinfo-mode))
+
+(use-package kind-icon
+  :ensure t
+  :after corfu
+  ;:custom
+  ; (kind-icon-blend-background t)
+  ; (kind-icon-default-face 'corfu-default) ; only needed with blend-background
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+(use-package cape
+  ;; Bind prefix keymap providing all Cape commands under a mnemonic key.
+  ;; Press C-c p ? to for help.
+  :bind ("C-c p" . cape-prefix-map) ;; Alternative keys: M-p, M-+, ...
+  ;; Alternatively bind Cape commands individually.
+  ;; :bind (("C-c p d" . cape-dabbrev)
+  ;;        ("C-c p h" . cape-history)
+  ;;        ("C-c p f" . cape-file)
+  ;;        ...)
+  :init
+  ;; Add to the global default value of `completion-at-point-functions' which is
+  ;; used by `completion-at-point'.  The order of the functions matters, the
+  ;; first function returning a result wins.  Note that the list of buffer-local
+  ;; completion functions takes precedence over the global list.
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'completion-at-point-functions #'cape-elisp-block)
+  ;; (add-hook 'completion-at-point-functions #'cape-history)
+  ;; ...
+  )
+
+;; - misc
+(use-package evil-nerd-commenter
+  :bind ("M-;" . evilnc-comment-or-uncomment-lines))
+
+;; keybinds
+
 (global-unset-key (kbd "C-z"))
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
-(global-set-key (kbd "C-/") #'undo-tree-undo)
-(global-set-key (kbd "M-/") #'undo-tree-redo)
-(global-set-key (kbd "C-c v") #'avy-goto-char-timer)
+(global-set-key (kbd "C-c f") #'consult-line)
+
+(use-package move-text)
 (global-set-key (kbd "M-p") #'move-text-up)
 (global-set-key (kbd "M-n") #'move-text-down)
 
-(defun next-word (p)
-  "Move point to the beginning of the next word, past any spaces"
-  (interactive "d")
-  (forward-word)
-  (forward-word)
-  (backward-word))
-(global-set-key "\M-f" 'next-word)
-
 (use-package expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
-
-(use-package lsp-mode
-    :init
-    (setq lsp-keymap-prefix "C-c l"
-          lsp-headerline-breadcrumb-enable nil
-          lsp-headerline-breadcrumb-icons-enable nil
-          lsp-keep-workspace-alive nil
-          lsp-enable-snippet nil
-          lsp-lens-enable nil)
-    :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-           (c-mode . lsp)
-           (c++-mode . lsp)
-           (python-mode . lsp-deferred)
-  	 (csharp-mode . lsp)
-           ;; if you want which-key integration
-           (lsp-mode . lsp-enable-which-key-integration))
-    :commands lsp)
-
-
-  (use-package consult-lsp
-    :after lsp)
-
-  (defun my-c-mode-common-hook ()
-    ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
-    (c-set-offset 'substatement-open 0)
-    ;; other customizations can go here
-
-    (setq c++-tab-always-indent t)
-    (setq c-basic-offset 4)                  ;; Default is 2
-    (setq c-indent-level 4)                  ;; Default is 2
-
-    (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60))
-    (setq tab-width 4)
-    (setq indent-tabs-mode t)  ; use spaces only if nil
-    )
-
-  (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
-
-  (use-package lsp-ui
-    :after lsp
-    :diminish lsp-lens-mode
-    :config
-    (setq lsp-ui-sideline-update-mode 'point)
-    (setq lsp-ui-sideline-show-diagnostics t)
-    (setq lsp-ui-sideline-ignore-duplicate t))
-
-  (use-package hydra)
-
-  (use-package lsp-treemacs
-    :ensure t
-    :commands lsp-treemacs-errors-list)
-
-  ;; company
-  (use-package company
-    :ensure t
-    :diminish
-    :config
-    (setq company-show-numbers            t
-       	company-minimum-prefix-length   1
-       	company-idle-delay              0.2
-       	company-backends
-       	'((company-files          
-       	   company-keywords       
-       	   company-capf           
-       	   company-yasnippet)
-       	  (company-abbrev company-dabbrev)))
-    (global-company-mode +1))
-
-  (use-package clang-format)
-  (use-package clang-format+)
-
-
-  (use-package company-box
-    :ensure t
-    :diminish
-    :after company
-    :hook (company-mode . company-box-mode))
-
-  ;; flycheck
-  (use-package flycheck
-    :diminish flycheck-mode
-    :config
-    (setq flycheck-error-message-buffer " *Flycheck error messages*")
-    (setq-default flycheck-emacs-lisp-load-path 'inherit)
-    (global-flycheck-mode 1))
-
-  (use-package flycheck-pos-tip
-    :ensure t
-    :after flycheck
-    :config
-    (flycheck-pos-tip-mode))
-
-  (use-package ccls
-    :ensure t
-    :config
-    :hook ((c-mode c++-mode objc-mode cuda-mode) .
-           (lambda () (require 'ccls) (lsp)))
-    (setq ccls-executable "/usr/local/bin/ccls")
-    (setq ccls-initialization-options
-       	'(:index (:comments 2) :completion (:detailedLabel t))))
-
-  (use-package srefactor
-    :ensure t
-    :config
-    (semantic-mode 1)
-    (define-key c-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
-    (define-key c++-mode-map (kbd "M-RET") 'srefactor-refactor-at-point))
-
-(use-package tagedit)
 
 (use-package multiple-cursors
   :bind (:map global-map
@@ -449,17 +547,3 @@
               ("C-c C->" . 'mc/mark-all-like-this)
               :map mc/keymap
               ("<return>" . nil)))
-
-(use-package dired
-  :ensure nil
-  :ensure nil
-  :commands (dired dired-jump)
-  :bind (:map dired-mode-map ("SPC" . dired-single-buffer))
-  :config
-  (setq dired-dwim-target t)
-  (evil-collection-define-key 'normal 'dired-mode-map
-			      "h" 'dired-single-up-directory
-			      "l" 'dired-single-buffer))
-
-(use-package dired-single
-  :commands (dired dired-jump))

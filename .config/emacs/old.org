@@ -65,33 +65,33 @@
   (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
   (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
   (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                                :ref nil :depth 1
-                                :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-                                :build (:not elpaca--activate-package)))
+				:ref nil :depth 1
+				:files (:defaults "elpaca-test.el" (:exclude "extensions"))
+				:build (:not elpaca--activate-package)))
   (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
-         (build (expand-file-name "elpaca/" elpaca-builds-directory))
-         (order (cdr elpaca-order))
-         (default-directory repo))
+	 (build (expand-file-name "elpaca/" elpaca-builds-directory))
+	 (order (cdr elpaca-order))
+	 (default-directory repo))
     (add-to-list 'load-path (if (file-exists-p build) build repo))
     (unless (file-exists-p repo)
       (make-directory repo t)
       (when (< emacs-major-version 28) (require 'subr-x))
       (condition-case-unless-debug err
-          (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                   ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
-                                                   ,@(when-let ((depth (plist-get order :depth)))
-                                                       (list (format "--depth=%d" depth) "--no-single-branch"))
-                                                   ,(plist-get order :repo) ,repo))))
-                   ((zerop (call-process "git" nil buffer t "checkout"
-                                         (or (plist-get order :ref) "--"))))
-                   (emacs (concat invocation-directory invocation-name))
-                   ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-                                         "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-                   ((require 'elpaca))
-                   ((elpaca-generate-autoloads "elpaca" repo)))
-              (progn (message "%s" (buffer-string)) (kill-buffer buffer))
-            (error "%s" (with-current-buffer buffer (buffer-string))))
-        ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+	  (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+		   ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
+						   ,@(when-let ((depth (plist-get order :depth)))
+						       (list (format "--depth=%d" depth) "--no-single-branch"))
+						   ,(plist-get order :repo) ,repo))))
+		   ((zerop (call-process "git" nil buffer t "checkout"
+					 (or (plist-get order :ref) "--"))))
+		   (emacs (concat invocation-directory invocation-name))
+		   ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+					 "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+		   ((require 'elpaca))
+		   ((elpaca-generate-autoloads "elpaca" repo)))
+	      (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+	    (error "%s" (with-current-buffer buffer (buffer-string))))
+	((error) (warn "%s" err) (delete-directory repo 'recursive))))
     (unless (require 'elpaca-autoloads nil t)
       (require 'elpaca)
       (elpaca-generate-autoloads "elpaca" repo)
@@ -121,9 +121,9 @@
   (use-package no-littering
     :config
     (add-to-list 'recentf-exclude
-                 (recentf-expand-file-name no-littering-var-directory))
+		 (recentf-expand-file-name no-littering-var-directory))
     (add-to-list 'recentf-exclude
-                 (recentf-expand-file-name no-littering-etc-directory))
+		 (recentf-expand-file-name no-littering-etc-directory))
     (setq custom-file (no-littering-expand-etc-file-name "custom.el")))
 
   (use-package gcmh
@@ -141,8 +141,8 @@
     :ensure (vertico :files (:defaults "extensions/*"))
     :diminish vertico-mode
     :bind (:map vertico-map
-                ("C-n" . vertico-next)
-                ("C-p" . vertico-previous))
+		("C-n" . vertico-next)
+		("C-p" . vertico-previous))
     :init
     (vertico-mode 1)
     ;; (vertico-flat-mode 1)
@@ -153,9 +153,9 @@
     :ensure nil
     ;; More convenient directory navigation commands
     :bind (:map vertico-map
-                ("RET" . vertico-directory-enter)
-                ("DEL" . vertico-directory-delete-char)
-                ("M-DEL" . vertico-directory-delete-word))
+		("RET" . vertico-directory-enter)
+		("DEL" . vertico-directory-delete-char)
+		("M-DEL" . vertico-directory-delete-word))
     ;; Tidy shadowed file names
     :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
@@ -176,23 +176,23 @@
   (use-package consult
     :config
     (setq completion-in-region-function
-          (lambda (&rest args)
-            (apply (if vertico-mode
-                       #'consult-completion-in-region
-                     #'completion--in-region)
-                   args)))
+	  (lambda (&rest args)
+	    (apply (if vertico-mode
+		       #'consult-completion-in-region
+		     #'completion--in-region)
+		   args)))
     (consult-customize consult-buffer :preview-key "M-."))
 
   (use-package orderless
     :config
     (setq completion-styles '(orderless)
-          completion-category-defaults nil
-          completion-category-overrides '((file (styles . (partial-completion))))))
+	  completion-category-defaults nil
+	  completion-category-overrides '((file (styles . (partial-completion))))))
 
   (use-package doom-themes
     :config
     (setq doom-themes-enable-bold t
-          doom-themes-enable-italic t)
+	  doom-themes-enable-italic t)
     (load-theme 'doom-vibrant t)
     (doom-themes-org-config))
 
@@ -227,8 +227,8 @@
     :config
     ;; default settings
     (setq consult-flyspell-select-function (lambda () (flyspell-correct-at-point) (consult-flyspell))
-          consult-flyspell-set-point-after-word t
-          consult-flyspell-always-check-buffer nil))
+	  consult-flyspell-set-point-after-word t
+	  consult-flyspell-always-check-buffer nil))
 
   (use-package rainbow-delimiters
     :diminish rainbow-delimiters-mode
@@ -276,9 +276,9 @@
     (add-to-list 'org-structure-template-alist '("py" . "src python"))
     (add-to-list 'org-structure-template-alist '("cpp" . "src c++"))
     (setq org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s%:T ")
-                                     (todo . " %i %-12:c")
-                                     (tags . " %i %-12:c%:T ")
-                                     (search . " %i %-12:c%:T ")))
+				     (todo . " %i %-12:c")
+				     (tags . " %i %-12:c%:T ")
+				     (search . " %i %-12:c%:T ")))
     (setq org-agenda-hide-tags-regexp ".*")
     (setq org-babel-default-header-args:emacs-lisp '((:lexical . "no") (:tangle . "./init.el")))
 
@@ -299,14 +299,14 @@
     (when (string-equal (buffer-file-name) (expand-file-name "~/.dotfiles/.config/emacs/Emacs.org"))
       ;; Dynamic scoping to the rescuennnn
       (let ((org-confirm-babel-evaluate nil))
-        (org-babel-tangle))))
+	(org-babel-tangle))))
 
   (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'org-babel-tangle-config)))
 
   (use-package ace-window
     :config
     (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-          aw-scope 'frame))
+	  aw-scope 'frame))
   (elpaca-wait)
 
 #+end_src
