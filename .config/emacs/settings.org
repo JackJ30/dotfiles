@@ -35,14 +35,17 @@
 
 * Basic behaviours
 #+BEGIN_SRC emacs-lisp
-  (setq make-backup-files nil
-      create-lockfiles nil
-      erc-join-buffer 'window
-      confirm-kill-processes nil)
 
-(setq inhibit-startup-message t
-      backup-inhibited t)
+  (use-package no-littering)
   
+  (setq make-backup-files nil
+	create-lockfiles nil
+	erc-join-buffer 'window
+	confirm-kill-processes nil)
+
+  (setq inhibit-startup-message t
+	backup-inhibited t)
+
 #+END_SRC
 * Basic UI Improvements
 #+BEGIN_SRC emacs-lisp
@@ -133,6 +136,15 @@
 
 * Development
 ** Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package transient)
+  (use-package magit
+    :bind (("C-x g" . magit-status))
+    :custom
+    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+#+END_SRC
+
+** LSP Bridge
 #+BEGIN_SRC emacs-lisp
   (use-package transient)
   (use-package magit
