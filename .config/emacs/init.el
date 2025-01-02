@@ -1,4 +1,6 @@
-(setq gc-cons-threshold 200000000)
+;; potentially should update: https://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
+(setq gc-cons-threshold most-positive-fixnum)
+(setq garbage-collection-messages t)
 
 ;; package setup
 (defvar elpaca-installer-version 0.7)
@@ -104,10 +106,10 @@
                     :family "Monospace"
                     :height 97)
 
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 25)))
+;; (use-package doom-modeline
+;;   :ensure t
+;;   :init (doom-modeline-mode 1)
+;;   :custom ((doom-modeline-height 25)))
 
 (use-package doom-themes
   :config
@@ -259,6 +261,7 @@
   :diminish undo-tree-mode
   :config
   (global-undo-tree-mode)
+  (setq undo-tree-limit 1000)
   (add-hook 'authinfo-mode-hook #'(lambda () (setq-local undo-tree-auto-save-history nil)))
   (defvar --undo-history-directory (concat user-emacs-directory "undotreefiles/")
     "Directory to save undo history files.")
@@ -359,7 +362,9 @@
 
 (use-package tree-sitter-langs)
 
-;; - combobulate
+;; - glsl
+(use-package glsl-mode
+    :ensure t)
 
 ;; - snippet
 (use-package yasnippet
@@ -374,10 +379,8 @@
   :commands (lsp lsp-deferred)
   :init
   (setq lsp-keymap-prefix "C-c l"
-	lsp-headerline-breadcrumb-enable t
-	lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols)
+	lsp-headerline-breadcrumb-enable nil
 	lsp-lens-enable nil)
-  (lsp-headerline-breadcrumb-mode)
   :config
   (lsp-enable-which-key-integration t)
   :hook (
@@ -391,8 +394,13 @@
 	 )
   :custom
   (lsp-completion-provider :none) ; corfu
-  (lsp-idle-delay 1.0)
+  (lsp-idle-delay 0.5)
   )
+
+(defun corfu-lsp-setup ()
+  (setq-local completion-styles '(orderless)
+              completion-category-defaults nil))
+(add-hook 'lsp-completion-mode-hook #'corfu-lsp-setup)
 
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode))
@@ -474,14 +482,14 @@
 (use-package lsp-treemacs
   :after lsp)
 
-;; - completion
+;- completion
 (use-package corfu
   :ensure t
   :custom
   (corfu-cycle t)
   (corfu-auto t)
   (corfu-auto-prefix 2)
-  (corfu-auto-delay 0.4)
+  (corfu-auto-delay 0.3)
   (corfu-popupinfo-delay '(0.2 . 0.1))
   (corfu-preview-current 'insert)
   (corfu-preselect 'first)
@@ -516,7 +524,7 @@
   ;; used by `completion-at-point'.  The order of the functions matters, the
   ;; first function returning a result wins.  Note that the list of buffer-local
   ;; completion functions takes precedence over the global list.
-  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  ;; (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-file)
   (add-hook 'completion-at-point-functions #'cape-elisp-block)
   ;; (add-hook 'completion-at-point-functions #'cape-history)
@@ -531,7 +539,8 @@
 
 (global-unset-key (kbd "C-z"))
 (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
-(global-set-key (kbd "C-c f") #'consult-line)
+(global-unset-key (kbd "C-c C-f"))
+(global-set-key (kbd "C-c C-f") #'consult-line)
 
 (use-package move-text)
 (global-set-key (kbd "M-p") #'move-text-up)
@@ -547,3 +556,18 @@
               ("C-c C->" . 'mc/mark-all-like-this)
               :map mc/keymap
               ("<return>" . nil)))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages '(miasma-theme vc-use-package))
+ '(package-vc-selected-packages
+   '((miasma-theme :vc-backend Git :url "https://github.com/daut/miasma-theme.el")
+     (vc-use-package :vc-backend Git :url "https://github.com/slotThe/vc-use-package"))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
