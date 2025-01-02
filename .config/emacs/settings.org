@@ -1,0 +1,142 @@
+* Garbage Collection Improvement
+#+BEGIN_SRC emacs-lisp
+  (defun my-minibuffer-setup-hook ()
+    (setq gc-cons-threshold most-positive-fixnum))
+
+  (defun my-minibuffer-exit-hook ()
+    (setq gc-cons-threshold 800000000))
+
+  (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
+  (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
+
+  (defun gc-idle-timer ()
+    "Trigger garbage collection when Emacs is idle for 0.5 seconds."
+    (run-with-idle-timer 0.5 t 'garbage-collect))
+
+  (gc-idle-timer)
+#+END_SRC
+
+* Use Package
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives '("gnu"   . "https://elpa.gnu.org/packages/"))
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+  (package-initialize)
+
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (eval-and-compile
+    (setq use-package-always-ensure t
+	  use-package-expand-minimally t))
+  (eval-when-compile (require 'use-package))
+  
+#+END_SRC
+
+* Basic behaviours
+#+BEGIN_SRC emacs-lisp
+  (setq make-backup-files nil
+      create-lockfiles nil
+      erc-join-buffer 'window
+      confirm-kill-processes nil)
+
+(setq inhibit-startup-message t
+      backup-inhibited t)
+  
+#+END_SRC
+* Basic UI Improvements
+#+BEGIN_SRC emacs-lisp
+
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (tooltip-mode -1)
+  (menu-bar-mode -1)
+
+  (setq scroll-up-aggressively nil
+	scroll-down-aggressively nil
+	scroll-conservatively 101
+	display-line-numbers-type t)
+
+  (setq scroll-step 1)
+  (setq scroll-margin 8)
+
+  (column-number-mode +1)
+  (global-display-line-numbers-mode t)
+  (setq-default fill-column 80)
+
+  (electric-pair-mode +1)
+
+  (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
+  (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
+
+  (global-set-key (kbd "M-n") 'scroll-up-line)
+  (global-set-key (kbd "M-p") 'scroll-down-line)
+#+END_SRC
+
+* Themeing
+#+BEGIN_SRC emacs-lisp
+  (use-package dracula-theme)
+  (load-theme 'dracula t)
+
+  (set-face-attribute 'default nil
+		      :font "DejaVu Sans Mono"
+		      :family "Monospace"
+		      :height 97)
+  (set-face-attribute 'variable-pitch nil
+		      :font "DejaVu Sans"
+		      :height 97)
+  (set-face-attribute 'fixed-pitch nil
+		      :font "DejaVu Sans Mono"
+		      :family "Monospace"
+		      :height 97)
+
+#+END_SRC
+
+* Completion
+#+BEGIN_SRC emacs-lisp
+
+  (use-package vertico
+    :diminish vertico-mode
+    :bind (:map vertico-map
+		("C-n" . vertico-next)
+		("C-p" . vertico-previous))
+    :init
+    (vertico-mode t)
+    ;; (vertico-flat-mode 1)
+    (setq vertico-count 15))
+
+  (use-package vertico-directory
+    :after vertico
+    :ensure nil
+    ;; More convenient directory navigation commands
+    :bind (:map vertico-map
+		("RET" . vertico-directory-enter)
+		("DEL" . vertico-directory-delete-char)
+		("M-DEL" . vertico-directory-delete-word))
+    ;; Tidy shadowed file names
+    :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+
+  (use-package marginalia
+    :after vertico
+    :custom
+    (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+    :config
+    (marginalia-mode))
+
+  (use-package orderless
+    :config
+    (setq completion-styles '(orderless)
+	  completion-category-defaults nil
+	  completion-category-overrides '((file (styles . (partial-completion))))))
+
+#+END_SRC
+
+* Development
+** Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package transient)
+  (use-package magit
+    :bind (("C-x g" . magit-status))
+    :custom
+    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+#+END_SRC
