@@ -292,3 +292,13 @@
 	orig-result)))
   (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 #+END_SRC
+
+* Util and Keybinds
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :bind("C-=" . er/expand-region))
+
+  (use-package evil-nerd-commenter
+    :bind ("M-;" . evilnc-comment-or-uncomment-lines))
+
+#+END_SRC
