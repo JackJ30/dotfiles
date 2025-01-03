@@ -1,6 +1,7 @@
 - [x] development lsps
 - [ ] lsp and searching macros
 - [ ] learn better navigation
+- [ ] tree sitter
 - [ ] project management
 - [ ] ido
 - [ ] debugger

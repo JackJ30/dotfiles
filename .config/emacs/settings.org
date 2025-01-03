@@ -11,7 +11,7 @@
 
   (defun gc-idle-timer ()
     "Trigger garbage collection when Emacs is idle for 0.5 seconds."
-    (run-with-idle-timer 0.5 t 'garbage-collect))
+    (run-with-idle-timer 1.2 t 'garbage-collect))
 
   (gc-idle-timer)
 #+END_SRC
@@ -135,6 +135,11 @@
 #+END_SRC
 
 * Development
+** Visual
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+#+END_SRC
 ** Magit
 #+BEGIN_SRC emacs-lisp
   (use-package transient)
@@ -144,11 +149,125 @@
     (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 #+END_SRC
 
-** LSP Bridge
+** Extra Modes
 #+BEGIN_SRC emacs-lisp
-  (use-package transient)
-  (use-package magit
-    :bind (("C-x g" . magit-status))
+  (use-package markdown-mode
+    :mode ("\\.md\\'" . markdown-mode))
+
+  (use-package glsl-mode)
+
+#+END_SRC
+
+** yasnippet
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :config
+    (yas-global-mode t))
+
+  (use-package yasnippet-snippets)
+
+#+END_SRC
+
+** LSP
+#+BEGIN_SRC emacs-lisp
+
+    (use-package lsp-mode
+      :commands (lsp lsp-deferred)
+      :init
+      (setq lsp-keymap-prefix "C-c l"
+	    lsp-headerline-breadcrumb-enable nil
+	    lsp-lens-enable nil)
+      :hook (
+	     (c-mode . lsp-deferred)
+	     (c++-mode . lsp-deferred)
+	     (python-mode . lsp-deferred)
+	     (csharp-mode . lsp-deferred))
+      :custom
+      (lsp-completion-provider :none) ; corfu
+      (lsp-idle-delay 0.2)
+      )
+
+    (use-package lsp-ui
+      :hook (lsp-mode . lsp-ui-mode)
+      :bind ("C-c r" . lsp-ui-peek-find-references))
+
+#+END_SRC
+
+** Corfu
+#+BEGIN_SRC emacs-lisp
+  (use-package corfu
+    :ensure t
     :custom
-    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+    (corfu-cycle t)
+    (corfu-auto t)
+    (corfu-auto-prefix 2)
+    (corfu-auto-delay 0.3)
+    (corfu-popupinfo-delay '(0.2 . 0.1))
+    (corfu-preview-current 'insert)
+    (corfu-preselect 'first)
+    (corfu-on-exact-match nil)
+    :bind (:map corfu-map
+		("C-g" . corfu-quit))
+    :init
+    (global-corfu-mode)
+    (corfu-history-mode)
+    (corfu-popupinfo-mode))
+
+  (defun corfu-lsp-setup ()
+    (setq-local completion-styles '(orderless)
+		completion-category-defaults nil))
+  (add-hook 'lsp-completion-mode-hook #'corfu-lsp-setup)
+#+END_SRC
+
+** C Mode Hook
+#+BEGIN_SRC emacs-lisp
+
+  (defun my-c-mode-common-hook ()
+    ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
+    (c-set-offset 'substatement-open 0)
+    ;; other customizations can go here
+
+    (setq c++-tab-always-indent t)
+    (setq c-basic-offset 4)                  ;; Default is 2
+    (setq c-indent-level 4)                  ;; Default is 2
+
+    (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60))
+    (setq tab-width 4)
+    (setq indent-tabs-mode t))
+  (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+#+END_SRC
+
+** LSP Booster
+#+BEGIN_SRC emacs-lisp
+  (defun lsp-booster--advice-json-parse (old-fn &rest args)
+    "Try to parse bytecode instead of json."
+    (or
+     (when (equal (following-char) ?#)
+       (let ((bytecode (read (current-buffer))))
+	 (when (byte-code-function-p bytecode)
+	   (funcall bytecode))))
+     (apply old-fn args)))
+  (advice-add (if (progn (require 'json)
+			 (fboundp 'json-parse-buffer))
+		  'json-parse-buffer
+		'json-read)
+	      :around
+	      #'lsp-booster--advice-json-parse)
+
+  (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+    "Prepend emacs-lsp-booster command to lsp CMD."
+    (let ((orig-result (funcall old-fn cmd test?)))
+      (if (and (not test?)                             ;; for check lsp-server-present?
+	       (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+	       lsp-use-plists
+	       (not (functionp 'json-rpc-connection))  ;; native json-rpc
+	       (executable-find "emacs-lsp-booster"))
+	  (progn
+	    (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+	      (setcar orig-result command-from-exec-path))
+	    (message "Using emacs-lsp-booster for %s!" orig-result)
+	    (cons "emacs-lsp-booster" orig-result))
+	orig-result)))
+  (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 #+END_SRC

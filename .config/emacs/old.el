@@ -204,7 +204,6 @@
 
 ;; text editing packages
 (use-package rainbow-delimiters
-  :diminish rainbow-delimiters-mode
   :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package highlight-quoted
