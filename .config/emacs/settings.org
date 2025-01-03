@@ -37,7 +37,7 @@
 #+BEGIN_SRC emacs-lisp
 
   (use-package no-littering)
-  
+
   (setq make-backup-files nil
 	create-lockfiles nil
 	erc-join-buffer 'window
@@ -45,6 +45,9 @@
 
   (setq inhibit-startup-message t
 	backup-inhibited t)
+
+  (setf dired-kill-when-opening-new-dired-buffer t)
+  (setq dired-dwim-target t)
 
 #+END_SRC
 * Basic UI Improvements
@@ -75,7 +78,14 @@
   (global-set-key (kbd "M-n") 'scroll-up-line)
   (global-set-key (kbd "M-p") 'scroll-down-line)
 #+END_SRC
-
+* Diminish
+#+BEGIN_SRC emacs-lisp
+	(use-package diminish
+	  :diminish flymake-mode
+	  :diminish flycheck-mode
+	  :diminish yas-minor-mode
+	  :diminish eldoc-mode)
+#+END_SRC
 * Themeing
 #+BEGIN_SRC emacs-lisp
   (use-package doom-themes
@@ -202,16 +212,16 @@
 
   (use-package lsp-ui
     :hook (lsp-mode . lsp-ui-mode)
-    :bind ("C-c r" . lsp-ui-peek-find-references)
+    :bind ("C-c r" . lsp-ui-peek-find-references))
 
 
 #+END_SRC
 
 ** Flycheck
-#+BEGIN_SRC
-  (use-package flycheck
-  :config
-  (add-hook 'after-init-hook #'global-flycheck-mode))
+#+BEGIN_SRC emacs-lisp
+    (use-package flycheck
+    :config
+    (add-hook 'after-init-hook #'global-flycheck-mode))
 #+END_SRC
 
 ** Corfu
@@ -245,16 +255,11 @@
 
   (defun my-c-mode-common-hook ()
     ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
-    (c-set-offset 'substatement-open 0)
-    ;; other customizations can go here
-
-    (setq c++-tab-always-indent t)
-    (setq c-basic-offset 4)                  ;; Default is 2
-    (setq c-indent-level 4)                  ;; Default is 2
-
-    (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60))
-    (setq tab-width 4)
-    (setq indent-tabs-mode t))
+    (setq c-default-style "k&r"
+	  c-basic-offset 4
+	  tab-width 8
+	  indent-tabs-mode t)
+    (c-set-offset 'arglist-intro '+))
   (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
 #+END_SRC
@@ -292,7 +297,6 @@
 	orig-result)))
   (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 #+END_SRC
-
 * Util and Keybinds
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
@@ -300,5 +304,7 @@
 
   (use-package evil-nerd-commenter
     :bind ("M-;" . evilnc-comment-or-uncomment-lines))
+
+  (global-set-key (kbd "C-c e") 'consult-flymake)
 
 #+END_SRC
