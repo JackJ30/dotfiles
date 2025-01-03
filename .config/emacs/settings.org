@@ -78,8 +78,12 @@
 
 * Themeing
 #+BEGIN_SRC emacs-lisp
-  (use-package dracula-theme)
-  (load-theme 'dracula t)
+  (use-package doom-themes
+  :config
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t)
+  (load-theme 'doom-dracula t)
+  (doom-themes-org-config))
 
   (set-face-attribute 'default nil
 		      :font "DejaVu Sans Mono"
@@ -128,9 +132,11 @@
 
   (use-package orderless
     :config
-    (setq completion-styles '(orderless)
+    (setq completion-styles '(orderless partial-completion basic)
 	  completion-category-defaults nil
 	  completion-category-overrides '((file (styles . (partial-completion))))))
+
+  (use-package consult)
 
 #+END_SRC
 
@@ -138,7 +144,10 @@
 ** Visual
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
+    :hook (prog-mode . rainbow-delimiters-mode))
+
+  (use-package ansi-color
+    :hook (compilation-filter . ansi-color-compilation-filter))
 #+END_SRC
 ** Magit
 #+BEGIN_SRC emacs-lisp
@@ -171,26 +180,38 @@
 ** LSP
 #+BEGIN_SRC emacs-lisp
 
-    (use-package lsp-mode
-      :commands (lsp lsp-deferred)
-      :init
-      (setq lsp-keymap-prefix "C-c l"
-	    lsp-headerline-breadcrumb-enable nil
-	    lsp-lens-enable nil)
-      :hook (
-	     (c-mode . lsp-deferred)
-	     (c++-mode . lsp-deferred)
-	     (python-mode . lsp-deferred)
-	     (csharp-mode . lsp-deferred))
-      :custom
-      (lsp-completion-provider :none) ; corfu
-      (lsp-idle-delay 0.2)
-      )
+  (use-package lsp-mode
+    :commands (lsp lsp-deferred)
+    :init
+    (setq lsp-keymap-prefix "C-c l"
+	  lsp-headerline-breadcrumb-enable nil
+	  lsp-lens-enable nil)
+    (defun my/lsp-mode-setup-completion ()
+      (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+	    '(orderless))) ;; Configure orderless
+    :hook ((lsp-completion-mode . my/lsp-mode-setup-completion)
+	   (c-mode . lsp-deferred)
+	   (c++-mode . lsp-deferred)
+	   (python-mode . lsp-deferred)
+	   (csharp-mode . lsp-deferred))
 
-    (use-package lsp-ui
-      :hook (lsp-mode . lsp-ui-mode)
-      :bind ("C-c r" . lsp-ui-peek-find-references))
+    :custom
+    (lsp-completion-provider :none) ; corfu
+    (lsp-idle-delay 0.2)
+    )
 
+  (use-package lsp-ui
+    :hook (lsp-mode . lsp-ui-mode)
+    :bind ("C-c r" . lsp-ui-peek-find-references)
+
+
+#+END_SRC
+
+** Flycheck
+#+BEGIN_SRC
+  (use-package flycheck
+  :config
+  (add-hook 'after-init-hook #'global-flycheck-mode))
 #+END_SRC
 
 ** Corfu
@@ -201,7 +222,7 @@
     (corfu-cycle t)
     (corfu-auto t)
     (corfu-auto-prefix 2)
-    (corfu-auto-delay 0.3)
+    (corfu-auto-delay 0.1)
     (corfu-popupinfo-delay '(0.2 . 0.1))
     (corfu-preview-current 'insert)
     (corfu-preselect 'first)
