@@ -47,6 +47,7 @@
 	backup-inhibited t)
 
   (setf dired-kill-when-opening-new-dired-buffer t)
+  (setq dired-listing-switches "-alh --group-directories-first")
   (setq dired-dwim-target t)
 
 #+END_SRC
@@ -83,7 +84,6 @@
 	(use-package diminish
 	  :diminish flymake-mode
 	  :diminish flycheck-mode
-	  :diminish yas-minor-mode
 	  :diminish eldoc-mode)
 #+END_SRC
 * Themeing
@@ -181,7 +181,8 @@
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
     :config
-    (yas-global-mode t))
+    (yas-global-mode t)
+    :diminish yas-minor-mode)
 
   (use-package yasnippet-snippets)
 
@@ -190,29 +191,34 @@
 ** LSP
 #+BEGIN_SRC emacs-lisp
 
-  (use-package lsp-mode
-    :commands (lsp lsp-deferred)
-    :init
-    (setq lsp-keymap-prefix "C-c l"
-	  lsp-headerline-breadcrumb-enable nil
-	  lsp-lens-enable nil)
-    (defun my/lsp-mode-setup-completion ()
-      (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-	    '(orderless))) ;; Configure orderless
-    :hook ((lsp-completion-mode . my/lsp-mode-setup-completion)
-	   (c-mode . lsp-deferred)
-	   (c++-mode . lsp-deferred)
-	   (python-mode . lsp-deferred)
-	   (csharp-mode . lsp-deferred))
+    (use-package lsp-mode
+      :commands (lsp lsp-deferred)
+      :init
+      (setq lsp-keymap-prefix "C-c l"
+	    lsp-headerline-breadcrumb-enable nil
+	    lsp-lens-enable nil
+	    lsp-completion-enable-additional-text-edit nil)
+      (defun my/lsp-mode-setup-completion ()
+	(setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+	      '(orderless))) ;; Configure orderless
+      :hook ((lsp-completion-mode . my/lsp-mode-setup-completion)
+	     (c-mode . lsp-deferred)
+	     (c++-mode . lsp-deferred)
+	     (python-mode . lsp-deferred)
+	     (csharp-mode . lsp-deferred))
 
-    :custom
-    (lsp-completion-provider :none) ; corfu
-    (lsp-idle-delay 0.2)
-    )
+      :custom
+      (lsp-completion-provider :none) ; corfu
+      (lsp-idle-delay 0.2)
+    
+      )
 
-  (use-package lsp-ui
-    :hook (lsp-mode . lsp-ui-mode)
-    :bind ("C-c r" . lsp-ui-peek-find-references))
+    (use-package lsp-ui
+      :hook (lsp-mode . lsp-ui-mode)
+      :bind (
+	     ("C-c r" . lsp-ui-peek-find-references)
+	     ("C-c d" . lsp-ui-peek-find-definitions) 
+	     ))
 
 
 #+END_SRC
@@ -259,7 +265,8 @@
 	  c-basic-offset 4
 	  tab-width 8
 	  indent-tabs-mode t)
-    (c-set-offset 'arglist-intro '+))
+    (c-set-offset 'arglist-intro '+)
+    (add-to-list 'c-offsets-alist '(arglist-close . c-lineup-close-paren)))
   (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
 #+END_SRC
@@ -297,14 +304,23 @@
 	orig-result)))
   (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 #+END_SRC
-* Util and Keybinds
+** Util and Keybinds
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
     :bind("C-=" . er/expand-region))
+
+  (use-package multiple-cursors
+  :bind (:map global-map
+              ("C->" . 'mc/mark-next-like-this)
+              ("C-<" . 'mc/mark-previous-like-this)
+              ("C-c C->" . 'mc/mark-all-like-this)
+              :map mc/keymap
+              ("<return>" . nil)))
 
   (use-package evil-nerd-commenter
     :bind ("M-;" . evilnc-comment-or-uncomment-lines))
 
   (global-set-key (kbd "C-c e") 'consult-flymake)
+  (global-set-key (kbd "C-c f") 'ff-find-other-file)
 
 #+END_SRC
