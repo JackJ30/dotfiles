@@ -259,15 +259,16 @@
 ** C Mode Hook
 #+BEGIN_SRC emacs-lisp
 
-  (defun my-c-mode-common-hook ()
-    ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
-    (setq c-default-style "k&r"
-	  c-basic-offset 4
-	  tab-width 8
-	  indent-tabs-mode t)
-    (c-set-offset 'arglist-intro '+)
-    (add-to-list 'c-offsets-alist '(arglist-close . c-lineup-close-paren)))
-  (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+    (defun my-c-mode-common-hook ()
+      ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
+      (setq c-default-style "k&r"
+	    c-basic-offset 4
+	    tab-width 4
+	    indent-tabs-mode t
+	    backward-delete-char-untabify "hungry")
+      (c-set-offset 'arglist-intro '+)
+      (add-to-list 'c-offsets-alist '(arglist-close . c-lineup-close-paren)))
+    (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
 #+END_SRC
 
