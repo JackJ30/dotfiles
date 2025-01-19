@@ -53,7 +53,7 @@
 #+END_SRC
 * Basic UI Improvements
 #+BEGIN_SRC emacs-lisp
-
+  
   (scroll-bar-mode -1)
   (tool-bar-mode -1)
   (tooltip-mode -1)
@@ -91,9 +91,12 @@
   (use-package doom-themes
   :config
   (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t)
-  (load-theme 'doom-dracula t)
+	doom-themes-enable-italic t)
   (doom-themes-org-config))
+
+  ;; load both themes lol
+  (load-theme 'doom-dracula t)
+  (enable-theme 'sonokai)
 
   (set-face-attribute 'default nil
 		      :font "DejaVu Sans Mono"
@@ -113,40 +116,58 @@
 #+BEGIN_SRC emacs-lisp
 
   (use-package vertico
-    :diminish vertico-mode
-    :bind (:map vertico-map
-		("C-n" . vertico-next)
-		("C-p" . vertico-previous))
-    :init
-    (vertico-mode t)
-    ;; (vertico-flat-mode 1)
-    (setq vertico-count 15))
+			:custom
+			(vertico-count 15)
+			:diminish vertico-mode
+			:bind (:map vertico-map
+					("C-n" . vertico-next)
+					("C-p" . vertico-previous))
+			:init
+			(vertico-mode t))
 
   (use-package vertico-directory
-    :after vertico
-    :ensure nil
-    ;; More convenient directory navigation commands
-    :bind (:map vertico-map
-		("RET" . vertico-directory-enter)
-		("DEL" . vertico-directory-delete-char)
-		("M-DEL" . vertico-directory-delete-word))
-    ;; Tidy shadowed file names
-    :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+			:after vertico
+			:ensure nil
+			;; More convenient directory navigation commands
+			:bind (:map vertico-map
+					("RET" . vertico-directory-enter)
+					("DEL" . vertico-directory-delete-char)
+					("M-DEL" . vertico-directory-delete-word)))
+
+  (use-package consult
+			:custom
+			;; Disable preview
+			(consult-preview-key nil)
+			:bind
+			(("C-x b" . 'consult-buffer)    ;; Switch buffer, including recentf and bookmarks
+			 ("M-l"   . 'consult-git-grep)  ;; Search inside a project
+			 ("M-y"   . 'consult-yank-pop)  ;; Paste by selecting the kill-ring
+			 ("M-s"   . 'consult-line)      ;; Search current buffer, like swiper
+			 ("C-c i" . 'consult-imenu)     ;; Search the imenu
+			 ))
 
   (use-package marginalia
-    :after vertico
-    :custom
-    (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-    :config
-    (marginalia-mode))
+			:after vertico
+			:custom
+			(marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+			:config
+			(marginalia-mode))
 
   (use-package orderless
-    :config
-    (setq completion-styles '(orderless partial-completion basic)
+			:config
+			(setq completion-styles '(orderless partial-completion basic)
 	  completion-category-defaults nil
 	  completion-category-overrides '((file (styles . (partial-completion))))))
 
-  (use-package consult)
+  (use-package embark
+			:bind
+			(("C-."   . embark-act)         ;; Begin the embark process
+			 ("C-;"   . embark-dwim)        ;; good alternative: M-.
+			 ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+			:config
+			(use-package embark-consult))
+
+
 
 #+END_SRC
 
@@ -166,6 +187,17 @@
     :bind (("C-x g" . magit-status))
     :custom
     (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+#+END_SRC
+** Projectile
+#+BEGIN_SRC emacs-lisp
+
+  
+  (use-package projectile  
+	:init
+	(projectile-mode t)
+	:bind (:map projectile-mode-map
+				("C-c p" . projectile-command-map)))
+
 #+END_SRC
 
 ** Extra Modes
@@ -209,7 +241,7 @@
 
       :custom
       (lsp-completion-provider :none) ; corfu
-      (lsp-idle-delay 0.2)
+      (lsp-idle-delay 0.05)
     
       )
 
@@ -238,7 +270,7 @@
     (corfu-cycle t)
     (corfu-auto t)
     (corfu-auto-prefix 2)
-    (corfu-auto-delay 0.1)
+    (corfu-auto-delay 0.05)
     (corfu-popupinfo-delay '(0.2 . 0.1))
     (corfu-preview-current 'insert)
     (corfu-preselect 'first)
@@ -265,7 +297,7 @@
 	    c-basic-offset 4
 	    tab-width 4
 	    indent-tabs-mode t
-	    backward-delete-char-untabify "hungry")
+	    backward-delete-char-untabify-method "hungry")
       (c-set-offset 'arglist-intro '+)
       (add-to-list 'c-offsets-alist '(arglist-close . c-lineup-close-paren)))
     (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
