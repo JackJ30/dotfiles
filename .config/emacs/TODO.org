@@ -1,5 +1,6 @@
 - [x] development lsps
 - [ ] projectile setup
+- [ ] fast undo tree
 - [ ] modes for shaders and cmake
 - [ ] tree sitter
 - [ ] tabs and spaces (not just in c++)
