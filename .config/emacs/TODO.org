@@ -1,7 +1,7 @@
 - [x] development lsps
-- [ ] lsp and searching macros
-- [ ] learn better navigation
+- [ ] projectile setup
+- [ ] modes for shaders and cmake
 - [ ] tree sitter
-- [ ] project management
-- [ ] ido
+- [ ] tabs and spaces (not just in c++)
+- [ ] improve corfu and completion from this article: https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/#h:e5e7b781-4b04-4c53-bf23-5e81789549ce
 - [ ] debugger
