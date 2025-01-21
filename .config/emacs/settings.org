@@ -83,10 +83,6 @@
 #+END_SRC
 ** Text Editing
 #+BEGIN_SRC emacs-lisp
-  (use-package delsel
-    :ensure nil ; no need to install it as it is built-in
-    :hook (after-init . delete-selection-mode))
-
   ;; scrolling
   (setq scroll-up-aggressively nil
 	scroll-down-aggressively nil
@@ -114,8 +110,19 @@
       (keyboard-quit))))
   (define-key global-map (kbd "C-g") #'prot/keyboard-quit-dwim)
 
+  ;; expand keybind
   (use-package expand-region
     :bind("C-=" . er/expand-region))
+
+  ;; better move beginning and end
+  (use-package mwim
+    :bind (("C-a" . mwim-beginning)
+	   ("C-e" . mwim-end)))
+
+  ;; selected marked text when typing start
+  (use-package delsel
+    :ensure nil ; no need to install it as it is built-in
+    :hook (after-init . delete-selection-mode))
 
   (use-package multiple-cursors
     :bind (:map global-map
@@ -125,6 +132,7 @@
 		:map mc/keymap
 		("<return>" . nil)))
 
+  ;; better commenting
   (use-package evil-nerd-commenter
     :bind ("M-;" . evilnc-comment-or-uncomment-lines))
 #+END_SRC
