@@ -1,15 +1,9 @@
 - [x] development lsps
-- [x] bettter configure corfu
-- [x] speed up lsp
-- [x] configure flycheck + argument completion + snippets
-- [ ] JS lsp setup
-- [ ] C-c macros for development and consult
-- [ ] lsp peeking, finding definitions, all that bs
-- [ ] grab shit from other lsp config
-- [ ] no corfu in org mode holy shit
-- [ ] better search
-- [ ] project management
-- [ ] ido
-- [ ] Org tangling
-- [ ] splash screen
-- [ ] dap mode 
+- [ ] projectile setup
+- [ ] fast undo tree
+- [ ] modes for shaders and cmake
+- [ ] tree sitter
+- [ ] tabs and spaces (not just in c++)
+- [ ] improve corfu and completion from this article: https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/#h:e5e7b781-4b04-4c53-bf23-5e81789549ce
+- [ ] become a ninja with navigation (jumping, sexps, and other stuff)
+- [ ] debugger

@@ -1,0 +1,436 @@
+* Initialization
+** Customize in different file
+#+BEGIN_SRC emacs-lisp
+  (setq custom-file (locate-user-emacs-file "custom.el"))
+  (load custom-file :no-error-if-file-is-missing)
+#+END_SRC
+** Garbage Collection Improvement
+#+BEGIN_SRC emacs-lisp
+  (defun my-minibuffer-setup-hook ()
+    (setq gc-cons-threshold most-positive-fixnum))
+
+  (defun my-minibuffer-exit-hook ()
+    (setq gc-cons-threshold 800000000))
+
+  (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
+  (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
+
+  (defun gc-idle-timer ()
+    "Trigger garbage collection when Emacs is idle for 0.5 seconds."
+    (run-with-idle-timer 1.2 t 'garbage-collect))
+
+  (gc-idle-timer)
+#+END_SRC
+** Packages
+#+BEGIN_SRC emacs-lisp
+  ;; package lists
+  (require 'package)
+  (add-to-list 'package-archives '("gnu"   . "https://elpa.gnu.org/packages/"))
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+  (package-initialize)
+
+  ;; use package
+  (when (< emacs-major-version 29)
+    (unless (package-installed-p 'use-package)
+      (unless package-archive-contents
+	(package-refresh-contents))
+      (package-install 'use-package)))
+
+  ;; remove stupid warnings
+  (add-to-list 'display-buffer-alist
+	       '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
+		 (display-buffer-no-window)
+		 (allow-no-window . t)))
+
+#+END_SRC
+
+* Basic changes
+** Behaviour
+#+BEGIN_SRC emacs-lisp
+
+  (use-package no-littering)
+
+  (setq make-backup-files nil
+	create-lockfiles nil
+	erc-join-buffer 'window
+	confirm-kill-processes nil)
+
+  (setq inhibit-startup-message t
+	backup-inhibited t)
+
+#+END_SRC
+** UI
+#+BEGIN_SRC emacs-lisp
+
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (tooltip-mode -1)
+  (menu-bar-mode -1)
+
+  (column-number-mode +1)
+  (global-display-line-numbers-mode t)
+  (setq-default fill-column 80)
+
+  (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
+  (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
+
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
+
+  (use-package ansi-color
+    :hook (compilation-filter . ansi-color-compilation-filter))
+
+#+END_SRC
+** Text Editing
+#+BEGIN_SRC emacs-lisp
+  ;; scrolling
+  (setq scroll-up-aggressively nil
+	scroll-down-aggressively nil
+	scroll-conservatively 101
+	display-line-numbers-type t)
+  (setq scroll-step 1)
+  (setq scroll-margin 8)
+  (global-set-key (kbd "M-n") 'scroll-up-line)
+  (global-set-key (kbd "M-p") 'scroll-down-line)
+
+  ;; electric pair
+  (electric-pair-mode +1)
+
+  ;; improved C-g dwim
+  (defun prot/keyboard-quit-dwim ()
+    (interactive)
+    (cond
+     ((region-active-p)
+      (keyboard-quit))
+     ((derived-mode-p 'completion-list-mode)
+      (delete-completion-window))
+     ((> (minibuffer-depth) 0)
+      (abort-recursive-edit))
+     (t
+      (keyboard-quit))))
+  (define-key global-map (kbd "C-g") #'prot/keyboard-quit-dwim)
+
+  ;; expand keybind
+  (use-package expand-region
+    :bind("C-=" . er/expand-region))
+
+  ;; better move beginning and end
+  (use-package mwim
+    :bind (("C-a" . mwim-beginning)
+	   ("C-e" . mwim-end)))
+
+  ;; selected marked text when typing start
+  (use-package delsel
+    :ensure nil ; no need to install it as it is built-in
+    :hook (after-init . delete-selection-mode))
+
+  (use-package multiple-cursors
+    :bind (:map global-map
+		("C->" . 'mc/mark-next-like-this)
+		("C-<" . 'mc/mark-previous-like-this)
+		("C-c C->" . 'mc/mark-all-like-this)
+		:map mc/keymap
+		("<return>" . nil)))
+
+  ;; better commenting
+  (use-package evil-nerd-commenter
+    :bind ("M-;" . evilnc-comment-or-uncomment-lines))
+#+END_SRC
+** DIRED
+#+BEGIN_SRC emacs-lisp
+  (use-package dired
+    :ensure nil
+    :commands (dired)
+    :hook
+    ((dired-mode . dired-hide-details-mode)
+     (dired-mode . hl-line-mode))
+    :config
+    (setq dired-recursive-copies 'always)
+    (setq dired-recursive-deletes 'always)
+    (setq dired-dwim-target t)
+    (setq dired-kill-when-opening-new-dired-buffer t)
+    (setq dired-listing-switches "-alh --group-directories-first"))
+
+  (use-package dired-subtree
+    :ensure t
+    :after dired
+    :bind
+    ( :map dired-mode-map
+      ("<tab>" . dired-subtree-toggle)
+      ("TAB" . dired-subtree-toggle)
+      ("<backtab>" . dired-subtree-remove)
+      ("S-TAB" . dired-subtree-remove))
+    :config
+    (setq dired-subtree-use-backgrounds nil))
+#+END_SRC
+* Style
+** Fonts
+#+BEGIN_SRC emacs-lisp
+  (let ((mono-spaced-font "Monospace")
+	(proportionately-spaced-font "Sans"))
+    (set-face-attribute 'default nil :family mono-spaced-font :height 100)
+    (set-face-attribute 'fixed-pitch nil :family mono-spaced-font :height 1.0)
+    (set-face-attribute 'variable-pitch nil :family proportionately-spaced-font :height 1.0))
+#+END_SRC
+** Themes
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-themes
+    :config
+    (setq doom-themes-enable-bold t
+	  doom-themes-enable-italic t)
+    (doom-themes-org-config))
+
+  (load-theme 'doom-dracula t)
+#+END_SRC
+** Icons
+#+BEGIN_SRC emacs-lisp
+  (use-package nerd-icons
+  :ensure t)
+
+(use-package nerd-icons-completion
+  :ensure t
+  :after marginalia
+  :config
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+
+(use-package nerd-icons-corfu
+  :ensure t
+  :after corfu
+  :config
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+
+(use-package nerd-icons-dired
+  :ensure t
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
+#+END_SRC
+** Diminish
+#+BEGIN_SRC emacs-lisp
+  (use-package diminish
+    :diminish flymake-mode
+    :diminish flycheck-mode
+    :diminish eldoc-mode
+    :diminish projectile-mode)
+#+END_SRC
+* Completion
+#+BEGIN_SRC emacs-lisp
+
+  (use-package vertico
+    :custom
+    (vertico-count 15)
+    :diminish vertico-mode
+    :bind (:map vertico-map
+		("C-n" . vertico-next)
+		("C-p" . vertico-previous))
+    :init
+    (vertico-mode t))
+
+  (use-package vertico-directory
+    :after vertico
+    :ensure nil
+    ;; More convenient directory navigation commands
+    :bind (:map vertico-map
+		("RET" . vertico-directory-enter)
+		("DEL" . vertico-directory-delete-char)
+		("M-DEL" . vertico-directory-delete-word)))
+
+  (use-package consult
+    :custom
+    ;; Disable preview
+    (consult-preview-key nil)
+    :bind
+    (("C-x b" . 'consult-buffer)    ;; Switch buffer, including recentf and bookmarks
+     ("M-l"   . 'consult-git-grep)  ;; Search inside a project
+     ("M-y"   . 'consult-yank-pop)  ;; Paste by selecting the kill-ring
+     ("M-s"   . 'consult-line)      ;; Search current buffer, like swiper
+     ("C-c i" . 'consult-imenu)     ;; Search the imenu
+     ))
+
+  (use-package marginalia
+    :after vertico
+    :custom
+    (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+    :config
+    (marginalia-mode))
+
+  (use-package orderless
+    :config
+    (setq completion-styles '(orderless partial-completion basic)
+	  completion-category-defaults nil
+	  completion-category-overrides '((file (styles . (partial-completion))))))
+
+  (use-package embark
+    :bind
+    (("C-."   . embark-act)         ;; Begin the embark process
+     ("C-;"   . embark-dwim)        ;; good alternative: M-.
+     ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+    :config
+    (use-package embark-consult))
+
+  (use-package savehist
+    :ensure nil ; it is built-in
+    :hook (after-init . savehist-mode))
+
+#+END_SRC
+
+* Development
+** Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package transient)
+  (use-package magit
+    :bind (("C-x g" . magit-status))
+    :custom
+    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+#+END_SRC
+** Projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile  
+    :init
+    (projectile-mode t)
+    :bind (:map projectile-mode-map
+		("C-c p" . projectile-command-map)))
+#+END_SRC
+
+** Extra Modes
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :mode ("\\.md\\'" . markdown-mode))
+
+  (use-package glsl-mode)
+
+#+END_SRC
+
+** yasnippet
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :config
+    (yas-global-mode t)
+    :diminish yas-minor-mode)
+
+  (use-package yasnippet-snippets)
+
+#+END_SRC
+
+** LSP
+#+BEGIN_SRC emacs-lisp
+
+    (use-package lsp-mode
+      :commands (lsp lsp-deferred)
+      :init
+      (setq lsp-keymap-prefix "C-c l"
+	    lsp-headerline-breadcrumb-enable nil
+	    lsp-lens-enable nil
+	    lsp-completion-enable-additional-text-edit nil)
+      (defun my/lsp-mode-setup-completion ()
+	(setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+	      '(orderless))) ;; Configure orderless
+      :hook ((lsp-completion-mode . my/lsp-mode-setup-completion)
+	     (c-mode . lsp-deferred)
+	     (c++-mode . lsp-deferred)
+	     (python-mode . lsp-deferred)
+	     (csharp-mode . lsp-deferred))
+
+      :custom
+      (lsp-completion-provider :none) ; corfu
+      (lsp-idle-delay 0.05)
+    
+      )
+
+    (use-package lsp-ui
+      :hook (lsp-mode . lsp-ui-mode)
+      :bind (
+	     ("C-c r" . lsp-ui-peek-find-references)
+	     ("C-c d" . lsp-ui-peek-find-definitions) 
+	     ))
+
+
+#+END_SRC
+
+** Flycheck
+#+BEGIN_SRC emacs-lisp
+    (use-package flycheck
+    :config
+    (add-hook 'after-init-hook #'global-flycheck-mode))
+#+END_SRC
+
+** Corfu
+#+BEGIN_SRC emacs-lisp
+  (use-package corfu
+    :ensure t
+    :custom
+    (corfu-cycle t)
+    (corfu-auto t)
+    (corfu-auto-prefix 2)
+    (corfu-auto-delay 0.05)
+    (corfu-popupinfo-delay '(0.2 . 0.1))
+    (corfu-preview-current 'insert)
+    (corfu-preselect 'first)
+    (corfu-on-exact-match nil)
+    :bind (:map corfu-map
+		("C-g" . corfu-quit))
+    :init
+    (global-corfu-mode)
+    (corfu-history-mode)
+    (corfu-popupinfo-mode))
+
+  (defun corfu-lsp-setup ()
+    (setq-local completion-styles '(orderless)
+		completion-category-defaults nil))
+  (add-hook 'lsp-completion-mode-hook #'corfu-lsp-setup)
+#+END_SRC
+
+** C Mode Hook
+#+BEGIN_SRC emacs-lisp
+
+    (defun my-c-mode-common-hook ()
+      ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
+      (setq c-default-style "k&r"
+	    c-basic-offset 4
+	    tab-width 4
+	    indent-tabs-mode t
+	    backward-delete-char-untabify-method "hungry")
+      (c-set-offset 'arglist-intro '+)
+      (add-to-list 'c-offsets-alist '(arglist-close . c-lineup-close-paren)))
+    (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+#+END_SRC
+
+** LSP Booster
+#+BEGIN_SRC emacs-lisp
+  (defun lsp-booster--advice-json-parse (old-fn &rest args)
+    "Try to parse bytecode instead of json."
+    (or
+     (when (equal (following-char) ?#)
+       (let ((bytecode (read (current-buffer))))
+	 (when (byte-code-function-p bytecode)
+	   (funcall bytecode))))
+     (apply old-fn args)))
+  (advice-add (if (progn (require 'json)
+			 (fboundp 'json-parse-buffer))
+		  'json-parse-buffer
+		'json-read)
+	      :around
+	      #'lsp-booster--advice-json-parse)
+
+  (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+    "Prepend emacs-lsp-booster command to lsp CMD."
+    (let ((orig-result (funcall old-fn cmd test?)))
+      (if (and (not test?)                             ;; for check lsp-server-present?
+	       (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+	       lsp-use-plists
+	       (not (functionp 'json-rpc-connection))  ;; native json-rpc
+	       (executable-find "emacs-lsp-booster"))
+	  (progn
+	    (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+	      (setcar orig-result command-from-exec-path))
+	    (message "Using emacs-lsp-booster for %s!" orig-result)
+	    (cons "emacs-lsp-booster" orig-result))
+	orig-result)))
+  (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+#+END_SRC
+** Keybinds
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c e") 'consult-flymake)
+  (global-set-key (kbd "C-c f") 'ff-find-other-file)
+
+#+END_SRC

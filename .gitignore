@@ -10,3 +10,4 @@
 /.config/emacs/eln-cache/
 /.config/emacs/etc/
 /.config/mpd/mpd.pid
+/.config/emacs/settings.el
