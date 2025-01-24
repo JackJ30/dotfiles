@@ -59,6 +59,12 @@
 	backup-inhibited t)
 
 #+END_SRC
+** Org Mode
+#+BEGIN_SRC emacs-lisp
+
+  (setq org-startup-folded t)
+
+#+END_SRC
 ** UI
 #+BEGIN_SRC emacs-lisp
 
@@ -117,7 +123,7 @@
   ;; better move beginning and end
   (use-package mwim
     :bind (("C-a" . mwim-beginning)
-	   ("C-e" . mwim-end)))
+	   ("C-e" . mwim-end-of-line)))
 
   ;; selected marked text when typing start
   (use-package delsel
@@ -295,6 +301,9 @@
 #+BEGIN_SRC emacs-lisp
   (use-package markdown-mode
     :mode ("\\.md\\'" . markdown-mode))
+
+  (use-package cmake-mode)
+  (use-package cmake-font-lock)
 
   (use-package glsl-mode)
 
