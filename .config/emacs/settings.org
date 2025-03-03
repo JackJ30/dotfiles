@@ -168,6 +168,13 @@
       ("S-TAB" . dired-subtree-remove))
     :config
     (setq dired-subtree-use-backgrounds nil))
+
+  (use-package casual)
+  (use-package casual-dired) ; optional if using autoloaded menu
+  (keymap-set dired-mode-map "C-o" #'casual-dired-tmenu)
+  (keymap-set dired-mode-map "s" #'casual-dired-sort-by-tmenu) ; optional
+  (keymap-set dired-mode-map "/" #'casual-dired-search-replace-tmenu) ; optional
+
 #+END_SRC
 * Style
 ** Fonts
@@ -186,7 +193,7 @@
 	  doom-themes-enable-italic t)
     (doom-themes-org-config))
 
-  (load-theme 'doom-dracula t)
+  (load-theme 'doom-vibrant t)
 #+END_SRC
 ** Icons
 #+BEGIN_SRC emacs-lisp
@@ -297,7 +304,7 @@
 		("C-c p" . projectile-command-map)))
 #+END_SRC
 
-** Extra Modes
+** Language Modes
 #+BEGIN_SRC emacs-lisp
   (use-package markdown-mode
     :mode ("\\.md\\'" . markdown-mode))
@@ -357,9 +364,9 @@
 
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
-    (use-package flycheck
-    :config
-    (add-hook 'after-init-hook #'global-flycheck-mode))
+    ;; (use-package flycheck
+    ;; :config
+    ;; (add-hook 'after-init-hook #'global-flycheck-mode))
 #+END_SRC
 
 ** Corfu
