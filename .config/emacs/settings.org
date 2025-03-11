@@ -200,7 +200,7 @@
 	  doom-themes-enable-italic t)
     (doom-themes-org-config))
 
-  (load-theme 'doom-vibrant t)
+  (load-theme `doom-badger t)
 #+END_SRC
 ** Icons
 #+BEGIN_SRC emacs-lisp
