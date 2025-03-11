@@ -180,8 +180,8 @@
 #+begin_src emacs-lisp
 
   # make frame transparent
-  (set-frame-parameter nil 'alpha-background 90)
-  (add-to-list 'default-frame-alist '(alpha-background . 90))
+  (set-frame-parameter nil 'alpha-background 75)
+  (add-to-list 'default-frame-alist '(alpha-background . 75))
 
 #+end_src
 ** Fonts
