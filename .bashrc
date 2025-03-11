@@ -2,6 +2,8 @@
 # ~/.bashrc
 #
 
+export LFS=/mnt/lfs
+
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 

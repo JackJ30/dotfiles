@@ -1,7 +1,7 @@
 {
   "layer": "top",
   "height": 15,
-  "margin": "10 25 -15 25",
+  "margin": "0 0 0 0",
 
   "modules-left": ["hyprland/workspaces", "custom/separator", "tray"],
   "modules-center": ["hyprland/window"],

@@ -177,6 +177,13 @@
 
 #+END_SRC
 * Style
+#+begin_src emacs-lisp
+
+  # make frame transparent
+  (set-frame-parameter nil 'alpha-background 90)
+  (add-to-list 'default-frame-alist '(alpha-background . 90))
+
+#+end_src
 ** Fonts
 #+BEGIN_SRC emacs-lisp
   (let ((mono-spaced-font "Monospace")
@@ -216,6 +223,12 @@
   :ensure t
   :hook
   (dired-mode . nerd-icons-dired-mode))
+#+END_SRC
+** Smooth Scrolling
+#+BEGIN_SRC emacs-lisp
+
+
+  
 #+END_SRC
 ** Diminish
 #+BEGIN_SRC emacs-lisp
