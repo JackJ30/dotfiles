@@ -142,13 +142,13 @@
 ### Text layout
 #
 	# Prompt to display.
-	prompt-text = "run: "
+	prompt-text = ""
 
 	# Extra horizontal padding between prompt and input.
 	prompt-padding = 0
 
 	# Placeholder input text.
-	placeholder-text = ""
+	placeholder-text = "Anything you desire..."
 
 	# Maximum number of results to display.
 	# If 0, tofi will draw as many results as it can fit in the window.
@@ -180,13 +180,13 @@
 	outline-color = #080800
 
 	# Width of the border in pixels.
-	border-width = 2
+	border-width = 5
 
 	# Border color
 	border-color = #FFFFFF
 
 	# Radius of window corners in pixels.
-	corner-radius = 15
+	corner-radius = 20
 
 	# Padding between borders and text. Can be pixels or a percentage.
 	padding-top = 8

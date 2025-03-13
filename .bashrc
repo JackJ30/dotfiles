@@ -9,7 +9,7 @@ export LFS=/mnt/lfs
 
 export CC=/usr/bin/clang
 export CXX=/usr/bin/clang++
-fastfetch
+
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias project='. project'
