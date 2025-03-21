@@ -89,9 +89,9 @@
 #+BEGIN_SRC emacs-lisp
   ;; scrolling
   (setq scroll-up-aggressively nil
-	scroll-down-aggressively nil
-	scroll-conservatively 101
-	display-line-numbers-type t)
+  	scroll-down-aggressively nil
+  	scroll-conservatively 101
+  	display-line-numbers-type t)
   (setq scroll-step 1)
   (setq scroll-margin 8)
   (global-set-key (kbd "M-n") 'scroll-up-line)
@@ -99,6 +99,9 @@
 
   ;; electric pair
   (electric-pair-mode +1)
+
+  ;; tab width
+  (setq tab-width 4)
 
   ;; improved C-g dwim
   (defun prot/keyboard-quit-dwim ()
@@ -121,7 +124,7 @@
   ;; better move beginning and end
   (use-package mwim
     :bind (("C-a" . mwim-beginning)
-	   ("C-e" . mwim-end-of-line)))
+  	   ("C-e" . mwim-end-of-line)))
 
   ;; selected marked text when typing start
   (use-package delsel
@@ -130,11 +133,11 @@
 
   (use-package multiple-cursors
     :bind (:map global-map
-		("C->" . 'mc/mark-next-like-this)
-		("C-<" . 'mc/mark-previous-like-this)
-		("C-c C->" . 'mc/mark-all-like-this)
-		:map mc/keymap
-		("<return>" . nil)))
+  		("C->" . 'mc/mark-next-like-this)
+  		("C-<" . 'mc/mark-previous-like-this)
+  		("C-c C->" . 'mc/mark-all-like-this)
+  		:map mc/keymap
+  		("<return>" . nil)))
 
   ;; better commenting
   (use-package evil-nerd-commenter
@@ -321,13 +324,15 @@
 
 ** Language Modes
 #+BEGIN_SRC emacs-lisp
-  (use-package markdown-mode
-    :mode ("\\.md\\'" . markdown-mode))
+      (use-package markdown-mode
+        :mode ("\\.md\\'" . markdown-mode))
 
-  (use-package cmake-mode)
-  (use-package cmake-font-lock)
+      (use-package cmake-mode
+        :config
+        (setq cmake-tab-width 4))
+      (use-package cmake-font-lock)
 
-  (use-package glsl-mode)
+      (use-package glsl-mode)
 
 #+END_SRC
 
