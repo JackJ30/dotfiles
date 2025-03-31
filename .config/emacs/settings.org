@@ -95,6 +95,10 @@
 
 (setq vc-follow-symlinks t)
 
+(use-package saveplace
+  :init
+  (save-place-mode))
+
 #+END_SRC
 ** Org Mode
 #+BEGIN_SRC emacs-lisp
@@ -116,7 +120,8 @@
 (column-number-mode +1)
 (setq-default fill-column 80)
 (global-display-line-numbers-mode t)
-(setq display-line-numbers-width-start t)
+(setq display-line-numbers-width-start t
+	  display-line-numbers-type t)
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -135,12 +140,9 @@
 ;; scrolling
 (setq scroll-up-aggressively nil
       scroll-down-aggressively nil
-      scroll-conservatively 101
-      display-line-numbers-type t)
+      scroll-conservatively 101)
 (setq scroll-step 1)
 (setq scroll-margin 8)
-(global-set-key (kbd "M-n") 'scroll-up-line)
-(global-set-key (kbd "M-p") 'scroll-down-line)
 
 ;; electric pair
 (electric-pair-mode +1)
@@ -355,6 +357,7 @@
 ** Text Completion
 #+BEGIN_SRC emacs-lisp
 
+;; corfu (fancy completion)
 (use-package corfu
   :bind (:map corfu-map
 			  ("C-g" . corfu-quit))
@@ -362,7 +365,10 @@
   (global-corfu-mode)
   (corfu-history-mode))
 
+;; completion preview (ghost text)
 (global-completion-preview-mode)
+(global-set-key (kbd "M-n") 'completion-preview-next-candidate)
+(global-set-key (kbd "M-p") 'completion-preview-prev-candidate)
 
 #+END_SRC
 ** Snippets
