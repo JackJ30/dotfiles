@@ -1,0 +1,8 @@
+settings.el
+customs.el
+/auto-save-list/
+/eln-cache/
+/elpa/
+/etc/
+/snippets/
+/var/

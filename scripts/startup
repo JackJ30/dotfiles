@@ -1,11 +1,6 @@
 #!/bin/sh
-gpgconf -K gpg-agent
-restartsearxng & 
 restartemacs >/dev/null &
 pipewire &
-mpd &
-dunst &
 waybar &
 hyprpaper &
 hypridle &
-gpg-agent --daemon

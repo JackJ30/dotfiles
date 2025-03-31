@@ -1,10 +1,12 @@
 /files
 /scripts
 /shortcuts
-.*~undo-tree~
-/.git
-.gitignore
+
 README.md
 install.sh
-/wallpapers
+
+/.git
+.gitignore
+
+.*~undo-tree~
 #.*#

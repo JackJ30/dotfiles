@@ -1,3 +1,0 @@
-#!/bin/sh
-pkill -x uwsgi
-uwsgi --ini $HOME/opt/searxng/searxng.ini 

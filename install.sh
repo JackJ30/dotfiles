@@ -1,1 +1,1 @@
-# stow . ? (TODO)
+#!/bin/bash
