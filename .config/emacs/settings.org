@@ -93,6 +93,8 @@
 (setq inhibit-startup-message t
       backup-inhibited t)
 
+(setq vc-follow-symlinks t)
+
 #+END_SRC
 ** Org Mode
 #+BEGIN_SRC emacs-lisp

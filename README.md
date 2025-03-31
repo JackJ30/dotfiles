@@ -10,6 +10,9 @@ Using:
 - Slurp
 - Tofi
 
+- Dejavu Sans Mono
+- Nerd icons
+
 Installation:
 - Download dependencies, and GNU stow
 - stow . --adopt
