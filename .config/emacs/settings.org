@@ -46,7 +46,9 @@
 			 lsp-ui
 			 corfu
 			 yasnippet
-			 yasnippet-snippets))
+			 yasnippet-snippets
+			 cmake-mode
+			 cmake-font-lockx))
 #+END_SRC
 ** Packages
 #+BEGIN_SRC emacs-lisp
@@ -333,7 +335,8 @@
 		lsp-completion-provider :none
 		lsp-idle-delay 0.05)
   :hook (;; automatic lsp
-         (c++-mode . lsp))
+         (c++-mode . lsp)
+		 (c-mode . lsp))
   :commands lsp)
 
 ;; ui
@@ -351,6 +354,38 @@
 #+BEGIN_SRC emacs-lisp
 
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
+
+;; lsp booster
+(defun lsp-booster--advice-json-parse (old-fn &rest args)
+  "Try to parse bytecode instead of json."
+  (or
+   (when (equal (following-char) ?#)
+     (let ((bytecode (read (current-buffer))))
+       (when (byte-code-function-p bytecode)
+         (funcall bytecode))))
+   (apply old-fn args)))
+(advice-add (if (progn (require 'json)
+                       (fboundp 'json-parse-buffer))
+                'json-parse-buffer
+              'json-read)
+            :around
+            #'lsp-booster--advice-json-parse)
+
+(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+  "Prepend emacs-lsp-booster command to lsp CMD."
+  (let ((orig-result (funcall old-fn cmd test?)))
+    (if (and (not test?)                             ;; for check lsp-server-present?
+             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+             lsp-use-plists
+             (not (functionp 'json-rpc-connection))  ;; native json-rpc
+             (executable-find "emacs-lsp-booster"))
+        (progn
+          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+            (setcar orig-result command-from-exec-path))
+          (message "Using emacs-lsp-booster for %s!" orig-result)
+          (cons "emacs-lsp-booster" orig-result))
+      orig-result)))
+(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
 #+END_SRC
 
@@ -380,5 +415,33 @@
   :diminish yas-minor-mode)
 
 (use-package yasnippet-snippets)
+
+#+END_SRC
+
+** C-like settings
+#+BEGIN_SRC emacs-lisp
+
+(defun my-c-mode-common-hook ()
+  ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
+  (setq c-default-style "k&r"
+	    c-basic-offset 4
+	    indent-tabs-mode t)
+  (c-set-offset 'arglist-intro '+)
+  (add-to-list 'c-offsets-alist '(arglist-close . c-lineup-close-paren)))
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+#+END_SRC
+
+** CMake
+#+BEGIN_SRC emacs-lisp
+
+(use-package cmake-mode)
+(use-package cmake-font-lock)
+(setq cmake-tab-width 4)
+
+(defun my-cmake-mode-hook ()
+  ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
+  (setq indent-tabs-mode t))
+(add-hook 'cmake-mode-hook 'my-cmake-mode-hook)
 
 #+END_SRC
