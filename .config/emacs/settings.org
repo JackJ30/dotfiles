@@ -48,7 +48,8 @@
 			 yasnippet
 			 yasnippet-snippets
 			 cmake-mode
-			 cmake-font-lockx))
+			 cmake-font-lock
+			 glsl-mode))
 #+END_SRC
 ** Packages
 #+BEGIN_SRC emacs-lisp
@@ -443,5 +444,11 @@
   ;; my customizations for all of c-mode, c++-mode, objc-mode, java-mode
   (setq indent-tabs-mode t))
 (add-hook 'cmake-mode-hook 'my-cmake-mode-hook)
+
+#+END_SRC
+** Shader Languages
+#+BEGIN_SRC emacs-lisp
+
+(use-package glsl-mode)
 
 #+END_SRC

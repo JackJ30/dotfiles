@@ -12,7 +12,7 @@
   },
   "custom/separator": {
     "exec": "echo \" | \"",
-    "format": "{}"
+    "format": "{}",
   },
   "custom/brightness": {
   	"exec": "get-brightness-percentage",
