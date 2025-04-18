@@ -49,7 +49,8 @@
 			 yasnippet-snippets
 			 cmake-mode
 			 cmake-font-lock
-			 glsl-mode))
+			 glsl-mode
+			 indent-bars))
 #+END_SRC
 ** Packages
 #+BEGIN_SRC emacs-lisp
