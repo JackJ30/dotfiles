@@ -50,7 +50,8 @@
 			 cmake-mode
 			 cmake-font-lock
 			 glsl-mode
-			 indent-bars))
+			 indent-bars
+			 evil))
 #+END_SRC
 ** Packages
 #+BEGIN_SRC emacs-lisp
@@ -218,6 +219,23 @@
     ("S-TAB" . dired-subtree-remove))
   :config
   (setq dired-subtree-use-backgrounds nil))
+
+#+END_SRC
+* Evil Mode
+#+BEGIN_SRC emacs-lisp
+(use-package evil)
+
+(defun evil-keyboard-quit ()
+  "Keyboard quit and force normal state."
+  (interactive)
+  (and evil-mode (evil-force-normal-state))
+  (keyboard-quit))
+
+(define-key evil-normal-state-map   (kbd "C-g") #'evil-keyboard-quit) 
+(define-key evil-motion-state-map   (kbd "C-g") #'evil-keyboard-quit) 
+(define-key evil-insert-state-map   (kbd "C-g") #'evil-keyboard-quit) 
+(define-key evil-window-map         (kbd "C-g") #'evil-keyboard-quit) 
+(define-key evil-operator-state-map (kbd "C-g") #'evil-keyboard-quit)
 
 #+END_SRC
 * Style

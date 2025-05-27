@@ -1,0 +1,20 @@
+#!/bin/bash
+echo $1
+echo $2
+
+if [[ $1 == "-full" ]];
+then
+	if [[ $2 == "-save" ]];
+	then
+		grim -o eDP-1 ~/Pictures/Screenshots/$(date +'%s_grim.png')
+	else
+		grim -o eDP-1 - | wl-copy
+	fi
+else
+	if [[ $1 == "-save" ]];
+	then
+		grim -g "$(slurp)" ~/Pictures/Screenshots/$(date +'%s_grim.png')
+	else
+		grim -g "$(slurp)" - | wl-copy
+	fi
+fi
