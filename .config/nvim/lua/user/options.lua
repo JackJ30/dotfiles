@@ -11,7 +11,8 @@ vim.opt.signcolumn="number"
 vim.opt.number=true
 vim.opt.fillchars:append({ eob = " " })
 
+vim.opt.cursorline = true
+
 vim.diagnostic.config({
 	virtual_text = true,
-	update_in_insert = true,
 })
