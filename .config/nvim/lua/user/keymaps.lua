@@ -30,3 +30,17 @@ vim.cmd('cmap <C-g> <C-c>')
 
 -- C-d to delete
 vim.keymap.set('i', '<C-d>', '<Del>', { desc = "Delete forward char"})
+
+-- Jump forward and back
+vim.keymap.set('n', '<C-l>', '$', { desc = "Delete forward char"})
+vim.keymap.set('n', '<C-h>', '_', { desc = "Delete forward char"})
+
+-- Insert at correct tab
+vim.keymap.set("n", "i", function()
+  local line = vim.api.nvim_get_current_line()
+  if #line == 0 then
+    return [["_cc]]
+  else
+    return "i"
+  end
+end, { expr = true, noremap = true })
