@@ -7,8 +7,11 @@ vim.opt.shortmess:append { s = true, I = true }
 vim.g.mapleader = ' '
 vim.g.maplocalleader = '\\'
 
-vim.opt.signcolumn="yes"
+vim.opt.signcolumn="number"
+vim.opt.number=true
+vim.opt.fillchars:append({ eob = " " })
 
 vim.diagnostic.config({
-	virtual_text = true
+	virtual_text = true,
+	update_in_insert = true,
 })

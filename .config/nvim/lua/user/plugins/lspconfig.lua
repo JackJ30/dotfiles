@@ -15,7 +15,7 @@ local on_attach = function(client, bufnr)
 
     keymap('n', 'K', vim.lsp.buf.hover, { desc = 'Show documentation' })
     keymap('n', 'gK', vim.lsp.buf.signature_help, { desc = 'Show signature' })
-    keymap('i', '<C-k>', vim.lsp.buf.signature_help, { desc = 'Show signature' })
+    keymap('i', '<C-s>', vim.lsp.buf.signature_help, { desc = 'Show signature' })
 
     keymap('n', '<leader>rn', vim.lsp.buf.rename, { desc = 'Rename symbol' })
     keymap('n', '<leader>ca', vim.lsp.buf.code_action, { desc = 'Code action' })
@@ -34,8 +34,9 @@ return {
 	'neovim/nvim-lspconfig',
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
+		'j-hui/fidget.nvim',
 	},
-	ft = { 'lua', 'zig' },
+	ft = { 'c', 'cpp', 'lua', 'zig' },
 	opts = {
 		servers = {
 			lua_ls = {
@@ -45,6 +46,9 @@ return {
 						telemetry = { enable = false },
 					},
 				},
+			},
+			clangd = {
+				settings = {},
 			},
 			zls = {
 				settings = {},
