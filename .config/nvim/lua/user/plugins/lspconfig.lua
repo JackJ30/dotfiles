@@ -22,6 +22,7 @@ local on_attach = function(client, bufnr)
 
     keymap('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, { desc = 'Add workspace folder' })
     keymap('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, { desc = 'Remove workspace folder' })
+    keymap('n', '<leader>cf', vim.cmd.ClangdSwitchSourceHeader, { desc = 'Switch source with header' })
     keymap(
         'n',
         '<leader>wl',
