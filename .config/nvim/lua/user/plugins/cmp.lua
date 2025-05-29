@@ -9,6 +9,7 @@ return {
 	},
 	opts = function()
 		local cmp = require('cmp')
+		local select_opts = {behavior = cmp.SelectBehavior.Select}
 
 		return {
 			snippet = {
@@ -16,12 +17,19 @@ return {
 					require('luasnip').lsp_expand(args.body)
 				end,
 			},
-			mapping = cmp.mapping.preset.insert(),
+			mapping = {
+				['<C-p>'] = cmp.mapping.select_prev_item(select_opts),
+				['<C-n>'] = cmp.mapping.select_next_item(select_opts),
+				['<C-u>'] = cmp.mapping.scroll_docs(-4),
+				['<C-d>'] = cmp.mapping.scroll_docs(4),
+				['<C-e>'] = cmp.mapping.abort(),
+				['<Tab>'] = cmp.mapping.confirm({select = true}),
+			},
 			sources = cmp.config.sources({
-				{ name = 'nvim_lsp', max_item_count = 5 },
-				{ name = "luasnip", max_item_count = 5 },
+				{ name = 'nvim_lsp', max_item_count = 5, keyword_length = 1 },
+				{ name = "luasnip", max_item_count = 5, keyword_length = 2 },
 			}, {
-				{ name = 'buffer', max_item_count = 2 },
+				{ name = 'buffer', max_item_count = 2, keyword_length = 3 },
 			}, {
 				{ name = 'path', max_item_count = 2 },
 			}),
