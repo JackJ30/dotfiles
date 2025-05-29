@@ -19,10 +19,10 @@ vim.keymap.set('n', 'gl', vim.diagnostic.open_float, { desc = 'Open floating dia
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setqflist, { desc = 'Open diagnostic quickfix list' })
 
 -- Nagivation in insert
-vim.keymap.set('i', '<C-h>', '<Left>', { desc = "Forward char" })
-vim.keymap.set('i', '<C-j>', '<C-o>gj', { desc = "Up char" })
-vim.keymap.set('i', '<C-k>', '<C-o>gk', { desc = "Forward char" })
-vim.keymap.set('i', '<C-l>', '<Right>', { desc = "Forward char" })
+vim.keymap.set({'i', 'c'}, '<C-h>', '<Left>', { desc = "Forward char" })
+vim.keymap.set({'i', 'c'}, '<C-j>', '<C-o>gj', { desc = "Up char" })
+vim.keymap.set({'i', 'c'}, '<C-k>', '<C-o>gk', { desc = "Down char" })
+vim.keymap.set({'i', 'c'}, '<C-l>', '<Right>', { desc = "Backward char" })
 
 -- <C-g> to exit
 vim.keymap.set({'i', 'n', 'v', 'c'}, '<C-g>', '<Esc>', { desc = "Exit mode" })
