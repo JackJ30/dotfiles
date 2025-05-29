@@ -11,6 +11,7 @@ vim.opt.signcolumn="number"
 vim.opt.number=true
 vim.opt.fillchars:append({ eob = " " })
 vim.opt.scrolloff = 7
+vim.opt.splitright = true
 
 vim.opt.cursorline = true
 
