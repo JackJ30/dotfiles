@@ -1,16 +1,22 @@
+-- tabs
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 0
 vim.opt.expandtab = false
+-- display cursor at front of tabs
+vim.opt.list = true
+vim.opt.listchars = { tab = "  " }
 
 vim.opt.shortmess:append { s = true, I = true }
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = '\\'
 
+-- line numbers
 vim.opt.signcolumn="number"
 vim.opt.number=true
 vim.opt.fillchars:append({ eob = " " })
 vim.opt.scrolloff = 7
+
 vim.opt.splitright = true
 
 vim.opt.cursorline = true
