@@ -2,6 +2,8 @@
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 0
 vim.opt.expandtab = false
+vim.opt.autoindent = true
+vim.opt.smartindent = true
 -- display cursor at front of tabs
 vim.opt.list = true
 vim.opt.listchars = { tab = "  " }
