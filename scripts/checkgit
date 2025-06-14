@@ -1,0 +1,15 @@
+#!/bin/bash
+# script checks all git repositories in subdirectory and displays their uncommitted changes
+
+echo -e ""
+for dir in *; do
+	if [[ -d $dir ]] then
+		if [[ -d "$dir/.git" ]] then
+			gStatus=$(git -c color.ui=always -C $dir status -s)
+			if [[ -n $gStatus ]] then
+				echo $dir
+				echo -e "${gStatus}\n"
+			fi
+		fi
+	fi
+done
