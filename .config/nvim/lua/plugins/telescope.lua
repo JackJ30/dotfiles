@@ -3,7 +3,6 @@ return {
     cmd = 'Telescope',
     dependencies = {
         'nvim-lua/plenary.nvim',
-		{ 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
     },
     keys = function()
         local lazy_telescope = function(builtin)
@@ -23,18 +22,6 @@ return {
             { '<leader>f/', lazy_telescope('current_buffer_fuzzy_find'), desc = 'Find fuzzy match in current buffer' },
         }
     end,
-	opts = function()
-        return {
-            extensions = {
-                fzf = {
-                    fuzzy = true,
-                    override_generic_sorter = true,
-                    override_file_sorter = true,
-                    case_mode = 'smart_case',
-                }
-            },
-        }
-    end,
 	config = function()
         local telescope = require('telescope')
 		telescope.setup({
@@ -49,6 +36,5 @@ return {
                 },
             },
         })
-		telescope.load_extension('fzf')
     end,
 }
