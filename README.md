@@ -1,19 +1,23 @@
-# Dotfiles
+# Jack Jamison's Dotfiles
 
-Using:
-- Hyprland
+## Dependencies
+Important
+- Hyprland + utils (hyprpaper, hypridle)
+- Bash
 - Kitty
-- Brightnessctl
-- Emacs
-- Emacs lsp booster
-- Grim
-- Slurp
-- Tofi
+- Neovim
+- Fuzzel
 
+Helper
+- Brightnessctl
+- Grim and Slurp for screenshots
+
+Fonts and style:
 - Dejavu Sans Mono
 - Nerd icons
 
-Installation:
-- Download dependencies, and GNU stow
-- stow . --adopt
-- git restore .
+## Installation
+Everything can be installed by running `stow .` Since there are probably conflicts with your existing files, you can use the `--adopt` flag and then `git restore .`.
+
+## TODO
+- [ ] 
