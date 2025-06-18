@@ -3,7 +3,7 @@
 ## Dependencies
 Important
 - Hyprland + utils (hyprpaper, hypridle)
-- Bash
+- Zsh
 - Kitty
 - Neovim
 - Fuzzel
@@ -20,4 +20,7 @@ Fonts and style:
 Everything can be installed by running `stow .` Since there are probably conflicts with your existing files, you can use the `--adopt` flag and then `git restore .`.
 
 ## TODO
-- [ ] 
+- [ ] Git branch in PS1
+- [ ] Hyprpaper and idle
+- [ ] Wmenu for commands 
+- [ ] Status bar
