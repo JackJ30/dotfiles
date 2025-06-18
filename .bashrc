@@ -12,10 +12,3 @@ PS1='\[\033[1;1m\]\u\[\033[00m\]@\[\033[34m\]\h \[\033[32m\]\w \[\033[35m\]$(git
 
 export CC=/usr/bin/clang
 export CXX=/usr/bin/clang++
-
-# Automatically added by the Guix install script.
-if [ -n "$GUIX_ENVIRONMENT" ]; then
-    if [[ $PS1 =~ (.*)"\\$" ]]; then
-        PS1="${BASH_REMATCH[1]} [env]\\\$ "
-    fi
-fi
