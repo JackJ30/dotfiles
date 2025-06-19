@@ -14,10 +14,15 @@ setopt hist_ignore_space
 setopt autocd
 setopt extendedglob
 
-# Prompt
+# Aliases
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
-PROMPT="[%B%F{33}%n%f%b%F{15}@%f%F{81}%m%f] %F{47}%~ %F{15}$ "
+
+# Prompt
+set_prompt() {
+	PROMPT="[%B%F{33}%n%f%b%F{15}@%f%F{81}%m%f] %F{47}%~ %F{105}$(git-ps1)%F{15}$ "
+}
+precmd_functions+=(set_prompt)
 
 # Vi mode
 bindkey -v
@@ -37,4 +42,4 @@ zle-line-init() {
 zle -N zle-line-init
 echo -ne '\e[5 q' # Use beam shape cursor on startup.
 preexec() { echo -ne '\e[5 q' ;} # Use beam shape cursor for each new prompt.
-KEYTIMEOUT=1
+KEYTIMEOUT=1 # remove lag

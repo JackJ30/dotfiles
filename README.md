@@ -22,5 +22,6 @@ Everything can be installed by running `stow .` Since there are probably conflic
 ## TODO
 - [ ] Git branch in PS1
 - [ ] Hyprpaper and idle
+- [ ] Cursor
 - [ ] Wmenu for commands 
 - [ ] Status bar
