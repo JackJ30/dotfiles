@@ -16,6 +16,7 @@ Helper
 - Grim and Slurp for screenshots
 
 Fonts and style:
+- Whiteglass xcursor theme
 - Dejavu Sans Mono
 - Nerd icons
 
@@ -24,7 +25,8 @@ Everything can be installed by running `stow .` Since there are probably conflic
 
 ## TODO
 - [x] Git branch in PS1
-- [ ] Hyprpaper and idle
-- [ ] Cursor
+- [x] Hyprpaper
+- [x] Cursor
 - [ ] Wmenu for commands 
 - [ ] Status bar
+- [ ] Idle

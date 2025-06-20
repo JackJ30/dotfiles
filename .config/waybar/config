@@ -25,7 +25,6 @@
     "format-disconnected": "Disconnected ",
     "tooltip-format": "{ifname}: {gwaddr}",
     "format": "{ifname}: {essid}",
-    "on-click": "alacritty -e nmtui",
   },
   "hyprland/window": {
     "format": "{title}",
