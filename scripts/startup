@@ -1,6 +1,6 @@
 #!/bin/sh
 hyprpaper &
 hypridle &
-restartemacs >/dev/null &
-pipewire &
 waybar &
+pipewire &
+restartemacs >/dev/null &

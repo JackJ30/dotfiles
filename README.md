@@ -3,6 +3,7 @@
 ## Dependencies
 System setup:
 - Zsh is set as shell
+- Elogind is running
 
 Important
 - Hyprland + utils (hyprpaper, hypridle)
@@ -14,6 +15,7 @@ Important
 Helper
 - Brightnessctl
 - Grim and Slurp for screenshots
+- Ripgrep for nvim
 
 Fonts and style:
 - Whiteglass xcursor theme
@@ -28,5 +30,6 @@ Everything can be installed by running `stow .` Since there are probably conflic
 - [x] Hyprpaper
 - [x] Cursor
 - [x] Status bar
-- [ ] Idle
+- [x] Screenshot
+- [x] Idle
 - [ ] Wmenu for commands 
