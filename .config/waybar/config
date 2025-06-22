@@ -1,7 +1,5 @@
 {
   "layer": "top",
-  "height": 15,
-  "margin": "0 0 0 0",
 
   "modules-left": ["hyprland/workspaces", "custom/separator", "tray"],
   "modules-center": ["hyprland/window"],
@@ -11,8 +9,9 @@
     "format": "{id}",
   },
   "custom/separator": {
-    "exec": "echo \" | \"",
+    "exec": "echo \"|\"",
     "format": "{}",
+	"class": "separator",
   },
   "custom/brightness": {
   	"exec": "get-brightness-percentage",
@@ -44,7 +43,7 @@
     "interval": 1,
   },
   "tray": {
-    "icon-size": 16,
+    "icon-size": 8,
     "spacing": 8,
   },
   "wireplumber": {

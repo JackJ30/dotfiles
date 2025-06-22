@@ -1,82 +1,37 @@
-
+@define-color foreground rgba(228, 228, 239, 1);
+@define-color foreground-active rgba(51, 204, 254, 1);
+@define-color background rgba(0, 0, 0, 0.8);
 
 * {
-    font-family: "DejaVu Sans Mono", "Symbols Nerd Font";
-    font-size: 14px;
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+	min-height: 0;
+    padding: 0.1rem;
+    margin: 0;
 }
 
 window#waybar {
-    background-color: rgba(13, 27, 42, 0.5);
-    color: rgba(228, 228, 239, 1);
-    border: 0px solid rgba(238, 171, 196, 0.8);
-}
-
-#window {
-    margin: 0 10px;
-}
-
-.modules-right:last-child {
-    /* background-color: rgba(51, 102, 0, 0.5); */
-    /* margin: 0 2px 0 0; */
-    margin-right: 10px;
-    /* padding: 0 3px; */
-}
-
-.modules-center {
-    /* background-color: #1d1f21; */
-    /* background-color: #2a3f38; */
-    /* background-color: rgba(51, 102, 0, 0.5); */
-    /* margin: 0 0 0 0; */
-    /* padding: 0 3px; */
-}
-
-.modules-left {
-    /* background-color: #1d1f21; */
-    /* background-color: #2a3f38; */
-    /* background-color: rgba(51, 102, 0, 0.5); */
-    /* margin: 0 0 0 2px; */
-    padding: 0 0 0 15px;
-}
-
-tooltip {
-    background-color: rgba(13, 27, 42, 1);
-    color: rgba(228, 228, 239, 1);
-    border: 2px solid rgba(238, 171, 196, 0.8);
-    border-radius: 10px;
+    color: @foreground;
+    background-color: @background;
 }
 
 #workspaces button {
-    color: rgba(228, 228, 239, 1);
-    /* padding: 0 3px; */
+    color: @foreground;
 }
 
-#workspaces button.focused {
-    color: rgba(238, 171, 196, 0.8);
+.module {
+	padding: 0rem 0.6rem;
+}
+
+#custom-separator {
+	padding: 0 0.2rem;
+}
+
+#workspaces button {
+    padding: 0 0.3rem;
 }
 
 #workspaces button.active {
-    color: rgba(238, 171, 196, 0.8);
-    transition: all 150ms ease;
+	color: @foreground-active;
 }
 
-#workspaces button:hover {
-    background: transparent;
-    border-color: rgba(238, 171, 196, 0.8);
-    box-shadow: none;
-    text-shadow: none;
-    transition: all 150ms ease;
-}
-
-#workspaces button:not(:last-child) {
-    transition: all 150ms ease;
-}
-
-#network,
-#wireplumber,
-#custom-brightness,
-#battery,
-#cpu,
-#memory,
-#clock {
-    padding: 0 10px;
-}
