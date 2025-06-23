@@ -26,6 +26,7 @@ precmd_functions+=(set_prompt)
 
 # Vi mode
 bindkey -v
+bindkey "^R" history-incremental-search-backward # isearch
 
 # Change cursor shape for different vi modes.
 function zle-keymap-select () {
