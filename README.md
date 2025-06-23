@@ -6,7 +6,7 @@ System setup:
 - Elogind is running
 
 Important
-- Hyprland + utils (hyprpaper, hypridle)
+- Hyprland + utils (hyprpaper, hypridle, hyprlock, hyprpicker)
 - Zsh
 - Kitty
 - Neovim
