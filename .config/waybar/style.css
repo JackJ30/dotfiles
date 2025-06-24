@@ -1,5 +1,6 @@
 @define-color foreground rgba(228, 228, 239, 1);
 @define-color foreground-active rgba(175, 215, 255, 1);
+@define-color foreground-disabled rgba(70, 70, 70, 1);
 @define-color background rgba(0, 0, 0, 0.88);
 
 * {
@@ -15,10 +16,6 @@ window#waybar {
     background-color: @background;
 }
 
-#workspaces button {
-    color: @foreground;
-}
-
 .module {
 	padding: 0rem 0.6rem;
 }
@@ -29,9 +26,25 @@ window#waybar {
 
 #workspaces button {
     padding: 0 0.3rem;
+    color: @foreground;
+	transition: color 0.1s;
+
+	border: transparent; /* Disable default border when hovered */
+}
+
+#workspaces button.empty {
+	color: @foreground-disabled;
 }
 
 #workspaces button.active {
 	color: @foreground-active;
 }
 
+#workspaces button:hover,
+#workspaces button.*:hover {
+	color: @foreground-active;
+
+	box-shadow: none; /* Remove predefined box-shadow */
+	text-shadow: none; /* Remove predefined text-shadow */
+	background: none; /* Remove predefined background color (white) */
+}

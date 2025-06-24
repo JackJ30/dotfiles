@@ -32,4 +32,5 @@ Everything can be installed by running `stow .` Since there are probably conflic
 - [x] Status bar
 - [x] Screenshot
 - [x] Idle
+- [x] Sound
 - [ ] Wmenu for commands 
