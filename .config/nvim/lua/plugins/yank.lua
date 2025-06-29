@@ -1,4 +1,4 @@
-{
+return {
 	"svban/YankAssassin.nvim",
 	event = "VeryLazy",
 	config = function()
