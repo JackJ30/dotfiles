@@ -10,7 +10,7 @@ export HISTFILE="$HOME/.history"
 export SAVEHIST=$HISTSIZE
 setopt hist_ignore_space
 
-# Misc
+# Misc options
 setopt autocd
 setopt extendedglob
 
@@ -32,8 +32,8 @@ bindkey "^R" history-incremental-search-backward # isearch
 # Change cursor shape for different vi modes.
 function zle-keymap-select () {
     case $KEYMAP in
-        vicmd) echo -ne '\e[1 q';;      # block
-        viins|main) echo -ne '\e[5 q';; # beam
+        vicmd) echo -ne '\e[1 q';;                        # block
+        viins|main) echo -ne '\e[5 q';;                   # beam
     esac
 }
 zle -N zle-keymap-select

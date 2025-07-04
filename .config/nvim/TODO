@@ -1,2 +1,2 @@
-- yank doesn't move cursor pack
-- multiple cursors
+- save more than one yank (emacs killring like)
+- undo chunks typed in insert mode
