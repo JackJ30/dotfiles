@@ -1,2 +1,4 @@
 - save more than one yank (emacs killring like)
 - undo chunks typed in insert mode
+- argument preview in status bar
+- next snippet argument

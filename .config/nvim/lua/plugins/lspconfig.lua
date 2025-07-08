@@ -8,7 +8,7 @@ local on_attach = function(client, bufnr)
     keymap('n', 'gD', vim.lsp.buf.declaration, { desc = 'Go to declaration' })
     keymap('n', 'gI', vim.lsp.buf.implementation, { desc = 'Go to implementation' })
     keymap('n', 'gy', vim.lsp.buf.type_definition, { desc = 'Go to type definition' })
-    keymap('n', 'gr', vim.lsp.buf.references, { desc = 'List references' })
+    -- keymap('n', 'gr', vim.lsp.buf.references, { desc = 'List references' })
 
     keymap('n', '<leader>ds', vim.lsp.buf.document_symbol, { desc = 'List document symbols' })
     keymap('n', '<leader>ws', vim.lsp.buf.workspace_symbol, { desc = 'List workspace symbols' })
@@ -74,5 +74,22 @@ return {
                 end,
 			}
 		end
+
+		-- Autohighlight symbol under cursor
+		vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+			callback = function()
+				local bufnr = vim.api.nvim_get_current_buf()
+				if next(vim.lsp.get_clients({ buffer = bufnr })) then
+					vim.lsp.buf.document_highlight()
+				end
+			end,
+		})
+		-- Clear highlights when cursor moves
+		vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+			callback = function()
+				vim.lsp.buf.clear_references()
+			end,
+		})
+
 	end
 }
