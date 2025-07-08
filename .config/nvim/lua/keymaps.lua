@@ -35,6 +35,9 @@ vim.keymap.set('i', '<C-d>', '<Del>', { desc = "Delete forward char"})
 vim.keymap.set('n', '<C-l>', '$', { desc = "Delete forward char"})
 vim.keymap.set('n', '<C-h>', '_', { desc = "Delete forward char"})
 
+-- File managerment
+vim.keymap.set('n', '<leader>e', ':e <C-R>=expand("%:p:h") . "/"<CR>', { desc = 'Open file in current directory' })
+
 -- Insert at correct tab
 vim.keymap.set("n", "i", function()
   local line = vim.api.nvim_get_current_line()
