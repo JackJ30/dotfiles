@@ -21,7 +21,7 @@ alias grep='grep --color=auto'
 # Prompt
 set_prompt() {
 	# PROMPT="%B%F{174}%n%f%b%F{15}@%f%F{81}%m %F{47}%~ %F{105}$(git-ps1)%F{15}$ "
-	PROMPT="%B%F{121}%n%f%b%F{15}@%f%F{153}%m %F{47}%~ %F{105}$(git-ps1)%F{15}$ "
+	PROMPT="%B%F{153}%n %F{47}%~ %F{105}$(git-ps1)%F{15}$ "
 }
 precmd_functions+=(set_prompt)
 

@@ -33,4 +33,5 @@ Everything can be installed by running `stow .` Since there are probably conflic
 - [x] Screenshot
 - [x] Idle
 - [x] Sound
-- [ ] Wmenu for commands 
+- [ ] Improve zsh completion and highlighting
+- [ ] Improve nvim
