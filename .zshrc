@@ -13,6 +13,7 @@ setopt hist_ignore_space
 # Misc options
 setopt autocd
 setopt extendedglob
+unsetopt BEEP
 
 # Aliases
 alias ls='ls --color=auto'

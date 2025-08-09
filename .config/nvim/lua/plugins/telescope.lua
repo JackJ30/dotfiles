@@ -8,7 +8,7 @@ return {
 		local lazy_telescope = function(builtin)
 			return function(...)
 				if builtin == 'find_files_custom' then
-					require('telescope.builtin').find_files({ find_command = {'rg', '--files', '--hidden', '-g', '!.git', '-g', '!external/' }})
+					require('telescope.builtin').find_files({ find_command = {'rg', '--files', '--hidden', '-g', '!.git', '-g', '!external/', '-g', '!build/' }})
 				else
 					require('telescope.builtin')[builtin](...)
 				end
