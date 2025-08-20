@@ -4,3 +4,4 @@ hypridle &
 waybar &
 pipewire &
 restartemacs >/dev/null &
+emacs --daemon

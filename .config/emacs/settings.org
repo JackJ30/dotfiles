@@ -51,7 +51,8 @@
 			 cmake-font-lock
 			 glsl-mode
 			 indent-bars
-			 evil))
+			 evil
+			 evil-collection))
 #+END_SRC
 ** Packages
 #+BEGIN_SRC emacs-lisp
@@ -224,31 +225,38 @@
 * Evil Mode
 #+BEGIN_SRC emacs-lisp
 (use-package evil)
+(use-package evil-collection)
 
+;; C-g to exit mode
 (defun evil-keyboard-quit ()
   "Keyboard quit and force normal state."
   (interactive)
   (and evil-mode (evil-force-normal-state))
   (keyboard-quit))
-
 (define-key evil-normal-state-map   (kbd "C-g") #'evil-keyboard-quit) 
 (define-key evil-motion-state-map   (kbd "C-g") #'evil-keyboard-quit) 
 (define-key evil-insert-state-map   (kbd "C-g") #'evil-keyboard-quit) 
 (define-key evil-window-map         (kbd "C-g") #'evil-keyboard-quit) 
 (define-key evil-operator-state-map (kbd "C-g") #'evil-keyboard-quit)
 
+;; tab to fold
+(defun my/evil-fold-key ()
+  (local-set-key (kbd "<tab>") #'evil-toggle-fold))
+(add-hook 'prog-mode-hook #'my/evil-fold-key)
+(add-hook 'text-mode-hook #'my/evil-fold-key)
+
+;; enable mode and collection keybinds
+(evil-mode)
+(evil-collection-init)
+
 #+END_SRC
 * Style
 #+BEGIN_SRC emacs-lisp
-
 (use-package dracula-theme)
 (load-theme 'dracula)
-
 (set-face-attribute 'show-paren-match nil :background "dark violet" :foreground "black")
-
 #+END_SRC
-
-*** Icons
+** Icons
 #+BEGIN_SRC emacs-lisp
 
 (use-package nerd-icons)
@@ -433,6 +441,7 @@
   :config
   (yas-global-mode t)
   :diminish yas-minor-mode)
+(global-set-key (kbd "") 'completion-preview-next-candidate)
 
 (use-package yasnippet-snippets)
 

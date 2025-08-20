@@ -13,3 +13,10 @@
  - new in buffer completion
  - better tabs
  - debugger
+
+Fixes
+- Completion key is always tab
+- Yas doesn't expand with tab
+- Yas next
+- LSP doesn't do shit when I press enter or auto include
+- Evil org expand
