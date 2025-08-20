@@ -50,6 +50,7 @@ return {
 			},
 			clangd = {
 				settings = {},
+				cmd = { "clangd", "--header-insertion=never" },
 			},
 			zls = {
 				settings = {},

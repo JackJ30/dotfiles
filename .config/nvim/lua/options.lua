@@ -21,6 +21,9 @@ vim.opt.scrolloff = 7
 
 vim.opt.splitright = true
 
+vim.opt.cinoptions:append("g0")
+vim.opt.cinoptions:append("L0")
+
 vim.opt.cursorline = true
 
 vim.diagnostic.config({
