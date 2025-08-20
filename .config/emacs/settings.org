@@ -240,10 +240,10 @@
 (define-key evil-operator-state-map (kbd "C-g") #'evil-keyboard-quit)
 
 ;; tab to fold
-(defun my/evil-fold-key ()
-  (local-set-key (kbd "<tab>") #'evil-toggle-fold))
-(add-hook 'prog-mode-hook #'my/evil-fold-key)
-(add-hook 'text-mode-hook #'my/evil-fold-key)
+;; (defun my/evil-fold-key ()
+;;   (local-set-key (kbd "<tab>") #'evil-toggle-fold))
+;; (add-hook 'prog-mode-hook #'my/evil-fold-key)
+;; (add-hook 'text-mode-hook #'my/evil-fold-key)
 
 ;; enable mode and collection keybinds
 (evil-mode)
@@ -360,6 +360,7 @@
   (setq lsp-keymap-prefix "C-c l"
 		lsp-headerline-breadcrumb-enable nil
 		lsp-completion-enable-additional-text-edit nil
+		lsp-enable-on-type-formatting nil
 		lsp-completion-provider :none
 		lsp-idle-delay 0.05)
   :hook (;; automatic lsp
@@ -442,6 +443,10 @@
   (yas-global-mode t)
   :diminish yas-minor-mode)
 (global-set-key (kbd "") 'completion-preview-next-candidate)
+(define-key yas-keymap (kbd "TAB") nil)
+(define-key yas-keymap (kbd "S-TAB") nil)
+(define-key yas-keymap (kbd "M-n") 'yas-next-field)
+(define-key yas-keymap (kbd "M-p") 'yas-prev-field)
 
 (use-package yasnippet-snippets)
 
