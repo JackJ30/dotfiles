@@ -13,3 +13,6 @@
  - new in buffer completion
  - better tabs
  - debugger
+
+
+- BETTER ERROR DISPLY

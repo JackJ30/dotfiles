@@ -96,6 +96,11 @@
       erc-join-buffer 'window
       confirm-kill-processes nil)
 
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
 (setq inhibit-startup-message t
       backup-inhibited t)
 
@@ -104,6 +109,10 @@
 (use-package saveplace
   :init
   (save-place-mode))
+
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (setq-local lsp-enable-indentation nil)))
 
 #+END_SRC
 ** Org Mode
@@ -224,6 +233,9 @@
 #+END_SRC
 * Evil Mode
 #+BEGIN_SRC emacs-lisp
+(setq evil-want-C-u-scroll t)
+(setq evil-want-keybinding nil)
+(setq evil-undo-system 'undo-redo)
 (use-package evil)
 (use-package evil-collection)
 
@@ -248,6 +260,8 @@
 ;; enable mode and collection keybinds
 (evil-mode)
 (evil-collection-init)
+
+(define-key evil-insert-state-map   (kbd "C-d") #'evil-delete-char) 
 
 #+END_SRC
 * Style
@@ -445,6 +459,8 @@
 (global-set-key (kbd "") 'completion-preview-next-candidate)
 (define-key yas-keymap (kbd "TAB") nil)
 (define-key yas-keymap (kbd "S-TAB") nil)
+(define-key yas-minor-mode-map(kbd "TAB") nil)
+(define-key yas-minor-mode-map (kbd "S-TAB") nil)
 (define-key yas-keymap (kbd "M-n") 'yas-next-field)
 (define-key yas-keymap (kbd "M-p") 'yas-prev-field)
 
