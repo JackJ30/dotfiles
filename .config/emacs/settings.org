@@ -52,7 +52,8 @@
 			 glsl-mode
 			 indent-bars
 			 evil
-			 evil-collection))
+			 evil-collection
+			 projectile))
 #+END_SRC
 ** Packages
 #+BEGIN_SRC emacs-lisp
@@ -336,25 +337,6 @@
 
 #+END_SRC
 
-* Misc Binds
-#+BEGIN_SRC emacs-lisp
-
-;; shortcuts
-(use-package consult
-  :custom
-  ;; Disable preview
-  (consult-preview-key nil)
-  :bind
-  (("C-x b" . 'consult-buffer)    ;; Switch buffer, including recentf and bookmarks
-   ("M-l"   . 'consult-git-grep)  ;; Search inside a project
-   ("M-y"   . 'consult-yank-pop)  ;; Paste by selecting the kill-ring
-   ("M-s"   . 'consult-line)      ;; Search current buffer, like swiper
-   ("C-c i" . 'consult-imenu)     ;; Search the imenu
-   ))
-
-(global-set-key (kbd "C-c f") 'ff-find-other-file)
-
-#+END_SRC
 * Development
 ** Magit
 #+BEGIN_SRC emacs-lisp
@@ -468,6 +450,10 @@
 
 #+END_SRC
 
+** Projectile
+#+BEGIN_SRC emacs-lisp
+(use-package projectile)
+#+END_SRC
 ** C-like settings
 #+BEGIN_SRC emacs-lisp
 
@@ -499,5 +485,27 @@
 #+BEGIN_SRC emacs-lisp
 
 (use-package glsl-mode)
+
+#+END_SRC
+
+* Misc Binds
+#+BEGIN_SRC emacs-lisp
+
+;; shortcuts
+(use-package consult
+  :custom
+  ;; Disable preview
+  (consult-preview-key nil)
+  :bind
+  (("C-x b" . 'consult-buffer)    ;; Switch buffer, including recentf and bookmarks
+   ("M-l"   . 'consult-git-grep)  ;; Search inside a project
+   ("M-y"   . 'consult-yank-pop)  ;; Paste by selecting the kill-ring
+   ("M-s"   . 'consult-line)      ;; Search current buffer, like swiper
+   ("C-c i" . 'consult-imenu)     ;; Search the imenu
+   ))
+
+(global-set-key (kbd "C-c f") 'ff-find-other-file)
+(global-set-key (kbd "C-c g") 'projectile-ripgrep)
+(global-set-key (kbd "C-c F") 'projectile-find-file)
 
 #+END_SRC
