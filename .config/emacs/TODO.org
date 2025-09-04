@@ -1,18 +1,2 @@
-- [x] development lsps
-- [ ] projectile setup
-- [ ] fast undo tree
-- [ ] modes for shaders and cmake
 - [ ] tree sitter
-- [ ] tabs and spaces (not just in c++)
-- [ ] improve corfu and completion from this article: https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/#h:e5e7b781-4b04-4c53-bf23-5e81789549ce
-- [ ] become a ninja with navigation (jumping, sexps, and other stuff)
-- [ ] debugger
-
- Notes for a rework
- - proper treesitter
- - new in buffer completion
- - better tabs
- - debugger
-
-
-- BETTER ERROR DISPLY
+- [ ] Cooler completion

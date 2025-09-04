@@ -46,3 +46,5 @@ zle -N zle-line-init
 echo -ne '\e[5 q' # Use beam shape cursor on startup.
 preexec() { echo -ne '\e[5 q' ;} # Use beam shape cursor for each new prompt.
 KEYTIMEOUT=1 # remove lag
+
+. "$HOME/.local/bin/env"
