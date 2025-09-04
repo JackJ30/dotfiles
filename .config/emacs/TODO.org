@@ -1,2 +1,3 @@
 - [ ] tree sitter
-- [ ] Cooler completion
+- [ ] cooler completion
+- [ ] typst

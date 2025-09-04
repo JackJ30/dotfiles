@@ -30,13 +30,8 @@
 (setq custom-file (expand-file-name "customs.el" user-emacs-directory))
 (load custom-file :no-error-if-file-is-missing)
 
-;; no littering
-(use-package no-littering
-  :config
-  (let ((dir (no-littering-expand-var-file-name "lock-files/")))
-	(make-directory dir t)
-	(setq lock-file-name-transforms `((".*" ,dir t))))
-  (setq custom-file (no-littering-expand-etc-file-name "custom.el")))
+;; no lockfiles
+(setq create-lockfiles nil) 
 
 ;; backups in one folder
 (setq backup-directory-alist
@@ -79,8 +74,8 @@
 (setq-default fill-column 80)
 (global-display-line-numbers-mode t)
 (setq display-line-numbers-width-start t
-	  display-line-numbers-type t
-	  truncate-lines t)
+	  display-line-numbers-type t)
+(setq-default truncate-lines t)
 
 ;; rainbow delimiters
 (use-package rainbow-delimiters
@@ -294,7 +289,8 @@
   (lsp-idle-delay 0.1)
   (lsp-enable-indentation nil)
   :hook ((c++-mode . lsp)
-		 (c-mode . lsp))
+		 (c-mode . lsp)
+		 (typst-ts-mode . lsp))
   :commands lsp)
 
 (use-package lsp-ui
@@ -340,18 +336,30 @@
 
 ;; == text completion
 (use-package corfu
-  :bind (:map corfu-map
-			  ("C-g" . corfu-quit))
+  :bind
+  (:map corfu-map
+		("C-g" . corfu-quit))
   :init
+  (add-hook 'corfu-mode-hook
+			(lambda ()
+			  ;; disable orderless
+			  (setq-local completion-styles '(basic)
+						  completion-category-overrides nil
+						  completion-category-defaults nil)))
   (global-corfu-mode)
   (corfu-history-mode))
+
+(use-package completion-preview
+  :ensure nil
+  :hook (prog-mode . completion-preview-mode))
 
 ;; == snippets
 (use-package yasnippet
   :diminish yas-minor-mode
   :config
   (yas-reload-all)
-  (add-hook 'prog-mode-hook 'yas-minor-mode)
+  :hook
+  (prog-mode . yas-minor-mode)
   :bind
   (:map yas-keymap
 		("M-n" . yas-next-field)
@@ -376,6 +384,17 @@
 (use-package yasnippet-snippets
   :after yasnippet)
 
+;; == treesitter
+(setq treesit-language-source-alist
+	  '((cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+		(c "https://github.com/tree-sitter/tree-sitter-c")
+		(typst "https://github.com/uben0/tree-sitter-typst")))
+(dolist (lang treesit-language-source-alist)
+  (unless (treesit-language-available-p (car lang))
+	(treesit-install-language-grammar (car lang))))
+(setq treesit-load-name-override-list
+   '((c++ "libtree-sitter-cpp")))
+
 ;; == languages
 
 ;; === c mode
@@ -396,6 +415,19 @@
 		org-src-preserve-indentation t
 		org-src-tab-acts-natively t
 		org-edit-src-content-indentation t))
+
+;; == typst modes
+(use-package typst-ts-mode
+  :vc (:url "https://codeberg.org/meow_king/typst-ts-mode"
+       :rev :newest))
+
+(with-eval-after-load 'lsp-mode
+  (add-to-list 'lsp-language-id-configuration
+			   '(typst-ts-mode . "typst"))
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection "tinymist")
+                    :activation-fn (lsp-activate-on "typst")
+                    :server-id 'theme-check)))
 
 ;; == random functionality
 ;; erc
