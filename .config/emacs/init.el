@@ -4,7 +4,9 @@
       '(("org" . "https://orgmode.org/elpa/")
     	("gnu" . "https://elpa.gnu.org/packages/")
     	("melpa" . "https://melpa.org/packages/")
-	("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+		("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+(setq package-archive-priorities
+	  '(("gnu" . 10)))
 (package-initialize)
 
 (unless package-archive-contents
@@ -88,6 +90,7 @@
 ;; == text editing and navigation
 
 ;; tabs
+
 (setq-default tab-width 4)
 (setq backward-delete-char-untabify-method "hungry")
 
@@ -188,11 +191,12 @@
 
 ;; == style
 ;; theme
-(use-package dracula-theme
-  :demand t
-  :config
-  (load-theme 'dracula)
-  (set-face-attribute 'show-paren-match nil :background "dark violet" :foreground "black"))
+;; (use-package dracula-theme
+;;   :demand t
+;;   :config
+;;   (load-theme 'dracula)
+;;   (set-face-attribute 'show-paren-match nil :background "dark violet" :foreground "black"))
+(load-theme `gruber-darker)
 
 ;; icons
 (use-package nerd-icons)
@@ -208,11 +212,14 @@
   :config
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
+;; rainbow mode
+(use-package rainbow-mode
+  :hook (after-change-major-mode . rainbow-mode))
+
 ;; == minibuffer completion
 (use-package vertico
   :custom
   (vertico-count 15)
-  :diminish vertico-mode
   :bind (:map vertico-map
 		("C-n" . vertico-next)
 		("C-p" . vertico-previous))
@@ -281,7 +288,7 @@
 ;; == lsp
 (use-package lsp-mode
   :custom
-  (lsp-Keymap-prefix "C-c l")
+  (lsp-keymap-prefix "C-c l")
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-completion-enable-additional-text-edit nil)
   (lsp-enable-on-type-formatting nil)
@@ -290,7 +297,8 @@
   (lsp-enable-indentation nil)
   :hook ((c++-mode . lsp)
 		 (c-mode . lsp)
-		 (typst-ts-mode . lsp))
+		 (typst-ts-mode . lsp)
+		 (java-mode . lsp))
   :commands lsp)
 
 (use-package lsp-ui
@@ -339,6 +347,10 @@
   :bind
   (:map corfu-map
 		("C-g" . corfu-quit))
+  :custom
+  (corfu-auto t)
+  (corfu-auto-delay 0.2)
+  (corfu-auto-prefix 2)
   :init
   (add-hook 'corfu-mode-hook
 			(lambda ()
@@ -349,13 +361,14 @@
   (global-corfu-mode)
   (corfu-history-mode))
 
-(use-package completion-preview
-  :ensure nil
-  :hook (prog-mode . completion-preview-mode))
+(use-package cape
+  :init
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  (add-hook 'completion-at-point-functions #'cape-file)
+)
 
 ;; == snippets
 (use-package yasnippet
-  :diminish yas-minor-mode
   :config
   (yas-reload-all)
   :hook
@@ -365,11 +378,13 @@
 		("M-n" . yas-next-field)
 		("M-p" . yas-prev-field)
 		([(tab)] . nil)
-		("TAB" . nil))
+		("TAB" . nil)
+		("M-I" . nil))
   (:map yas-minor-mode-map
 		("C-'". yas-expand)
 		([(tab)] . nil)
-		("TAB" . nil)))
+		("TAB" . nil)
+		("M-I" . nil)))
 
 (use-package yasnippet
   :bind
