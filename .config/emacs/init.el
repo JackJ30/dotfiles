@@ -243,7 +243,7 @@
   (marginalia-mode))
 
 (use-package orderless
-  :config
+  :init
   (setq completion-styles '(orderless partial-completion basic)
 	  completion-category-defaults nil
 	  completion-category-overrides '((file (styles . (partial-completion))))))
@@ -349,8 +349,8 @@
 		("C-g" . corfu-quit))
   :custom
   (corfu-auto t)
-  (corfu-auto-delay 0.2)
-  (corfu-auto-prefix 2)
+  (corfu-auto-delay 0.25)
+  (corfu-auto-prefix 3)
   :init
   (add-hook 'corfu-mode-hook
 			(lambda ()
