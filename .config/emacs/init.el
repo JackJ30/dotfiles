@@ -102,7 +102,7 @@
 (setq scroll-margin 8)
 
 ;; electric pairs
-(electric-pair-mode +1)
+;; (electric-pair-mode +1)
 
 ;; mwim
 (use-package mwim
@@ -196,7 +196,10 @@
 ;;   :config
 ;;   (load-theme 'dracula)
 ;;   (set-face-attribute 'show-paren-match nil :background "dark violet" :foreground "black"))
-(load-theme `gruber-darker)
+(use-package gruber-darker-theme
+  :demand t
+  :config
+  (load-theme 'gruber-darker))
 
 ;; icons
 (use-package nerd-icons)
@@ -272,7 +275,7 @@
   :after rg
   :bind
   (("C-c g" . projectile-ripgrep)
-   ("C-c F" . projectile-find-file)))
+   ("C-c v" . projectile-find-file)))
 
 ;; find other file
 (global-set-key (kbd "C-c f") 'ff-find-other-file)
@@ -347,10 +350,6 @@
   :bind
   (:map corfu-map
 		("C-g" . corfu-quit))
-  :custom
-  (corfu-auto t)
-  (corfu-auto-delay 0.25)
-  (corfu-auto-prefix 3)
   :init
   (add-hook 'corfu-mode-hook
 			(lambda ()
@@ -362,10 +361,17 @@
   (corfu-history-mode))
 
 (use-package cape
+  :after lsp-mode
   :init
   (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-file)
-)
+  (defun my/lsp-capf-busted ()
+    "Return an uncached LSP completion function."
+    (cape-capf-buster #'lsp-completion-at-point))
+  (add-hook 'lsp-completion-mode-hook
+            (lambda ()
+              (setq-local completion-at-point-functions
+                          (list (my/lsp-capf-busted))))))
 
 ;; == snippets
 (use-package yasnippet

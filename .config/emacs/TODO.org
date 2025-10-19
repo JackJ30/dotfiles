@@ -1,4 +1,3 @@
-- [ ] tree sitter
-- [ ] cooler completion
-- [ ] typst
-- [ ] diminish
+- [ ] Fix completion issues
+- [ ] Fix freeze
+- [ ] Fix error messages on the side
