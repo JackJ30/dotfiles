@@ -1,0 +1,7 @@
+[general]
+import = [
+    "~/.config/alacritty/themes/themes/theme.toml"
+]
+
+[window]
+padding = { x = 5, y = 5 }

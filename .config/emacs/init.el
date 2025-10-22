@@ -196,10 +196,10 @@
 ;;   :config
 ;;   (load-theme 'dracula)
 ;;   (set-face-attribute 'show-paren-match nil :background "dark violet" :foreground "black"))
-(use-package gruber-darker-theme
+(use-package doom-themes
   :demand t
   :config
-  (load-theme 'gruber-darker))
+  (load-theme 'doom-tokyo-night))
 
 ;; icons
 (use-package nerd-icons)
@@ -295,13 +295,14 @@
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-completion-enable-additional-text-edit nil)
   (lsp-enable-on-type-formatting nil)
+  (lsp-enable-symbol-highlighting nil)
   (lsp-completion-provider :none)
   (lsp-idle-delay 0.1)
   (lsp-enable-indentation nil)
-  :hook ((c++-mode . lsp)
-		 (c-mode . lsp)
-		 (typst-ts-mode . lsp)
-		 (java-mode . lsp))
+  :hook ((c++-mode . lsp-deferred)
+		 (c-mode . lsp-deferred)
+		 (typst-ts-mode . lsp-deferred)
+		 (java-mode . lsp-deferred))
   :commands lsp)
 
 (use-package lsp-ui
@@ -372,6 +373,10 @@
             (lambda ()
               (setq-local completion-at-point-functions
                           (list (my/lsp-capf-busted))))))
+
+(global-completion-preview-mode)
+(global-set-key (kbd "M-n") 'completion-preview-next-candidate)
+(global-set-key (kbd "M-p") 'completion-preview-prev-candidate)
 
 ;; == snippets
 (use-package yasnippet
