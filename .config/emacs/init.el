@@ -189,6 +189,21 @@
   (define-key evil-window-map         (kbd "C-g") #'evil-keyboard-quit) 
   (define-key evil-operator-state-map (kbd "C-g") #'evil-keyboard-quit))
 
+;; Custom "in-line" text object
+(evil-define-text-object evil-inner-line (count &optional beg end type)
+  "Select the current line excluding leading/trailing whitespace."
+  (let* ((line-start (line-beginning-position))
+		 (line-end (line-end-position))
+		 (text (buffer-substring-no-properties line-start line-end))
+		 (nonspace-start (string-match-p "\\S-" text))
+		 (nonspace-end (or (save-match-data
+							 (string-match-p "\\S-\\s-*\\'" text))
+						   0)))
+	(evil-range (+ line-start nonspace-start)
+				(+ line-start nonspace-end)
+				'exclusive)))
+(define-key evil-inner-text-objects-map "l" 'evil-inner-line)
+
 ;; == style
 ;; theme
 ;; (use-package dracula-theme
