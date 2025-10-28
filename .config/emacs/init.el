@@ -204,6 +204,11 @@
 				'exclusive)))
 (define-key evil-inner-text-objects-map "l" 'evil-inner-line)
 
+(use-package evil-paste-indent
+  :vc (:url "https://github.com/Schievel1/evil-paste-indent"
+			:rev :newest)
+  :config (global-evil-paste-indent-mode t))
+
 ;; == style
 ;; theme
 ;; (use-package dracula-theme

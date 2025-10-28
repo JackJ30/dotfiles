@@ -1,1 +1,2 @@
+- [x] auto indent on paste for evil
 - [ ] connect xdg open to current session
