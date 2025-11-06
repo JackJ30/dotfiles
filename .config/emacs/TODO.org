@@ -1,7 +1,10 @@
 - [x] auto indent on paste for evil
-- [ ] indent switch statements right
+- [x] no littering
+- [x] indent switch statements right
+- [x] evil mode stop $ selecting newline
+- [x] C-g dwim for minibuffer
 - [ ] vterm and command to open term, session management with projectile + (multi-vterm)
 - [ ] better window management (close frame and kill window)
-- [ ] evil mode stop $ selecting newline
-- [ ] connect xdg open to current session
+- [ ] compile command caching and always running under dape
 - [ ] switch to eglot
+- [ ] connect xdg open to current session

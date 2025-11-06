@@ -15,6 +15,8 @@
 (setq use-package-always-ensure t)
 
 ;; == greener emacs
+(use-package no-littering
+  :demand t)
 
 ;; garbage collection improvement
 (defun my-minibuffer-setup-hook ()
@@ -50,18 +52,17 @@
   (save-place-mode))
 
 ;; improved C-g dwim
-(defun prot/keyboard-quit-dwim ()
+(defun my-keyboard-quit ()
+  "Smart C-g: exits evil mode, closes minibuffer, or behaves normally."
   (interactive)
-  (cond
-   ((region-active-p)
-    (keyboard-quit))
-   ((derived-mode-p 'completion-list-mode)
-    (delete-completion-window))
-   ((> (minibuffer-depth) 0)
-    (abort-recursive-edit))
-   (t
-    (keyboard-quit))))
-(define-key global-map (kbd "C-g") #'prot/keyboard-quit-dwim)
+  (if (and (bound-and-true-p evil-local-mode) (not (evil-normal-state-p)))
+	  (evil-force-normal-state)
+	(if (active-minibuffer-window)
+		(if (minibufferp)
+			(minibuffer-keyboard-quit)
+		  (abort-recursive-edit))
+	  (keyboard-quit))))
+(global-set-key (kbd "C-g") #'my-keyboard-quit)
 
 ;; == ui
 
@@ -90,7 +91,6 @@
 ;; == text editing and navigation
 
 ;; tabs
-
 (setq-default tab-width 4)
 (setq backward-delete-char-untabify-method "hungry")
 
@@ -166,28 +166,17 @@
   :custom
   (evil-want-C-u-scroll t)
   (evil-undo-system 'undo-redo)
+  (evil-move-beyond-eol nil)
   :bind
   ( :map evil-insert-state-map
 	("C-d" . evil-delete-char))
   ( :map evil-motion-state-map
 	("C-e" . nil)))
 
-;; C-g to exit mode
-(defun evil-keyboard-quit ()
-  "Keyboard quit and force normal state."
-  (interactive)
-  (and evil-mode (evil-force-normal-state))
-  (keyboard-quit))
-
 (use-package evil-collection
   :after evil
   :config
-  (evil-collection-init)
-  (define-key evil-normal-state-map   (kbd "C-g") #'evil-keyboard-quit) 
-  (define-key evil-motion-state-map   (kbd "C-g") #'evil-keyboard-quit) 
-  (define-key evil-insert-state-map   (kbd "C-g") #'evil-keyboard-quit) 
-  (define-key evil-window-map         (kbd "C-g") #'evil-keyboard-quit) 
-  (define-key evil-operator-state-map (kbd "C-g") #'evil-keyboard-quit))
+  (evil-collection-init))
 
 ;; Custom "in-line" text object
 (evil-define-text-object evil-inner-line (count &optional beg end type)
@@ -450,6 +439,7 @@
 	    c-basic-offset 4
 	    indent-tabs-mode t)
   (c-set-offset 'arglist-intro '+)
+  (c-set-offset 'case-label '+)
   (add-to-list 'c-offsets-alist '(arglist-close . c-lineup-close-paren)))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
