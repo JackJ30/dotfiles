@@ -1,2 +1,7 @@
 - [x] auto indent on paste for evil
+- [ ] indent switch statements right
+- [ ] vterm and command to open term, session management with projectile + (multi-vterm)
+- [ ] better window management (close frame and kill window)
+- [ ] evil mode stop $ selecting newline
 - [ ] connect xdg open to current session
+- [ ] switch to eglot

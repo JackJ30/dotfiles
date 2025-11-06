@@ -8,14 +8,14 @@ System setup:
 Important
 - Hyprland + utils (hyprpaper, hypridle, hyprlock, hyprpicker)
 - Zsh
-- Kitty
-- Neovim
-- Fuzzel
+- Alacritty
+- Swenu
+- Emacs ("tree-sitter -X gtk dynamic-loading" use flags for gentoo)
 
 Helper
 - Brightnessctl
 - Grim and Slurp for screenshots
-- Ripgrep for nvim
+- Ripgrep
 
 Fonts and style:
 - Whiteglass xcursor theme
@@ -23,7 +23,7 @@ Fonts and style:
 - Nerd icons
 
 ## Installation
-Everything can be installed by running `stow .` Since there are probably conflicts with your existing files, you can use the `--adopt` flag and then `git restore .`.
+Config files can be installed by running `stow .` Since there are probably conflicts with your existing files, you can use the `--adopt` flag and then `git restore .`.
 
 ## TODO
 - [x] Git branch in PS1
@@ -33,5 +33,5 @@ Everything can be installed by running `stow .` Since there are probably conflic
 - [x] Screenshot
 - [x] Idle
 - [x] Sound
-- [ ] Improve zsh completion and highlighting
-- [ ] Improve nvim
+- [x] Improve zsh completion and highlighting
+- [ ] Emacs vterm and projectile detached/tmux like workflow
