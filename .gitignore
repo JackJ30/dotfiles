@@ -1,13 +1,1 @@
-/.config/emacs/recentf
-/.config/emacs/undotreefiles/
-/.config/emacs/elpa/
-.config/emacs/init.el
-/.config/emacs/elpaca/
-/.config/emacs/transient/
-/.config/emacs/var/
-/.config/emacs/auto-save-list/
-/.config/emacs/tree-sitter/
-/.config/emacs/eln-cache/
-/.config/emacs/etc/
-/.config/mpd/mpd.pid
-/.config/emacs/settings.el
+.ssh/

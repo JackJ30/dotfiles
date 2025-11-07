@@ -72,13 +72,17 @@
 (tooltip-mode -1)
 (menu-bar-mode -1)
 
-;; columns and line numbers
+;; columns and truncation
 (column-number-mode +1)
 (setq-default fill-column 80)
-(global-display-line-numbers-mode t)
-(setq display-line-numbers-width-start t
-	  display-line-numbers-type t)
 (setq-default truncate-lines t)
+
+;; line numbers in prog mode
+(defun my/prog-mode-hook ()
+  (display-line-numbers-mode t)
+  (setq display-line-numbers-width-start t
+		display-line-numbers-type t))
+(add-hook 'prog-mode-hook 'my/prog-mode-hook)
 
 ;; rainbow delimiters
 (use-package rainbow-delimiters
@@ -210,6 +214,18 @@
   :config
   (load-theme 'doom-tokyo-night))
 
+(use-package spacious-padding
+  :config
+  (setq spacious-padding-widths (plist-put spacious-padding-widths :internal-border-width 10))
+  (setq spacious-padding-widths (plist-put spacious-padding-widths :right-divider-width 10))
+  (spacious-padding-mode))
+
+(use-package doom-modeline
+  :config
+  (setq doom-modeline-modal nil
+		doom-modeline-height 0)
+  (doom-modeline-mode))
+
 ;; icons
 (use-package nerd-icons)
 (use-package nerd-icons-dired
@@ -270,13 +286,11 @@
 (use-package consult
   :custom
   (consult-preview-key nil)
-  :bind
-  (("C-x b" . 'consult-buffer)    ;; Switch buffer, including recentf and bookmarks
-   ("M-l"   . 'consult-git-grep)  ;; Search inside a project
-   ("M-y"   . 'consult-yank-pop)  ;; Paste by selecting the kill-ring
-   ("M-s"   . 'consult-line)      ;; Search current buffer, like swiper
-   ("C-c i" . 'consult-imenu)     ;; Search the imenu
-   ))
+  :bind (("M-l"   . 'consult-git-grep)  ;; Search inside a project
+		 ("M-y"   . 'consult-yank-pop)  ;; Paste by selecting the kill-ring
+		 ("M-s"   . 'consult-line)      ;; Search current buffer, like swiper
+		 ("C-c i" . 'consult-imenu)     ;; Search the imenu
+		 ))
 
 ;; projectile
 (use-package rg)
@@ -296,6 +310,9 @@
   :bind (("C-x g" . magit-status))
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+;; == flycheck
+(use-package flycheck)
 
 ;; == lsp
 (use-package lsp-mode
@@ -429,6 +446,46 @@
 	(treesit-install-language-grammar (car lang))))
 (setq treesit-load-name-override-list
    '((c++ "libtree-sitter-cpp")))
+
+;; == development environment
+(use-package vterm
+  :bind ( ("C-c a" . vterm-other-window)
+		  :map vterm-mode-map
+		  ("C-c c" . vterm-copy-mode)
+		  ("C-l" . my-vterm-clear)
+		  :map vterm-copy-mode-map
+		  ("C-c c" . vterm-copy-mode))
+  :config
+  (defun my-vterm-clear ()
+	(interactive)
+	(vterm-send-key "l" nil nil t)
+	(vterm-clear-scrollback))
+  (defun my-vterm-copy-mode-evil-setup ()
+	"Enable evil only in vterm-copy-mode."
+	(if vterm-copy-mode
+		;; on enter
+		(progn
+		  (evil-local-mode 1)
+		  (evil-force-normal-state))
+	  ;; on exit
+	  (evil-local-mode -1)))
+  (defun my-vterm-setup ()
+	(when (bound-and-true-p evil-local-mode)
+	  (evil-local-mode -1))
+	(text-scale-set 1)
+	(setq-local truncate-lines nil))
+  ;; disable evil
+  (with-eval-after-load 'evil
+	(evil-set-initial-state 'vterm-mode 'emacs))
+  (add-hook 'vterm-mode-hook #'my-vterm-setup)
+  (add-hook 'vterm-copy-mode-hook #'my-vterm-copy-mode-evil-setup))
+
+(use-package perspective
+  :bind (("C-x k" . persp-kill-buffer*))
+  :custom
+  (persp-mode-prefix-key (kbd "C-c M-p"))
+  :init
+  (persp-mode))
 
 ;; == languages
 

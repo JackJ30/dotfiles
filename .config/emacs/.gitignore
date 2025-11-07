@@ -1,8 +1,5 @@
-settings.el
+var/
+etc/
+elpa/
+tree-sitter/
 customs.el
-/auto-save-list/
-/eln-cache/
-/elpa/
-/etc/
-/snippets/
-/var/
