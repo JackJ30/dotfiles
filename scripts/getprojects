@@ -1,0 +1,6 @@
+#!/bin/sh
+{
+	find "$HOME/homework/"   -mindepth 2 -maxdepth 2 -type d
+	find "$HOME/development/" -mindepth 1 -maxdepth 1 -type d
+	find "$HOME/opt/"         -mindepth 1 -maxdepth 1 -type d
+}

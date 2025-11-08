@@ -1,0 +1,14 @@
+#!/bin/sh
+project_name=$(swenu -coil 10 -p "New Workspace:")
+if [ $? -ne 0 ]; then
+	exit 1
+fi
+
+project_path=$(getprojects | swenu -coil 10 -p "Directory:" -s "$project_name")
+
+emacs --daemon="$project_name"
+if [ -z "$project_path" ]; then
+	emacsclient -c -s "$project_name"
+else
+	emacsclient -c -s "$project_name" -e "(dired \"$project_path\")"
+fi

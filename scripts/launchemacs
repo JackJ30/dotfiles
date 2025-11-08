@@ -1,0 +1,5 @@
+#!/bin/sh
+name=$(ls -1 $XDG_RUNTIME_DIR/emacs/ | swenu -ceoil 10 -p "Workspace:")
+if [ $? -eq 0 ]; then
+	emacsclient -c -s "$name"
+fi

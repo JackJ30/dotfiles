@@ -448,8 +448,43 @@
    '((c++ "libtree-sitter-cpp")))
 
 ;; == development environment
+(defun my/replace-master-vterm ()
+  (interactive)
+  (let* ((master-name "Master Terminal")
+		 (banished-base "Banished Terminal ")
+		 (master-buf (get-buffer master-name))
+		 (visible-win (and master-buf (get-buffer-window master-buf t))))
+	(when master-buf
+	  (with-current-buffer master-buf
+		(let ((n 1)
+			  new-name)
+		  (while (get-buffer (setq new-name (format "%s%d" banished-base n)))
+			(setq n (1+ n)))
+		  (rename-buffer new-name))))
+	(let ((buf (if visible-win
+                   (with-selected-window visible-win
+                     (vterm))
+                 (vterm-other-window))))
+	  (with-current-buffer buf
+		(rename-buffer master-name t)))))
+(defun my/switch-to-master-vterm ()
+  (interactive)
+  (let* ((master-name "Master Terminal")
+         (master-buf (get-buffer master-name))
+         (visible-win (and master-buf (get-buffer-window master-buf t))))
+    (cond
+     (visible-win
+      (select-window visible-win))
+     (master-buf
+      (switch-to-buffer-other-window master-buf))
+     (t
+      (let ((buf (vterm-other-window)))
+        (with-current-buffer buf
+          (rename-buffer master-name t)))))))
+
 (use-package vterm
-  :bind ( ("C-c a" . vterm-other-window)
+  :bind ( ("C-c a" . my/switch-to-master-vterm)
+		  ("C-c C-a" . my/replace-master-vterm)
 		  :map vterm-mode-map
 		  ("C-c c" . vterm-copy-mode)
 		  ("C-l" . my-vterm-clear)
@@ -472,7 +507,6 @@
   (defun my-vterm-setup ()
 	(when (bound-and-true-p evil-local-mode)
 	  (evil-local-mode -1))
-	(text-scale-set 1)
 	(setq-local truncate-lines nil))
   ;; disable evil
   (with-eval-after-load 'evil
@@ -480,12 +514,13 @@
   (add-hook 'vterm-mode-hook #'my-vterm-setup)
   (add-hook 'vterm-copy-mode-hook #'my-vterm-copy-mode-evil-setup))
 
-(use-package perspective
-  :bind (("C-x k" . persp-kill-buffer*))
-  :custom
-  (persp-mode-prefix-key (kbd "C-c M-p"))
-  :init
-  (persp-mode))
+;; (use-package persp-mode
+;;   :bind (("C-x k" . persp-kill-buffer*)
+;; 		 ("C-x C-p" . persp-switch))
+;;   :custom
+;;   (persp-mode-prefix-key (kbd "C-c M-p"))
+;;   :init
+;;   (persp-mode))
 
 ;; == languages
 

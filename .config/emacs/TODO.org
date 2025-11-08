@@ -5,22 +5,18 @@
 - [x] C-g dwim for minibuffer
 - [x] vterm and command to open terms
 - [x] spacious padding
-- [ ] easier keybind for close frame and kill frame
-- [ ] session management with perspective.el
-- [ ] connect xdg open to current session
+- [ ] session management
 - [ ] vterm fix resizing + %
 
 - [ ] switch to eglot
 - [ ] agent shell
-- [ ] compile command cacheing and always running under dape
+- [ ] always running under dape
 
-- [ ] theme resetter
-
-Perspective System
-- Set up binds for perspective
-- Initialize misc perspective
-- Command to open this perspective's vterm. Also to open a second vterm for this perspective
-- open to re-open a vterm buffer (to reset its directory)
-- System wide keybind to open misc perspective or terminal
-- System wide keybind to open an emacs client with a perspective (or yank the view to a current one)
-- XDG open client which asks which perspective
+Session Management System
+- [x] Session creator tool (creates emacs daemon with name and directory, and open client)
+- [x] Session opener tool (opens frame from an existing session)
+- [x] Misc terminal keybind
+- [x] Command to open this perspective's main vterm (in the current projectile directory). Also command to push a new term
+- [ ] easy session switcher (yank or replace or something), maybe save frame or placement from last session's frame
+- [ ] session name displayed in modeline
+- [ ] XDG open client which asks which session
