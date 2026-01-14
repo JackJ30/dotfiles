@@ -45,7 +45,8 @@
 
 ;; == better meta behaviour
 (setq inhibit-startup-message t
-	  vc-follow-symlinks t)
+	  vc-follow-symlinks t
+	  use-short-answers t)
 (use-package saveplace
   :ensure nil
   :config
@@ -209,16 +210,36 @@
 ;;   :config
 ;;   (load-theme 'dracula)
 ;;   (set-face-attribute 'show-paren-match nil :background "dark violet" :foreground "black"))
-(use-package doom-themes
-  :demand t
-  :config
-  (load-theme 'doom-tokyo-night))
+;; (use-package doom-themes
+;;   :demand t
+;;   :config
+;;   (load-theme 'doom-tokyo-night))
+;; (use-package ef-themes
+;;   :demand t
+;;   :config
+;;   (load-theme 'ef-bio))
+;; (use-package catppuccin-theme
+;;   :demand t
+;;   :config
+;;   (setq catppuccin-flavor 'mocha)
+;;   (load-theme 'catppuccin t))
 
-(use-package spacious-padding
-  :config
-  (setq spacious-padding-widths (plist-put spacious-padding-widths :internal-border-width 10))
-  (setq spacious-padding-widths (plist-put spacious-padding-widths :right-divider-width 10))
-  (spacious-padding-mode))
+(load-theme `modus-vivendi)
+
+;; (use-package spacious-padding
+;;   :config
+;;   (setq spacious-padding-widths (plist-put spacious-padding-widths :internal-border-width 10))
+;;   (setq spacious-padding-widths (plist-put spacious-padding-widths :right-divider-width 10))
+;;   (spacious-padding-mode))
+
+(set-face-attribute 'mode-line nil
+                    :box nil
+                    :foreground "#9fefff"
+                    :background "black")
+(set-face-attribute 'mode-line-inactive nil
+                    :box nil
+                    :foreground "#5e8891"
+                    :background "black")
 
 (use-package doom-modeline
   :config
@@ -234,6 +255,7 @@
 (use-package nerd-icons-completion
   :after marginalia
   :config
+  (nerd-icons-completion-mode)
   (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 (use-package nerd-icons-corfu
   :after corfu
@@ -264,10 +286,10 @@
 		("M-DEL" . vertico-directory-delete-word)))
 
 (use-package marginalia
-  :after vertico
-  :custom
-  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-  :config
+  :bind (:map minibuffer-local-map
+			  ("M-A" . marginalia-cycle))
+
+  :init
   (marginalia-mode))
 
 (use-package orderless
@@ -279,6 +301,11 @@
 (use-package savehist
   :ensure nil
   :hook (after-init . savehist-mode))
+
+(use-package stillness-mode
+  :ensure nil
+  :init
+  (stillness-mode))
 
 ;; == effecient navigation
 
@@ -329,7 +356,9 @@
 		 (c-mode . lsp-deferred)
 		 (typst-ts-mode . lsp-deferred)
 		 (java-mode . lsp-deferred))
-  :commands lsp)
+  :commands lsp
+  :bind
+  (("C-c s" . lsp-signature-activate)))
 
 (use-package lsp-ui
   :after lsp-mode
@@ -372,6 +401,12 @@
       orig-result)))
 (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
+;; == dumb jump
+(use-package dumb-jump
+  :init
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+  (setq xref-show-definitions-function #'xref-show-definitions-completing-read))
+
 ;; == text completion
 (use-package corfu
   :bind
@@ -388,7 +423,6 @@
   (corfu-history-mode))
 
 (use-package cape
-  :after lsp-mode
   :init
   (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-file)
@@ -467,7 +501,8 @@
                  (vterm-other-window))))
 	  (with-current-buffer buf
 		(rename-buffer master-name t)))))
-(defun my/switch-to-master-vterm ()
+
+(defun my/switch-to-master-vterm-other-window ()
   (interactive)
   (let* ((master-name "Master Terminal")
          (master-buf (get-buffer master-name))
@@ -482,8 +517,23 @@
         (with-current-buffer buf
           (rename-buffer master-name t)))))))
 
+(defun my/switch-to-master-vterm ()
+  (interactive)
+  (let* ((master-name "Master Terminal")
+         (master-buf (get-buffer master-name))
+         (visible-win (and master-buf (get-buffer-window master-buf t))))
+    (cond
+     (visible-win
+      (select-window visible-win))
+     (master-buf
+      (switch-to-buffer master-buf))
+     (t
+      (let ((buf (vterm)))
+        (with-current-buffer buf
+          (rename-buffer master-name t)))))))
+
 (use-package vterm
-  :bind ( ("C-c a" . my/switch-to-master-vterm)
+  :bind ( ("C-c a" . my/switch-to-master-vterm-other-window)
 		  ("C-c C-a" . my/replace-master-vterm)
 		  :map vterm-mode-map
 		  ("C-c c" . vterm-copy-mode)

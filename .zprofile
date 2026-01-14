@@ -1,4 +1,4 @@
-export PATH="$HOME/dotfiles/scripts/:$PATH"
+export PATH="$HOME/dotfiles/scripts/:/usr/local/lib:$HOME/path:$HOME/opt/Odin:$PATH"
 export EDITOR="/bin/emacs"
 export GHIDRA_INSTALL_DIR="/usr/local/bin/ghidraFiles"
 

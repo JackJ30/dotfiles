@@ -1,7 +1,6 @@
 #!/bin/sh
 hyprpaper &
 hypridle &
-waybar &
 pipewire &
 restartemacs >/dev/null &
 dunst

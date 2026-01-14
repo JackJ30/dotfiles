@@ -5,18 +5,14 @@
 - [x] C-g dwim for minibuffer
 - [x] vterm and command to open terms
 - [x] spacious padding
-- [ ] session management
-- [ ] vterm fix resizing + %
-
+- [x] basic session management
+- [ ] fix cape completions not being active in most buffers
+- [ ] dape presets and run config
 - [ ] switch to eglot
-- [ ] agent shell
-- [ ] always running under dape
+- [ ] gptel
 
-Session Management System
-- [x] Session creator tool (creates emacs daemon with name and directory, and open client)
-- [x] Session opener tool (opens frame from an existing session)
-- [x] Misc terminal keybind
-- [x] Command to open this perspective's main vterm (in the current projectile directory). Also command to push a new term
+Revamp Session Management System
+- [ ] switch to perject
 - [ ] easy session switcher (yank or replace or something), maybe save frame or placement from last session's frame
 - [ ] session name displayed in modeline
 - [ ] XDG open client which asks which session

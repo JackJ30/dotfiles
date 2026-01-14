@@ -1,0 +1,41 @@
+#!/bin/sh
+
+batperc=$(cat /sys/class/power_supply/BAT0/capacity)
+batstate=$(cat /sys/class/power_supply/BAT0/status)
+brightness=$(brightnessctl -m | cut -d, -f 4)
+
+network_info() {
+    device=$(ip a | grep "state UP" | awk -F': ' '{ printf($2) }')
+    case "${device}" in
+        wlan*)
+            network=$(iwctl station ${device} show | grep 'Connected network' \
+                | awk -F' ' '{ printf($3) }')
+            echo "${device}: ${network}"
+            ;;
+        eth*)
+            echo "${device}: ${network}"
+            ;;
+    esac
+}
+
+get_volume() {
+    wpctl get-volume @DEFAULT_SINK@ | awk -F' ' '{ printf "%s %s%% %s", $1, ($2 * 100), $3; }'
+}
+
+if [ "$TERM" = "linux" ]; then
+    notify-send \
+        "System Info:" \
+        "\
+Time: $(date "+%I:%M:%S")
+$(get_volume)
+Brightness: ${brightness}
+${batstate}: ${batperc}%
+$(network_info)"
+else
+    echo "\
+Time: $(date "+%I:%M:%S")
+$(get_volume)
+Brightness: ${brightness}%
+${batstate}: ${batperc}%
+$(network_info)"
+fi
