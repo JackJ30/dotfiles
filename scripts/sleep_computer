@@ -1,0 +1,4 @@
+#!/bin/sh
+echo "slept" >> $HOME/.sleeplog
+lock
+echo "mem" > /sys/power/state

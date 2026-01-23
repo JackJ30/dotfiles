@@ -35,7 +35,7 @@ else
     echo "\
 Time: $(date "+%I:%M:%S")
 $(get_volume)
-Brightness: ${brightness}%
+Brightness: ${brightness}
 ${batstate}: ${batperc}%
 $(network_info)"
 fi

@@ -109,32 +109,12 @@
 ;; electric pairs
 ;; (electric-pair-mode +1)
 
-;; mwim
-(use-package mwim
-  :bind (("C-a" . mwim-beginning)
-	 ("C-e" . mwim-end-of-line)))
+;; find other file
+(global-set-key (kbd "C-c f") 'ff-find-other-file)
 
 ;; better commenting
 (use-package evil-nerd-commenter
   :bind ("M-;" . evilnc-comment-or-uncomment-lines))
-
-;; expand keybind
-(use-package expand-region
-  :bind("C-=" . er/expand-region))
-
-;; multiple cursors
-(use-package multiple-cursors
-  :bind (:map global-map
-	      ("C->" . 'mc/mark-next-like-this)
-	      ("C-<" . 'mc/mark-previous-like-this)
-	      ("C-c C->" . 'mc/mark-all-like-this)
-	      :map mc/keymap
-	      ("<return>" . nil)))
-
-;; delete marked text when typing start
-(use-package delsel
-  :ensure nil
-  :hook (after-init . delete-selection-mode))
 
 ;; == dired
 (use-package dired
@@ -183,21 +163,6 @@
   :config
   (evil-collection-init))
 
-;; Custom "in-line" text object
-(evil-define-text-object evil-inner-line (count &optional beg end type)
-  "Select the current line excluding leading/trailing whitespace."
-  (let* ((line-start (line-beginning-position))
-		 (line-end (line-end-position))
-		 (text (buffer-substring-no-properties line-start line-end))
-		 (nonspace-start (string-match-p "\\S-" text))
-		 (nonspace-end (or (save-match-data
-							 (string-match-p "\\S-\\s-*\\'" text))
-						   0)))
-	(evil-range (+ line-start nonspace-start)
-				(+ line-start nonspace-end)
-				'exclusive)))
-(define-key evil-inner-text-objects-map "l" 'evil-inner-line)
-
 (use-package evil-paste-indent
   :vc (:url "https://github.com/Schievel1/evil-paste-indent"
 			:rev :newest)
@@ -205,15 +170,16 @@
 
 ;; == style
 ;; theme
+(use-package doom-themes
+  :demand t
+  :config
+  (load-theme 'doom-one))
+
 ;; (use-package dracula-theme
 ;;   :demand t
 ;;   :config
 ;;   (load-theme 'dracula)
 ;;   (set-face-attribute 'show-paren-match nil :background "dark violet" :foreground "black"))
-;; (use-package doom-themes
-;;   :demand t
-;;   :config
-;;   (load-theme 'doom-tokyo-night))
 ;; (use-package ef-themes
 ;;   :demand t
 ;;   :config
@@ -224,7 +190,7 @@
 ;;   (setq catppuccin-flavor 'mocha)
 ;;   (load-theme 'catppuccin t))
 
-(load-theme `modus-vivendi)
+;; (load-theme `modus-vivendi)
 
 ;; (use-package spacious-padding
 ;;   :config
@@ -232,35 +198,20 @@
 ;;   (setq spacious-padding-widths (plist-put spacious-padding-widths :right-divider-width 10))
 ;;   (spacious-padding-mode))
 
-(set-face-attribute 'mode-line nil
-                    :box nil
-                    :foreground "#9fefff"
-                    :background "black")
-(set-face-attribute 'mode-line-inactive nil
-                    :box nil
-                    :foreground "#5e8891"
-                    :background "black")
+;; (set-face-attribute 'mode-line nil
+;;                     :box nil
+;;                     :foreground "#9fefff"
+;;                     :background "black")
+;; (set-face-attribute 'mode-line-inactive nil
+;;                     :box nil
+;;                     :foreground "#5e8891"
+;;                     :background "black")
 
-(use-package doom-modeline
-  :config
-  (setq doom-modeline-modal nil
-		doom-modeline-height 0)
-  (doom-modeline-mode))
-
-;; icons
-(use-package nerd-icons)
-(use-package nerd-icons-dired
-  :hook
-  (dired-mode . nerd-icons-dired-mode))
-(use-package nerd-icons-completion
-  :after marginalia
-  :config
-  (nerd-icons-completion-mode)
-  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
-(use-package nerd-icons-corfu
-  :after corfu
-  :config
-  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+;; (use-package doom-modeline
+;;   :config
+;;   (setq doom-modeline-modal nil
+;; 		doom-modeline-height 0)
+;;   (doom-modeline-mode))
 
 ;; rainbow mode
 (use-package rainbow-mode
@@ -327,9 +278,6 @@
   (("C-c g" . projectile-ripgrep)
    ("C-c v" . projectile-find-file)))
 
-;; find other file
-(global-set-key (kbd "C-c f") 'ff-find-other-file)
-
 ;; == magit
 (use-package transient)
 (use-package magit
@@ -340,6 +288,10 @@
 
 ;; == flycheck
 (use-package flycheck)
+
+;; == editorconfig
+(editorconfig-mode 1)
+(add-hook 'prog-mode 'editorconfig-apply)
 
 ;; == lsp
 (use-package lsp-mode
@@ -470,17 +422,6 @@
 (use-package yasnippet-snippets
   :after yasnippet)
 
-;; == treesitter
-(setq treesit-language-source-alist
-	  '((cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-		(c "https://github.com/tree-sitter/tree-sitter-c")
-		(typst "https://github.com/uben0/tree-sitter-typst")))
-(dolist (lang treesit-language-source-alist)
-  (unless (treesit-language-available-p (car lang))
-	(treesit-install-language-grammar (car lang))))
-(setq treesit-load-name-override-list
-   '((c++ "libtree-sitter-cpp")))
-
 ;; == development environment
 (defun my/replace-master-vterm ()
   (interactive)
@@ -564,14 +505,6 @@
   (add-hook 'vterm-mode-hook #'my-vterm-setup)
   (add-hook 'vterm-copy-mode-hook #'my-vterm-copy-mode-evil-setup))
 
-;; (use-package persp-mode
-;;   :bind (("C-x k" . persp-kill-buffer*)
-;; 		 ("C-x C-p" . persp-switch))
-;;   :custom
-;;   (persp-mode-prefix-key (kbd "C-c M-p"))
-;;   :init
-;;   (persp-mode))
-
 ;; == languages
 
 ;; === c mode
@@ -584,29 +517,3 @@
   (c-set-offset 'case-label '+)
   (add-to-list 'c-offsets-alist '(arglist-close . c-lineup-close-paren)))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
-
-;; == org mode
-(use-package org
-  :ensure nil
-  :config
-  (setq org-startup-folded t
-		org-src-preserve-indentation t
-		org-src-tab-acts-natively t
-		org-edit-src-content-indentation t))
-
-;; == typst modes
-(use-package typst-ts-mode
-  :vc (:url "https://codeberg.org/meow_king/typst-ts-mode"
-       :rev :newest))
-
-(with-eval-after-load 'lsp-mode
-  (add-to-list 'lsp-language-id-configuration
-			   '(typst-ts-mode . "typst"))
-  (lsp-register-client
-   (make-lsp-client :new-connection (lsp-stdio-connection "tinymist")
-                    :activation-fn (lsp-activate-on "typst")
-                    :server-id 'theme-check)))
-
-;; == random functionality
-;; erc
-(setq erc-join-buffer 'window)
