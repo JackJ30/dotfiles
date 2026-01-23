@@ -26,12 +26,6 @@ Fonts and style:
 Config files can be installed by running `stow .` Since there are probably conflicts with your existing files, you can use the `--adopt` flag and then `git restore .`.
 
 ## TODO
-- [x] Git branch in PS1
-- [x] Hyprpaper
-- [x] Cursor
-- [x] Status bar
-- [x] Screenshot
-- [x] Idle
-- [x] Sound
-- [x] Improve zsh completion and highlighting
-- [ ] Emacs vterm and projectile detached/tmux like workflow
+- [x] emacs project launcher script
+- [ ] better sleeping
+- [ ] battery reminders
