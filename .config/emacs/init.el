@@ -14,6 +14,9 @@
 
 (setq use-package-always-ensure t)
 
+;; == custom lisp
+(add-to-list 'load-path (concat (getenv "HOME") "/.config/emacs/lisp"))
+
 ;; == greener emacs
 (use-package no-littering
   :demand t)
@@ -109,8 +112,9 @@
 ;; electric pairs
 ;; (electric-pair-mode +1)
 
-;; find other file
+;; some binds
 (global-set-key (kbd "C-c f") 'ff-find-other-file)
+(global-set-key (kbd "C-c c") 'recompile)
 
 ;; better commenting
 (use-package evil-nerd-commenter
@@ -517,3 +521,11 @@
   (c-set-offset 'case-label '+)
   (add-to-list 'c-offsets-alist '(arglist-close . c-lineup-close-paren)))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+;; == proj
+(require 'proj)
+(setq
+ proj-locations '("~/development/" "~/opt/" "~/classes/psoft/" "~/classes/parallel-programming/" "~/classes/operating-systems/")
+ proj-find-params '("-mindepth 1" "-maxdepth 1" "-path '*/.git'" "-prune -o" "-type d" "-print"))
+(global-set-key (kbd "C-x b") `proj-switch-to-buffer)
+(global-set-key (kbd "C-c b") `switch-to-buffer)
