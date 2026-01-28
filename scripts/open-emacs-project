@@ -1,7 +1,5 @@
 #!/bin/bash
 
-emacsclient -e '(message "")' 2>&1 >/dev/null || emacs --daemon &
-
 find_dirs() {
 	echo $(emacsclient -e "(proj--get-paths)" | sed -ze 's/(\(.*\))/\1/') | xargs -n1
 }

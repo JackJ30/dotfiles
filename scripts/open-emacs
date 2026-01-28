@@ -1,7 +1,5 @@
 #!/bin/bash
 
-emacsclient -e '(message "")' 2>&1 >/dev/null || emacs --daemon &
-
 emacs_attached() {
     [ "$(emacsclient -e '(- (length (frame-list)) 1)')" = 0 ] && return 1 || return 0
 }

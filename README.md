@@ -27,5 +27,6 @@ Config files can be installed by running `stow .` Since there are probably confl
 
 ## TODO
 - [x] emacs project launcher script
+- [ ] switch to eglot
 - [ ] better sleeping
 - [ ] battery reminders

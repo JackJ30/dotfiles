@@ -115,6 +115,7 @@
 ;; some binds
 (global-set-key (kbd "C-c f") 'ff-find-other-file)
 (global-set-key (kbd "C-c c") 'recompile)
+(global-set-key (kbd "C-<return>") 'browse-url-xdg-open)
 
 ;; better commenting
 (use-package evil-nerd-commenter
@@ -357,6 +358,14 @@
       orig-result)))
 (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
+;; == eglot
+;; (use-package eglot
+;;   :ensure nil
+;;   :config
+;;   (add-to-list 'eglot-ignored-server-capabilities ':inlayHintProvider)
+;;   (add-to-list 'eglot-ignored-server-capabilities ':documentOnTypeFormattingProvider)
+;;   (add-hook 'eglot-mode-hook 'flymake-mode))
+
 ;; == dumb jump
 (use-package dumb-jump
   :init
@@ -413,15 +422,15 @@
 		("TAB" . nil)
 		("M-I" . nil)))
 
-(use-package yasnippet
-  :bind
-  (:map yas-minor-mode-map
-        ("C-'". yas-expand)
-        ([(tab)] . nil)
-        ("TAB" . nil))
-  :config
-  (yas-reload-all)
-  (yas-global-mode t))
+;; (use-package yasnippet
+;;   :bind
+;;   (:map yas-minor-mode-map
+;;         ("C-'". yas-expand)
+;;         ([(tab)] . nil)
+;;         ("TAB" . nil))
+;;   :config
+;;   (yas-reload-all)
+;;   (yas-global-mode t))
 
 (use-package yasnippet-snippets
   :after yasnippet)
