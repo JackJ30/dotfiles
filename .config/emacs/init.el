@@ -536,5 +536,13 @@
 (setq
  proj-locations '("~/development/" "~/opt/" "~/classes/psoft/" "~/classes/parallel-programming/" "~/classes/operating-systems/")
  proj-find-params '("-mindepth 1" "-maxdepth 1" "-path '*/.git'" "-prune -o" "-type d" "-print"))
+
 (global-set-key (kbd "C-x b") `proj-switch-to-buffer)
 (global-set-key (kbd "C-c b") `switch-to-buffer)
+
+(global-set-key (kbd "C-x k") `proj-kill-buffer)
+(global-set-key (kbd "C-c k") `kill-buffer)
+
+;; == toggle-window
+(require 'toggle-window)
+(global-set-key (kbd "C-c w") 'toggle-window)

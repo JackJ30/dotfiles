@@ -6,7 +6,7 @@ emacs_attached() {
 
 if emacs_attached; then
 	# focus emacs
-	swaymsg [con_id="$(swaymsg -t get_tree | jq -r '.nodes[1].nodes[].nodes[] | .. | (.id|tostring) + " " + .name?' | grep -e "[0-9]* ." | grep Emacs | awk '{print $1}')"] focus
+	swaymsg [con_id="$(swaymsg -t get_tree | jq -r '.nodes[1].nodes[].nodes[] | .. | (.id|tostring) + " " + .app_id?' | grep emacs | awk '{print $1}')"] focus
 else
     emacsclient -c
 fi

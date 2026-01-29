@@ -71,6 +71,10 @@ default_border pixel
     # Start screen locker
     bindsym $mod+Ctrl+l exec lock
 
+	# screenshot
+    bindsym $mod+s exec screenshot
+    bindsym $mod+Shift+s exec screenshot -save
+
     # Drag floating windows by holding down $mod and left mouse button.
     floating_modifier $mod normal
 
