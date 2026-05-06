@@ -1,17 +1,21 @@
 (defvar toggle-window-configuration nil
   "Stores the window configuration")
 
-;; should rewrite to not do the save configuration thing
-
 (defun toggle-window ()
   (interactive)
   (if (count-windows)
 	  (if (one-window-p)
 		  ;; reset configuration if single window
 		  (if toggle-window-configuration
-			  (progn
-				(set-window-configuration toggle-window-configuration)
-				(setq toggle-window-configuration nil))
+			  (let* ((current-window (selected-window))
+					 (current-buffer (window-buffer current-window)))
+				(progn
+				  (set-window-configuration toggle-window-configuration)
+				  (set-window-buffer current-window current-buffer)
+				  ;; make sure current window keeps state
+				  (window-state-put current-window-state)
+				  (setq toggle-window-configuration nil))
+				)
 			(message "No previous window layout to restore."))
 		;; if multiple windows save configuration
 		(setq toggle-window-configuration (current-window-configuration))

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# get args
+file="${!#}"
+set -- "${@:1:$(($#-1))}"
+args="$@"
+
+cat "$file" | ssh vm "tee ~/dafny/torun.dfy > /dev/null; dafny $args ~/dafny/torun.dfy"

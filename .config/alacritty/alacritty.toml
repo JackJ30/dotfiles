@@ -5,3 +5,10 @@ import = [
 
 [window]
 padding = { x = 5, y = 5 }
+opacity = 1.0
+
+[font]
+size = 13.0
+
+[font.normal]
+family = "Fantasque Sans Mono"

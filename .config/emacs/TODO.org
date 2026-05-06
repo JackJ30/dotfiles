@@ -6,13 +6,14 @@
 - [x] vterm and command to open terms
 - [x] spacious padding
 - [x] basic session management
+- [x] switch to eglot
 - [ ] fix cape completions not being active in most buffers
 - [ ] dape presets and run config
-- [ ] switch to eglot
 - [ ] gptel
 
-Revamp Session Management System
-- [ ] switch to perject
-- [ ] easy session switcher (yank or replace or something), maybe save frame or placement from last session's frame
-- [ ] session name displayed in modeline
-- [ ] XDG open client which asks which session
+Annoyances:
+- [ ] eglot rename doesn't prompt with existing name (kind of fixed with M-n in prompt)
+- [ ] the function argument information in buffer doesn't always stay. Maybe I should make it pop up
+
+Improvements:
+- [ ] No more package archives, install and vet lisp locally

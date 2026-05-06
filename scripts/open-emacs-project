@@ -10,9 +10,9 @@ emacs_attached() {
 
 switch_to() {
     if emacs_attached; then
-        emacsclient -e "(proj-set-dir \"$1\")"
+        emacsclient -e "(proj-set \"$1\")"
     else
-        emacsclient -ce "(proj-set-dir \"$1\")"
+        emacsclient -ce "(proj-set \"$1\")"
     fi
 }
 

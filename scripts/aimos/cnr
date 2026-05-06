@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# cnr - compile and run
+
+path=$(realpath $1)
+out="$path.out"
+shift
+args="$@"
+
+
+# compile
+echo "===> COMPILING..."
+nvcc -g -G -gencode arch=compute_70,code=sm_70 "$path" -o "$out"
+if [[ $? -ne 0 ]]; then
+	exit 1
+fi
+echo "Success"
+
+# get node
+node=$(getactivenode)
+if [[ -z "$node" || "$node" == "(Priority)" || "$node" == "(Resources)" ]]; then
+	echo "No active nodes to run on, exiting."
+	exit 1
+fi
+
+# run
+echo "===> EXECUTING ON NODE $node ..."
+ssh $node "$out $args"

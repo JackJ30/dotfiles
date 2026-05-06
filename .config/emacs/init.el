@@ -33,6 +33,11 @@
   (run-with-idle-timer 1.2 t 'garbage-collect))
 (gc-idle-timer)
 
+;; diminish
+(use-package diminish
+  :diminish auto-revert-mode
+  :demand t)
+
 ;; customize in different file
 (setq custom-file (expand-file-name "customs.el" user-emacs-directory))
 (load custom-file :no-error-if-file-is-missing)
@@ -90,6 +95,7 @@
 
 ;; rainbow delimiters
 (use-package rainbow-delimiters
+  :diminish
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;; ansi color in compilation
@@ -165,10 +171,12 @@
 
 (use-package evil-collection
   :after evil
+  :diminish evil-collection-unimpaired-mode
   :config
   (evil-collection-init))
 
 (use-package evil-paste-indent
+  :diminish
   :vc (:url "https://github.com/Schievel1/evil-paste-indent"
 			:rev :newest)
   :config (global-evil-paste-indent-mode t))
@@ -179,6 +187,9 @@
   :demand t
   :config
   (load-theme 'doom-one))
+
+;; font
+(add-to-list 'default-frame-alist '(font . "Fantasque Sans Mono-12"))
 
 ;; (use-package dracula-theme
 ;;   :demand t
@@ -220,6 +231,7 @@
 
 ;; rainbow mode
 (use-package rainbow-mode
+  :diminish rainbow-mode
   :hook (after-change-major-mode . rainbow-mode))
 
 ;; == minibuffer completion
@@ -291,80 +303,124 @@
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
+;; == helpful
+(use-package helpful
+  :bind
+  ([remap describe-command] . helpful-command)
+  ([remap describe-function] . helpful-callable)
+  ([remap describe-variable] . helpful-variable)
+  ([remap describe-key] . helpful-key))
+
 ;; == flycheck
-(use-package flycheck)
+;; (use-package flycheck)
 
 ;; == editorconfig
 (editorconfig-mode 1)
 (add-hook 'prog-mode 'editorconfig-apply)
 
 ;; == lsp
-(use-package lsp-mode
-  :custom
-  (lsp-keymap-prefix "C-c l")
-  (lsp-headerline-breadcrumb-enable nil)
-  (lsp-completion-enable-additional-text-edit nil)
-  (lsp-enable-on-type-formatting nil)
-  (lsp-enable-symbol-highlighting nil)
-  (lsp-completion-provider :none)
-  (lsp-idle-delay 0.1)
-  (lsp-enable-indentation nil)
-  :hook ((c++-mode . lsp-deferred)
-		 (c-mode . lsp-deferred)
-		 (typst-ts-mode . lsp-deferred)
-		 (java-mode . lsp-deferred))
-  :commands lsp
-  :bind
-  (("C-c s" . lsp-signature-activate)))
+;; (use-package lsp-mode
+;;   :custom
+;;   (lsp-keymap-prefix "C-c l")
+;;   (lsp-headerline-breadcrumb-enable nil)
+;;   (lsp-completion-enable-additional-text-edit nil)
+;;   (lsp-enable-on-type-formatting nil)
+;;   (lsp-enable-symbol-highlighting nil)
+;;   (lsp-completion-provider :none)
+;;   (lsp-idle-delay 0.1)
+;;   (lsp-enable-indentation nil)
+;;   :hook ((c++-mode . lsp-deferred)
+;; 		 (c-mode . lsp-deferred)
+;; 		 (typst-ts-mode . lsp-deferred)
+;; 		 (java-mode . lsp-deferred))
+;;   :commands lsp
+;;   :bind
+;;   (("C-c s" . lsp-signature-activate)))
 
-(use-package lsp-ui
-  :after lsp-mode
-  :commands lsp-ui-mode
-  :hook (lsp-mode . lsp-ui-mode)
-  :bind
-  (("C-c r" . lsp-ui-peek-find-references)
-   ("C-c d" . lsp-ui-peek-find-definitions)))
+;; (use-package lsp-ui
+;;   :after lsp-mode
+;;   :commands lsp-ui-mode
+;;   :hook (lsp-mode . lsp-ui-mode)
+;;   :bind
+;;   (("C-c r" . lsp-ui-peek-find-references)
+;;    ("C-c d" . lsp-ui-peek-find-definitions)))
 
 ;; lsp booster
-(setq read-process-output-max (* 1024 1024)) ;; 1mb
-(defun lsp-booster--advice-json-parse (old-fn &rest args)
-  "Try to parse bytecode instead of json."
-  (or
-   (when (equal (following-char) ?#)
-     (let ((bytecode (read (current-buffer))))
-       (when (byte-code-function-p bytecode)
-         (funcall bytecode))))
-   (apply old-fn args)))
-(advice-add (if (progn (require 'json)
-                       (fboundp 'json-parse-buffer))
-                'json-parse-buffer
-              'json-read)
-            :around
-            #'lsp-booster--advice-json-parse)
+;; (setq read-process-output-max (* 1024 1024)) ;; 1mb
+;; (defun lsp-booster--advice-json-parse (old-fn &rest args)
+;;   "Try to parse bytecode instead of json."
+;;   (or
+;;    (when (equal (following-char) ?#)
+;;      (let ((bytecode (read (current-buffer))))
+;;        (when (byte-code-function-p bytecode)
+;;          (funcall bytecode))))
+;;    (apply old-fn args)))
+;; (advice-add (if (progn (require 'json)
+;;                        (fboundp 'json-parse-buffer))
+;;                 'json-parse-buffer
+;;               'json-read)
+;;             :around
+;;             #'lsp-booster--advice-json-parse)
 
-(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-  "Prepend emacs-lsp-booster command to lsp CMD."
-  (let ((orig-result (funcall old-fn cmd test?)))
-    (if (and (not test?)                             ;; for check lsp-server-present?
-             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-             lsp-use-plists
-             (not (functionp 'json-rpc-connection))  ;; native json-rpc
-             (executable-find "emacs-lsp-booster"))
-        (progn
-          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
-            (setcar orig-result command-from-exec-path))
-          (message "Using emacs-lsp-booster for %s!" orig-result)
-          (cons "emacs-lsp-booster" orig-result))
-      orig-result)))
-(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+;; (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+;;   "Prepend emacs-lsp-booster command to lsp CMD."
+;;   (let ((orig-result (funcall old-fn cmd test?)))
+;;     (if (and (not test?)                             ;; for check lsp-server-present?
+;;              (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+;;              lsp-use-plists
+;;              (not (functionp 'json-rpc-connection))  ;; native json-rpc
+;;              (executable-find "emacs-lsp-booster"))
+;;         (progn
+;;           (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+;;             (setcar orig-result command-from-exec-path))
+;;           (message "Using emacs-lsp-booster for %s!" orig-result)
+;;           (cons "emacs-lsp-booster" orig-result))
+;;       orig-result)))
+;; (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
 ;; == eglot
-;; (use-package eglot
-;;   :ensure nil
-;;   :config
-;;   (add-to-list 'eglot-ignored-server-capabilities ':inlayHintProvider)
-;;   (add-to-list 'eglot-ignored-server-capabilities ':documentOnTypeFormattingProvider)
-;;   (add-hook 'eglot-mode-hook 'flymake-mode))
+(use-package eglot
+  :ensure nil
+  :bind
+  (("C-c l a" . eglot-code-actions))
+  (("C-c l r" . eglot-rename))
+  :hook
+  (eglot-managed-mode . (lambda () (setq-local eldoc-documentation-function 'eldoc-documentation-enthusiast)))
+  (eglot-mode-hook . flymake-mode)
+  :config
+  (add-to-list 'eglot-ignored-server-capabilities ':inlayHintProvider)
+  (add-to-list 'eglot-ignored-server-capabilities ':documentOnTypeFormattingProvider)
+  (add-to-list 'eglot-ignored-server-capabilities ':documentHighlightProvider)
+  (add-to-list 'eglot-server-programs
+			   '((c-ts-mode c++-ts-mode c-mode c++-mode)
+				 . ("clangd"
+					"-j=8"
+					"--log=error"
+					"--malloc-trim"
+					"--background-index"
+					"--completion-style=detailed"
+					"--pch-storage=memory"
+					"--header-insertion=never"
+					"--header-insertion-decorators=0")))
+  :custom
+  (eglot-send-changes-idle-time 0.1))
+
+(use-package eldoc
+  :ensure nil
+  :config
+  (setq-default eldoc-documentation-strategy 'eldoc-documentation-enthusiast)
+  (setq-default eldoc-minor-mode-string ""))
+
+(use-package sideline-flymake)
+(use-package sideline
+  :diminish
+  :hook
+  ((flymake-mode . sideline-mode))
+  :init
+  (setq sideline-backends-right '(sideline-flymake)
+		sideline-backends-right-skip-current-line nil
+		sideline-order-right 'up
+		sideline-priority 100))
 
 ;; == dumb jump
 (use-package dumb-jump
@@ -391,20 +447,27 @@
   :init
   (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-file)
-  (defun my/lsp-capf-busted ()
-    "Return an uncached LSP completion function."
-    (cape-capf-buster #'lsp-completion-at-point))
-  (add-hook 'lsp-completion-mode-hook
-            (lambda ()
-              (setq-local completion-at-point-functions
-                          (list (my/lsp-capf-busted))))))
+  :config
+  (advice-add 'eglot-completion-at-point :around  #'cape-wrap-buster))
+  ;; (defun my/lsp-capf-busted ()
+  ;;   "Return an uncached LSP completion function."
+  ;;   (cape-capf-buster #'lsp-completion-at-point))
+  ;; (add-hook 'lsp-completion-mode-hook
+  ;;           (lambda ()
+  ;;             (setq-local completion-at-point-functions
+  ;;                         (list (my/lsp-capf-busted))))))
 
-(global-completion-preview-mode)
-(global-set-key (kbd "M-n") 'completion-preview-next-candidate)
-(global-set-key (kbd "M-p") 'completion-preview-prev-candidate)
+(use-package completion-preview
+  :ensure nil
+  :diminish
+  :config
+  (global-completion-preview-mode)
+  (global-set-key (kbd "M-n") 'completion-preview-next-candidate)
+  (global-set-key (kbd "M-p") 'completion-preview-prev-candidate))
 
 ;; == snippets
 (use-package yasnippet
+  :diminish yas-minor-mode yas-global-mode
   :config
   (yas-reload-all)
   :hook
@@ -519,6 +582,19 @@
   (add-hook 'vterm-copy-mode-hook #'my-vterm-copy-mode-evil-setup))
 
 ;; == languages
+;; (setq treesit-font-lock-level 4)
+;; (setq treesit-language-source-alist
+;; 	  '((cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+;; 		(c "https://github.com/tree-sitter/tree-sitter-c")
+;;         (python "https://github.com/tree-sitter/tree-sitter-python")))
+;; (dolist (lang treesit-language-source-alist)
+;;   (unless (treesit-language-available-p (car lang))
+;; 	(treesit-install-language-grammar (car lang))))
+;; (setq treesit-load-name-override-list
+;;       '((c++ "libtree-sitter-cpp")))
+;; (setq major-mode-remap-alist '((c-mode . c-ts-mode)
+;;                                (c++-mode . c++-ts-mode)
+;;                                (python-mode . python-ts-mode)))
 
 ;; === c mode
 (defun my-c-mode-common-hook ()
@@ -531,17 +607,26 @@
   (add-to-list 'c-offsets-alist '(arglist-close . c-lineup-close-paren)))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
+;; === odin mode
+(use-package odin-mode
+  :vc (:url "https://github.com/mattt-b/odin-mode"
+			:rev :newest))
+
+;; === markdown
+(add-hook 'markdown-mode-hook #'auto-fill-mode)
+
 ;; == proj
 (require 'proj)
 (setq
- proj-locations '("~/development/" "~/opt/" "~/classes/psoft/" "~/classes/parallel-programming/" "~/classes/operating-systems/")
- proj-find-params '("-mindepth 1" "-maxdepth 1" "-path '*/.git'" "-prune -o" "-type d" "-print"))
+ proj-locations '(("~/development/" . 1) ("~/opt/" . 1) ("~/classes/" . 2) ("~/dotfiles/" . 0) ("~/dotfiles/.config/emacs/lisp/" . 1))
+ proj-grep-function 'consult-ripgrep)
 
 (global-set-key (kbd "C-x b") `proj-switch-to-buffer)
 (global-set-key (kbd "C-c b") `switch-to-buffer)
 
 (global-set-key (kbd "C-x k") `proj-kill-buffer)
 (global-set-key (kbd "C-c k") `kill-buffer)
+
 
 ;; == toggle-window
 (require 'toggle-window)

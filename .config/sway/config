@@ -18,7 +18,7 @@ exec startup
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in @datadir@/backgrounds/sway/)
-output * bg ~/dotfiles/files/wallpapers/mill.png fill
+output * bg ~/dotfiles/files/wallpapers/sunset.jpg fill
 #
 # Example configuration:
 #
@@ -26,7 +26,7 @@ output * bg ~/dotfiles/files/wallpapers/mill.png fill
 #
 # You can get the names of your outputs by running: swaymsg -t get_outputs
 output eDP-1 position -0,0
-output HDMI-A-1 position -0,0
+# output HDMI-A-1 position -0,0 mode 1920x1080
 
 ### Idle configuration
 exec swayidle -w \
@@ -35,6 +35,7 @@ exec swayidle -w \
 ### Input configuration
 input type:touchpad {
     natural_scroll enabled
+    dwt disabled
 }
 
 input type:keyboard {
@@ -44,7 +45,7 @@ input type:keyboard {
 }
 
 ### Style
-default_border pixel
+default_border none
 
 ### Key bindings
 #
@@ -72,8 +73,8 @@ default_border pixel
     bindsym $mod+Ctrl+l exec lock
 
 	# screenshot
-    bindsym $mod+s exec screenshot
-    bindsym $mod+Shift+s exec screenshot -save
+    bindsym $mod+s exec screenshot -save
+    bindsym $mod+Shift+s exec screenshot
 
     # Drag floating windows by holding down $mod and left mouse button.
     floating_modifier $mod normal
@@ -141,7 +142,7 @@ default_border pixel
     # $mod+b or $mod+v, for horizontal and vertical splits
     # respectively.
     bindsym $mod+b splith
-    bindsym $mod+v splitv
+    # bindsym $mod+v splitv
 
     # Switch the current container between different layout styles
     # bindsym $mod+s layout stacking
@@ -152,7 +153,7 @@ default_border pixel
     bindsym $mod+f fullscreen
 
     # Toggle the current focus between tiling and floating mode
-    bindsym $mod+Shift+space floating toggle
+    bindsym $mod+v floating toggle
 
     # Swap focus between the tiling area and the floating area
     bindsym $mod+space focus mode_toggle
