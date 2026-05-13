@@ -1,0 +1,8 @@
+#!/bin/sh
+
+logs=$(for file in /var/tmp/portage/*/*; do
+    echo "$(basename $(dirname $file))/$(basename $file)"
+done)
+
+selected=$(echo "$logs" | swenu)
+doas less -R -f +F /var/tmp/portage/$selected/temp/build.log

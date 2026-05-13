@@ -18,9 +18,8 @@ export HISTCONTROL=ignorespace  # Equivalent to setopt hist_ignore_space
 
 # Misc options
 shopt -s autocd     # Equivalent to setopt autocd
-shopt -s extglob    # Equivalent to setopt extendedglob
 
-# Disable Beep (Equivalent to unsetopt BEEP)
+# Disable Beep
 bind 'set bell-style none'
 
 # Aliases
