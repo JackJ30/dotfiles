@@ -1,4 +1,3 @@
 #!/bin/sh
-echo "slept" >> $HOME/.sleeplog
-lock
-echo "mem" > /sys/power/state
+echo "mem" | doas tee /sys/power/state
+lock_computer

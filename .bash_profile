@@ -21,6 +21,12 @@ else
     chmod 0700 "${XDG_RUNTIME_DIR}"
 fi
 
+# Create other XDG directories
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_STATE_HOME="${HOME}/.local/state"
+
 # Auto-start wm on tty1
 if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     exec mango
