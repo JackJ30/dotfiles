@@ -2,5 +2,6 @@
 # pipewire &
 dunst &
 swaybg -i $HOME/dotfiles/files/wallpapers/mill.png &
-swayidle timeout 300 sleep_computer &
+swayidle timeout 300 sleep-computer &
+monitor-battery &
 # restartemacs >/dev/null &

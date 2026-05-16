@@ -1,0 +1,30 @@
+#!/bin/sh
+
+threshold=20
+very_low_threshold=10
+
+amount="low"
+prev_cap=100
+
+while true; do
+	cap=$(cat /sys/class/power_supply/BAT0/capacity)
+	status=$(cat /sys/class/power_supply/BAT0/status)
+
+	# when capacity changes
+	if [ $cap -ne $prev_cap ]; then
+
+		# notify when drop under threshold
+		if [ $cap -lt $threshold ] && [ $prev_cap -ge $threshold ]; then
+			notify-send "Plug In" "Battery has fallen under $threshold%"
+		fi
+	
+		# notify every percent if very low
+		if [ $cap -le $very_low_threshold ] && [ $status -ne "Charging" ]; then
+			notify-send "BATTERY LOW" "Battery is at $bat%"
+		fi
+
+	fi
+
+	prev_cap=$cap
+	sleep 10
+done

@@ -3,7 +3,7 @@ if [ -f "$HOME/.bashrc" ]; then
 fi
 
 # Environment Variables
-export PATH="$HOME/dotfiles/scripts/:$PATH"
+export PATH="$HOME/dotfiles/scripts/util:$HOME/dotfiles/scripts/system:$PATH"
 export EDITOR="/bin/emacs"
 
 # Create XDG Runtime Dir
