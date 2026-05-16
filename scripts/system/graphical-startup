@@ -1,7 +1,12 @@
 #!/bin/sh
-# pipewire &
+
+# start services
+pipewire &
 dunst &
 swaybg -i $HOME/dotfiles/files/wallpapers/mill.png &
 swayidle timeout 300 sleep-computer &
 monitor-battery &
 # restartemacs >/dev/null &
+
+# defaults
+brightnessctl set 50%

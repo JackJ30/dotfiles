@@ -29,6 +29,6 @@ export XDG_STATE_HOME="${HOME}/.local/state"
 
 # Auto-start wm on tty1
 if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
-    exec mango
+    exec dbus-launch mango
 fi
 
