@@ -19,9 +19,19 @@ shopt -s autocd     # Equivalent to setopt autocd
 # Disable Beep
 bind 'set bell-style none'
 
-# Aliases
-alias ls='ls --color=auto'
+# Aliases that significantly change function
+alias cp="cp -iv"
+alias mv="mv -iv"
+alias rm="rm -Iv"
+alias mkdir="mkdir -pv"
+
+
+# Juice Aliases
+alias ls='ls -hN --color=auto --group-directories-first'
 alias grep='grep --color=auto'
+alias diff='diff --color=auto'
+alias ip='ip -color=auto'
+alias tree='tree --gitignore -I .git'
 
 # Flow control
 stty -ixon

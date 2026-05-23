@@ -1,0 +1,20 @@
+#!/bin/sh
+
+sway_idle() {
+	swayidle timeout 300 sleep-computer
+}
+
+if [ -n "$1" ] && [ $1 = "-t" ]; then
+	# toggle
+	if pgrep --quiet swayidle; then
+		notify-send "Idle Disabled" "Computer will not sleep when idle"
+		pkill swayidle
+	else
+		notify-send "Idle Enabled" "Computer will sleep when idle"
+		sway_idle
+	fi
+else
+	# start
+	sway_idle
+fi
+

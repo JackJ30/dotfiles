@@ -17,21 +17,32 @@ get_message() {
 	
 	# Network Info
     	net_device=$(ip a | grep "state UP" | awk -F': ' '{ printf($2) }')
-    	case "${net_device}" in
-        	wlan*)
-            	connected_network=$(iwctl station ${net_device} show | grep 'Connected network' \
-						  	| awk -F' ' '{ printf($3) }')
-            	;;
-        	eth*)
-            	;;
-    	esac
-	echo "${net_device}: ${connected_network}"
+	if ! [ -z $net_device ]; then
+    		case "${net_device}" in
+        		wlan*)
+            		connected_network=$(iwctl station ${net_device} show | grep 'Connected network' \
+						  		| awk -F' ' '{ printf($3) }')
+            		;;
+        		eth*)
+            		;;
+    		esac
+		echo "${net_device}: ${connected_network}"
+	else
+		echo "Network: DOWN"
+	fi
+
+	echo ""
+
+	# Idle monitor status
+	pgrep --quiet swayidle && echo "Idle Sleep: Enabled" || echo "Idle Sleep: Disabled"
 }
 
 message=$(get_message)
 
 if [ "$TERM" = "linux" ]; then
-	notify-send "System Info" "$message"
+	replace_id=$(cat $XDG_RUNTIME_DIR/sysinfoid)
+	[ ! -z $replace_id ] && replace_arg="-r $replace_id"
+	notify-send $replace_arg -p "System Info" "$message" > $XDG_RUNTIME_DIR/sysinfoid
 else
 	echo "$message"
 fi
