@@ -1,5 +1,6 @@
-var/
-etc/
-elpa/
-tree-sitter/
-customs.el
+/var/
+/etc/
+/elpa/
+/eln-cache/
+/tree-sitter/
+/customs.el

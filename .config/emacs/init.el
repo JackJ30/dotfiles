@@ -12,6 +12,7 @@
 (unless package-archive-contents
   (package-refresh-contents))
 
+;; ensure by default, use ensure nil when built in
 (setq use-package-always-ensure t)
 
 ;; == custom lisp
@@ -19,6 +20,7 @@
 
 ;; == greener emacs
 (use-package no-littering
+  :ensure nil ;; it's in lisp folder
   :demand t)
 
 ;; garbage collection improvement
@@ -38,9 +40,9 @@
   :diminish auto-revert-mode
   :demand t)
 
-;; customize in different file
-(setq custom-file (expand-file-name "customs.el" user-emacs-directory))
-(load custom-file :no-error-if-file-is-missing)
+;; disable custom file, allow themes to be loaded without marking them safe
+(setq custom-file null-device)
+(setq custom-safe-themes t)
 
 ;; no lockfiles
 (setq create-lockfiles nil) 
@@ -271,7 +273,6 @@
   :hook (after-init . savehist-mode))
 
 (use-package stillness-mode
-  :ensure nil
   :init
   (stillness-mode))
 

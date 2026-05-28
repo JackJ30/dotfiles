@@ -1,3 +1,12 @@
+Improvements:
+- [ ] No more package archives, install and vet lisp locally
+- [ ] Run my code in debuggers by default
+
+Annoyances:
+- [ ] eglot rename doesn't prompt with existing name (kind of fixed with M-n in prompt)
+- [ ] the function argument information in buffer doesn't always stay. Maybe I should make it pop up
+
+Archive:
 - [x] auto indent on paste for evil
 - [x] no littering
 - [x] indent switch statements right
@@ -10,10 +19,3 @@
 - [ ] fix cape completions not being active in most buffers
 - [ ] dape presets and run config
 - [ ] gptel
-
-Annoyances:
-- [ ] eglot rename doesn't prompt with existing name (kind of fixed with M-n in prompt)
-- [ ] the function argument information in buffer doesn't always stay. Maybe I should make it pop up
-
-Improvements:
-- [ ] No more package archives, install and vet lisp locally
