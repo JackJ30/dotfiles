@@ -27,8 +27,14 @@ export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_DATA_HOME="${HOME}/.local/share"
 export XDG_STATE_HOME="${HOME}/.local/state"
 
+# Declutter home
+export LESSHISTFILE="${XDG_STATE_HOME}/less/history"
+export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
+export NSS_USER_DB_DIR="${XDG_DATA_HOME}/pki"
+export MYVIMRC="${XDG_CONFIG_HOME}/vim/vimrc"
+export VIMINIT="source $MYVIMRC"
+
 # Auto-start wm on tty1
 if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     exec dbus-launch mango
 fi
-
