@@ -36,5 +36,5 @@ export VIMINIT="source $MYVIMRC"
 
 # Auto-start wm on tty1
 if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
-    exec dbus-launch mango
+    exec dbus-launch --exit-with-session mango
 fi

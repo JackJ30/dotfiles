@@ -6,7 +6,7 @@ dunst &
 swaybg -i $HOME/dotfiles/files/wallpapers/mill.png &
 idle-sleep &
 monitor-battery &
-# restartemacs >/dev/null &
+restartemacs >/dev/null &
 
 # defaults
 brightnessctl set 50%
