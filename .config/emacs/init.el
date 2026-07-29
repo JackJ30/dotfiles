@@ -24,7 +24,7 @@
   :demand t)
 
 ;; no custom and lockfiles
-(setq custom-file null-device)
+(setq custom-file (make-temp-file "emacs-custom-"))
 (setq create-lockfiles nil)
 
 ;; backups in one folder

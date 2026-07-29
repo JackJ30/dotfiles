@@ -4,4 +4,4 @@
   (load-theme 'doom-one t))
 
 ;; font
-(add-to-list 'default-frame-alist '(font . "ComicShannsMono-12"))
+(add-to-list 'default-frame-alist '(font . "ComicMono-12"))
