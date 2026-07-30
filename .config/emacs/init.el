@@ -1,4 +1,11 @@
-(require 'package)
+;; add my lisp directory and its subdirectories to the load path
+(defvar my-lisp-dir (concat (getenv "XDG_CONFIG_HOME") "/emacs/lisp"))
+(add-to-list 'load-path my-lisp-dir)
+(let ((default-directory my-lisp-dir))
+  (normal-top-level-add-subdirs-to-load-path))
+
+;; stop garbage files
+(require 'no-littering)
 
 ;; improve garbage collection
 (defun my-minibuffer-setup-hook ()
@@ -12,22 +19,11 @@
   (run-with-idle-timer 1.2 t 'garbage-collect))
 (gc-idle-timer)
 
-;; add my lisp directory and its subdirectories to the load path
-(defvar my-lisp-dir (concat (getenv "XDG_CONFIG_HOME") "/emacs/lisp"))
-(add-to-list 'load-path my-lisp-dir)
-(let ((default-directory my-lisp-dir))
-  (normal-top-level-add-subdirs-to-load-path))
-
-;; greener emacs
-(use-package no-littering
-  :ensure nil
-  :demand t)
-
-;; no custom and lockfiles
+;; opt out of custom and lockfiles
 (setq custom-file (make-temp-file "emacs-custom-"))
 (setq create-lockfiles nil)
 
-;; backups in one folder
+;; backups in one directory
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
@@ -35,32 +31,55 @@
 
 ;; better meta behaviour
 (setq inhibit-startup-message t
-          vc-follow-symlinks t
-          use-short-answers t
-		  enable-recursive-minibuffers t)
+      vc-follow-symlinks t
+      use-short-answers t
+	  enable-recursive-minibuffers t)
 
-;; saveplace mode
+;; set up package managers
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
+
+;; don't complain about bytecomp errors in a window
+(add-to-list 'display-buffer-alist
+			 '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
+			   (display-buffer-no-window)
+			   (allow-no-window . t)))
+
+;; saves last place in file
 (use-package saveplace
-  :ensure nil
   :config
   (save-place-mode))
 
-;; savehist mode
-(use-package savehist
-  :ensure nil
-  :init
-  (savehist-mode))
+;; better C-g dwim
+(defun keyboard-quit-dwim ()
+  (interactive)
+  (cond
+   ((region-active-p)
+    (keyboard-quit))
+   ((derived-mode-p 'completion-list-mode)
+    (delete-completion-window))
+   ((> (minibuffer-depth) 0)
+    (abort-recursive-edit))
+   (t
+    (keyboard-quit))))
+(define-key global-map (kbd "C-g") #'keyboard-quit-dwim)
 
 ;; load my config files
-(defun loadc (file) (load (expand-file-name file user-emacs-directory)))
-(loadc "ui.el")
-(loadc "text-editing.el")
-(loadc "misc.el")
+(defun loadc (file) (load (locate-user-emacs-file file)))
 (loadc "style.el")
-(loadc "file-management.el")  (context-menu-mode t)
-(loadc "ide.el")
-(loadc "evil.el")
-(loadc "lang.el")
+(loadc "text-editing.el")
+(loadc "minibuffer.el")
+(loadc "completion-at-point.el")
+(loadc "files.el")
+(loadc "misc.el")
+;; (loadc "ide.el")
+;; (loadc "evil.el")
+;; (loadc "lang.el")
+
+(find-file user-init-file)
 
 ;; skipped: diminish, improved C-g, evil nerd commenter, ansi color and rainbow
 ;; delimiters, evil, rainbow, 
