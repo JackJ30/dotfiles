@@ -33,7 +33,8 @@
 (setq inhibit-startup-message t
       vc-follow-symlinks t
       use-short-answers t
-      enable-recursive-minibuffers t)
+      enable-recursive-minibuffers t
+      y-or-n-p t)
 
 ;; set up package managers
 (require 'package)

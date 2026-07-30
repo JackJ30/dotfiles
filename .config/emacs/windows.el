@@ -15,6 +15,8 @@
    '("\\*Messages\\*"
      "Output\\*$"
      "\\*Async Shell Command\\*"
+     "\\*Compile-Log\\*"
+     "\\*Async-native-compile-log\\*"
      help-mode
      helpful-mode
      compilation-mode
