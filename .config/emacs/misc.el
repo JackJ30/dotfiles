@@ -7,6 +7,8 @@
 (use-package magit
   :ensure t
   :bind (("C-x g" . magit-status))
+  :hook
+  ((magit-mode . (lambda () (setq-local cursor-type nil))))
   :config
   (setq vc-handled-backends (delq 'Git vc-handled-backends))
   :custom

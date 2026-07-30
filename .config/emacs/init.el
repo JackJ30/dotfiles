@@ -1,5 +1,5 @@
 ;; add my lisp directory and its subdirectories to the load path
-(defvar my-lisp-dir (concat (getenv "XDG_CONFIG_HOME") "/emacs/lisp"))
+(defvar my-lisp-dir (file-name-concat user-emacs-directory "lisp"))
 (add-to-list 'load-path my-lisp-dir)
 (let ((default-directory my-lisp-dir))
   (normal-top-level-add-subdirs-to-load-path))
@@ -33,7 +33,7 @@
 (setq inhibit-startup-message t
       vc-follow-symlinks t
       use-short-answers t
-	  enable-recursive-minibuffers t)
+      enable-recursive-minibuffers t)
 
 ;; set up package managers
 (require 'package)
@@ -48,25 +48,6 @@
 			   (display-buffer-no-window)
 			   (allow-no-window . t)))
 
-;; saves last place in file
-(use-package saveplace
-  :config
-  (save-place-mode))
-
-;; better C-g dwim
-(defun keyboard-quit-dwim ()
-  (interactive)
-  (cond
-   ((region-active-p)
-    (keyboard-quit))
-   ((derived-mode-p 'completion-list-mode)
-    (delete-completion-window))
-   ((> (minibuffer-depth) 0)
-    (abort-recursive-edit))
-   (t
-    (keyboard-quit))))
-(define-key global-map (kbd "C-g") #'keyboard-quit-dwim)
-
 ;; load my config files
 (defun loadc (file) (load (locate-user-emacs-file file)))
 (loadc "style.el")
@@ -79,7 +60,5 @@
 ;; (loadc "evil.el")
 ;; (loadc "lang.el")
 
-(find-file user-init-file)
-
-;; skipped: diminish, improved C-g, evil nerd commenter, ansi color and rainbow
+;; skipped: diminish, ansi color and rainbow
 ;; delimiters, evil, rainbow, 

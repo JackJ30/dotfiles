@@ -1,13 +1,18 @@
 ;; scrolling
 (setq scroll-up-aggressively nil
       scroll-down-aggressively nil
-      scroll-conservatively 101)
-(setq scroll-step 1)
-(setq scroll-margin 8)
+      scroll-conservatively 101
+      scroll-step 1
+      scroll-margin 6)
 
 ;; columns
 (setq-default fill-column 80)
 (setq-default truncate-lines t)
+
+;; saves last place in file
+(use-package saveplace
+  :config
+  (save-place-mode))
 
 ;; mwim
 (use-package mwim

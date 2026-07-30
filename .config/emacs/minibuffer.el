@@ -1,9 +1,24 @@
+;; better C-g dwim
+(defun keyboard-quit-dwim ()
+  (interactive)
+  (cond
+   ((region-active-p)
+    (keyboard-quit))
+   ((derived-mode-p 'completion-list-mode)
+    (delete-completion-window))
+   ((> (minibuffer-depth) 0)
+    (abort-recursive-edit))
+   (t
+    (keyboard-quit))))
+(define-key global-map (kbd "C-g") #'keyboard-quit-dwim)
+
+;; ui improvements
+
 (use-package vertico
   :ensure t
   :hook (after-init . vertico-mode))
 
 (use-package vertico-directory
-  :ensure t
   :after vertico
   ;; More convenient directory navigation commands
   :bind (:map vertico-map
@@ -18,6 +33,17 @@
   :ensure t
   :hook (after-init . marginalia-mode))
 
+;; (use-package stillness
+;;   :demand t
+;;   :vc (:url "https://github.com/neeasade/stillness-mode.el" :branch "main"))
+
+;; sorting and history
+
+;; https://kristofferbalintona.me/articles/complement-corfu-vertico-and-completion-preview-with-prescientel-sorting/
+
+(use-package savehist
+  :hook (after-init . savehist-mode))
+
 (use-package orderless
   :ensure t
   :config
@@ -25,5 +51,25 @@
   (setq completion-category-defaults nil)
   (setq completion-category-overrides nil))
 
-(use-package savehist
-  :hook (after-init . savehist-mode))
+(use-package prescient
+  :ensure t
+  :custom
+  (prescient-aggressive-file-save t)
+  (prescient-sort-length-enable nil)
+  (prescient-sort-full-matches-first t)
+  (prescient-history-length 200)
+  (prescient-frequency-decay 0.997)
+  (prescient-frequency-threshold 0.05)
+  :config
+  (prescient-persist-mode 1))
+
+(use-package vertico-prescient
+  :ensure t
+  :demand t
+  :after vertico prescient
+  :custom
+  (vertico-prescient-enable-sorting t)
+  (vertico-prescient-override-sorting nil)
+  (vertico-prescient-enable-filtering nil) ; We want orderless to do the filtering
+  :config
+  (vertico-prescient-mode 1))
