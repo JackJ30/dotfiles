@@ -43,10 +43,10 @@
   (package-refresh-contents))
 
 ;; don't complain about bytecomp errors in a window
-(add-to-list 'display-buffer-alist
-			 '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
-			   (display-buffer-no-window)
-			   (allow-no-window . t)))
+;; (add-to-list 'display-buffer-alist
+;; 			 '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
+;; 			   (display-buffer-no-window)
+;; 			   (allow-no-window . t)))
 
 ;; load my config files
 (defun loadc (file) (load (locate-user-emacs-file file)))
@@ -56,9 +56,11 @@
 (loadc "completion-at-point.el")
 (loadc "files.el")
 (loadc "misc.el")
+(loadc "windows.el")
 ;; (loadc "ide.el")
 ;; (loadc "evil.el")
 ;; (loadc "lang.el")
 
+;; todo: terminal, capfs
 ;; skipped: diminish, ansi color and rainbow
 ;; delimiters, evil, rainbow, 

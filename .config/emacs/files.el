@@ -1,9 +1,9 @@
 (use-package dired
   :commands (dired)
   :hook  ((dired-mode . dired-hide-details-mode)
-	  (dired-mode . (lambda ()
-			  (hl-line-mode)
-			  (setq-local cursor-type nil))))
+	  (dired-mode . hl-line-mode)
+	  (dired-mode . auto-revert-mode)
+	  (dired-mode . (lambda () (setq-local cursor-type nil))))
   :config
   (setq dired-recursive-copies 'always)
   (setq dired-recursive-deletes 'always)

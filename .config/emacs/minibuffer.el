@@ -33,9 +33,10 @@
   :ensure t
   :hook (after-init . marginalia-mode))
 
-;; (use-package stillness
-;;   :demand t
-;;   :vc (:url "https://github.com/neeasade/stillness-mode.el" :branch "main"))
+(use-package stillness
+  :demand t
+  :vc (:url "https://github.com/neeasade/stillness-mode.el" :rev :newest)
+  :hook (after-init . stillness-mode))
 
 ;; sorting and history
 

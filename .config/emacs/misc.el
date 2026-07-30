@@ -37,13 +37,36 @@
 (add-hook 'prog-mode 'editorconfig-apply)
 
 ;; proj
-;; (use-package proj
+(use-package proj
+  :vc ( :url "https://github.com/NAHTAIV3L/proj.el" :rev :newest )
+  :demand
+  :config
+  (global-set-key (kbd "C-x b") `proj-switch-to-buffer)
+  (global-set-key (kbd "C-c b") `switch-to-buffer)
+  (global-set-key (kbd "C-x k") `proj-kill-buffer)
+  (global-set-key (kbd "C-c k") `kill-buffer)
+  (setq proj-locations '(("~/development/" . 1) ("~/opt/" . 1) ("~/dotfiles/" . 0) ("~/dotfiles/.config/emacs/lisp/" . 1))
+		proj-grep-function 'consult-ripgrep))
+
+;; (use-package compile-angel
 ;;   :demand t
 ;;   :config
-;;   (global-set-key (kbd "C-x b") `proj-switch-to-buffer)
-;;   (global-set-key (kbd "C-c b") `switch-to-buffer)
-;;   (global-set-key (kbd "C-x k") `proj-kill-buffer)
-;;   (global-set-key (kbd "C-c k") `kill-buffer)
-;;   (setq proj-locations '(("~/development/" . 1) ("~/opt/" . 1) ("~/dotfiles/" . 0) ("~/dotfiles/.config/emacs/lisp/" . 1))
-;; 		proj-grep-function 'consult-ripgrep))
+;;   (setq compile-angel-verbose t)
 
+;;   ;; The following directive prevents compile-angel from compiling your init
+;;   ;; files. If you choose to remove this push to `compile-angel-excluded-path-suffixes'
+;;   ;; and compile your pre/post-init files, ensure you understand the
+;;   ;; implications and thoroughly test your code. For example, if you're using
+;;   ;; the `use-package' macro, you'll need to explicitly add:
+;;   ;; (eval-when-compile (require 'use-package))
+;;   ;; at the top of your init file.
+;;   (push "/init.el" compile-angel-excluded-path-suffixes)
+;;   (push "/early-init.el" compile-angel-excluded-path-suffixes)
+;;   (push ".config/emacs/[^/]*.el" compile-angel-excluded-path-regexps)
+
+;;   ;; Uncomment the line below to compile automatically when an Elisp file is saved
+;;   ;; (add-hook 'emacs-lisp-mode-hook #'compile-angel-on-save-local-mode)
+
+;;   ;; A global mode that compiles .el files when they are loaded
+;;   ;; using `load' or `require'.
+;;   (compile-angel-on-load-mode 1))

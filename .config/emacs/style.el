@@ -1,16 +1,5 @@
-;; get rid of ui
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
-
+;; turn off blink cursor
 (blink-cursor-mode -1)
-
-;; fonts - https://github.com/thep0y/monaco-nerd-font/releases/tag/v0.2.2
-(let ((mono-spaced-font "Monaco Nerd Font Mono")
-      (proportionately-spaced-font "MonacoLigaturized Nerd Font"))
-  (set-face-attribute 'default nil :family mono-spaced-font :height 100)
-  (set-face-attribute 'fixed-pitch nil :family mono-spaced-font :height 1.0)
-  (set-face-attribute 'variable-pitch nil :family proportionately-spaced-font :height 1.0))
 
 ;; theme
 (load-theme 'wombat)
@@ -23,6 +12,10 @@
  '(font-lock-keyword-face ((t (:foreground "#86b7dd"))))
  '(font-lock-string-face ((t (:foreground "#98dc5f"))))
  )
+
+;; ansi color
+(use-package ansi-color
+  :hook (compilation-filter . ansi-color-compilation-filter))
 
 ;; icons
 
