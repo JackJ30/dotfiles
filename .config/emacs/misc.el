@@ -45,7 +45,7 @@
   (global-set-key (kbd "C-c b") `switch-to-buffer)
   (global-set-key (kbd "C-x k") `proj-kill-buffer)
   (global-set-key (kbd "C-c k") `kill-buffer)
-  (setq proj-locations '(("~/development/" . 1) ("~/opt/" . 1) ("~/dotfiles/" . 0) ("~/dotfiles/.config/emacs/lisp/" . 1))
+  (setq proj-locations '(("~/development/" . 1) ("~/opt/" . 1) ("~/dotfiles/" . 0) ("~/dotfiles/.config/emacs/" . 0) ("~/dotfiles/.config/emacs/lisp/" . 1))
 		proj-grep-function 'consult-ripgrep))
 
 ;; (use-package compile-angel

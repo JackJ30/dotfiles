@@ -1,8 +1,5 @@
 ;; add my lisp directory and its subdirectories to the load path
-(defvar my-lisp-dir (file-name-concat user-emacs-directory "lisp"))
-(add-to-list 'load-path my-lisp-dir)
-(let ((default-directory my-lisp-dir))
-  (normal-top-level-add-subdirs-to-load-path))
+(add-to-list 'load-path (locate-user-emacs-file "lisp"))
 
 ;; stop garbage files
 (require 'no-littering)

@@ -13,6 +13,7 @@
   (popper-display-control 'nil)
   (popper-reference-buffers
    '("\\*Messages\\*"
+     "\\*Warnings\\*"
      "Output\\*$"
      "\\*Async Shell Command\\*"
      "\\*Compile-Log\\*"

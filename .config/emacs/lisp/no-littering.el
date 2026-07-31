@@ -6,10 +6,10 @@
 ;; Homepage: https://github.com/emacscollective/no-littering
 ;; Keywords: convenience
 
-;; Package-Version: 1.8.7
+;; Package-Version: 1.8.9
 ;; Package-Requires: (
 ;;     (emacs  "28.1")
-;;     (compat "30.1"))
+;;     (compat "31.0"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -308,6 +308,7 @@ This variable has to be set before `no-littering' is loaded.")
     (setq lsp-python-ms-dir                (var "lsp-python-ms/"))
     (setq lsp-server-install-dir           (var "lsp/server/"))
     (setq lsp-session-file                 (var "lsp/session.el"))
+    (setq magit-user-githook-file          (var "magit/user-githooks"))
     (setq magithub-cache-file              (var "magithub/cache.el"))
     (setq magithub-dir                     (var "magithub/"))
     (setq mason-dir                        (var "mason/"))
@@ -345,6 +346,7 @@ This variable has to be set before `no-littering' is loaded.")
     (setq pomm-third-time-state-file-location (var "pomm/third-time-state"))
     (setq prescient-save-file              (var "prescient-save.el"))
     (setq projectile-cache-file            (var "projectile/cache.el"))
+    (setq projectile-frecency-file         (var "projectile/frecency.eld"))
     (setq projectile-known-projects-file   (var "projectile/known-projects.el"))
     (setq psession-elisp-objects-default-directory (var "psession/"))
     (setq purpose-default-layout-file      (etc "window-purpose/default-layout.el"))
