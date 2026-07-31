@@ -16,15 +16,18 @@
 
 ;; mwim
 (use-package mwim
+  :ensure t
   :bind (("C-a" . mwim-beginning)
 		 ("C-e" . mwim-end-of-line)))
 
 ;; expand keybind
 (use-package expand-region
+  :ensure t
   :bind ("C-=" . er/expand-region))
 
 ;; better comment keybind
 (use-package evil-nerd-commenter
+  :ensure t
   :bind ("M-;" . evilnc-comment-or-uncomment-lines))
 
 ;; delete selected region when you type new text

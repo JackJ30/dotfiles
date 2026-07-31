@@ -4,7 +4,7 @@
 ;; theme
 (load-theme 'wombat)
 (custom-set-faces
- '(default ((t (:inherit nil :stipple nil :background "#222323" :foreground "#f6f3e8" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 115 :width normal :family "Monaco"))))
+ '(default ((t (:inherit nil :stipple nil :background "#222323" :foreground "#f6f3e8" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 115 :width normal))))
  '(highlight ((t (:underline nil))))
  '(fringe ((t (:background "#222323"))))
  '(vertical-border ((t (:foreground "#303030"))))

@@ -58,7 +58,7 @@
   :ensure t
   :custom
   (prescient-aggressive-file-save t)
-  (prescient-sort-length-enable nil)
+  (prescient-sort-length-enable t) ; testing this out
   (prescient-sort-full-matches-first t)
   (prescient-history-length 200)
   (prescient-frequency-decay 0.997)

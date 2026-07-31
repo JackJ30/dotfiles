@@ -24,3 +24,5 @@
   (dired-subtree-after-insert . nerd-icons-dired--refresh)
   :config
   (setq dired-subtree-use-backgrounds nil))
+
+;; todo - make auto revert buffer actually work with subtree

@@ -39,10 +39,10 @@
 (set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-;; fonts
+;; fonts - https://github.com/thep0y/monaco-nerd-font/releases/tag/v0.2.2
 (let ((mono-spaced-font "Monaco Nerd Font Mono")
       (proportionately-spaced-font "MonacoLigaturized Nerd Font"))
-  (set-face-attribute 'default nil :family mono-spaced-font :height 100)
+  (set-face-attribute 'default nil :family mono-spaced-font :height 105)
   (set-face-attribute 'fixed-pitch nil :family mono-spaced-font :height 1.0)
   (set-face-attribute 'variable-pitch nil :family proportionately-spaced-font :height 1.0))
 
