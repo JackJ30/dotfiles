@@ -85,5 +85,5 @@
 (set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-;; native comp warnings
+;; silence native comp warnings (who cares)
 (setq native-comp-async-report-warnings-errors 'silent)

@@ -2,12 +2,6 @@
 (setq custom-file (make-temp-file "emacs-custom-"))
 (setq create-lockfiles nil)
 
-;; backups in one directory
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-
 ;; better meta behaviour
 (setq inhibit-startup-message t
       vc-follow-symlinks t
