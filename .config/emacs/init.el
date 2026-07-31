@@ -1,6 +1,4 @@
-;; opt out of custom and lockfiles
-(setq custom-file (make-temp-file "emacs-custom-"))
-(setq create-lockfiles nil)
+;; see early-init.el for basic configuration
 
 ;; better meta behaviour
 (setq inhibit-startup-message t
@@ -9,7 +7,7 @@
       enable-recursive-minibuffers t
       y-or-n-p t)
 
-;; set up package managers
+;; set up package manager
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
@@ -29,6 +27,7 @@
 (loadc "text-editing.el")
 (loadc "minibuffer.el")
 (loadc "completion-at-point.el")
+(loadc "completion-sorting.el")
 (loadc "files.el")
 (loadc "misc.el")
 (loadc "windows.el")
@@ -36,5 +35,6 @@
 ;; (loadc "evil.el")
 ;; (loadc "lang.el")
 
-;; todo: ultra scroll, dumb-jump, scroll-on-jump, hl-line, minions for modeline, terminal, fork theme and make some improvements
-;; skipped: diminish, evil, rainbow delimiters
+;; todo: integrated terminal, org config with modules, full screen popups, shackle
+;; todo styling: minions (modeline collapse), forked theme to enable: hl-line, spacious-padding, pulsar
+

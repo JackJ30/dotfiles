@@ -1,4 +1,5 @@
-;; better C-g dwim
+;; behaviour improvemnts
+
 (defun keyboard-quit-dwim ()
   (interactive)
   (cond
@@ -12,7 +13,16 @@
     (keyboard-quit))))
 (define-key global-map (kbd "C-g") #'keyboard-quit-dwim)
 
-;; ui improvements
+(use-package savehist
+  :hook (after-init . savehist-mode))
+
+(use-package stillness-mode
+  :demand t
+  :vc (:url "https://github.com/neeasade/stillness-mode.el" :rev :newest)
+  :ensure t
+  :hook (after-init . stillness-mode))
+
+;; minad stack
 
 (use-package vertico
   :ensure t
@@ -33,45 +43,9 @@
   :ensure t
   :hook (after-init . marginalia-mode))
 
-(use-package stillness-mode
-  :demand t
-  :vc (:url "https://github.com/neeasade/stillness-mode.el" :rev :newest)
-  :ensure t
-  :hook (after-init . stillness-mode))
-
-;; sorting and history
-
-;; https://kristofferbalintona.me/articles/complement-corfu-vertico-and-completion-preview-with-prescientel-sorting/
-
-(use-package savehist
-  :hook (after-init . savehist-mode))
-
 (use-package orderless
   :ensure t
   :config
   (setq completion-styles '(orderless basic))
   (setq completion-category-defaults nil)
   (setq completion-category-overrides nil))
-
-(use-package prescient
-  :ensure t
-  :custom
-  (prescient-aggressive-file-save t)
-  (prescient-sort-length-enable t) ; testing this out
-  (prescient-sort-full-matches-first t)
-  (prescient-history-length 200)
-  (prescient-frequency-decay 0.997)
-  (prescient-frequency-threshold 0.05)
-  :config
-  (prescient-persist-mode 1))
-
-(use-package vertico-prescient
-  :ensure t
-  :demand t
-  :after vertico prescient
-  :custom
-  (vertico-prescient-enable-sorting t)
-  (vertico-prescient-override-sorting nil)
-  (vertico-prescient-enable-filtering nil) ; We want orderless to do the filtering
-  :config
-  (vertico-prescient-mode 1))

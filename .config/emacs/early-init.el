@@ -32,6 +32,12 @@
         tramp-backup-directory-alist `((".*" . ,backup-dir))
         tramp-auto-save-directory auto-saves-dir))
 
+;; put custom in junk
+(setq custom-file (no-littering-expand-etc-file-name "custom.el"))
+
+;; put lockfiles in nowhere
+(setq create-lockfiles nil)
+
 ;; improve garbage collection
 (defun my-minibuffer-setup-hook ()
   (setq gc-cons-threshold most-positive-fixnum))
