@@ -42,6 +42,6 @@
 ;; (loadc "evil.el")
 ;; (loadc "lang.el")
 
-;; todo: terminal, capfs
+;; todo: minions for modeline, hl-line, terminal, capfs
 ;; skipped: diminish, ansi color and rainbow
 ;; delimiters, evil, rainbow, 
