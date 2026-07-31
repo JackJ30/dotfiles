@@ -33,8 +33,10 @@
   :ensure t
   :hook (after-init . marginalia-mode))
 
+(use-package dash :ensure t)
 (use-package stillness-mode
   :demand t
+  :after dash
   ;; :vc (:url "https://github.com/neeasade/stillness-mode.el" :rev :newest)
   :ensure nil
   :load-path "lisp/stillness-mode.el/"

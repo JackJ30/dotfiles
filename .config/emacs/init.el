@@ -1,21 +1,3 @@
-;; add my lisp directory and its subdirectories to the load path
-(add-to-list 'load-path (locate-user-emacs-file "lisp"))
-
-;; stop garbage files
-(require 'no-littering)
-
-;; improve garbage collection
-(defun my-minibuffer-setup-hook ()
-  (setq gc-cons-threshold most-positive-fixnum))
-(defun my-minibuffer-exit-hook ()
-  (setq gc-cons-threshold 800000000))
-(add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
-(add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
-(defun gc-idle-timer ()
-  "Trigger garbage collection when Emacs is idle for 0.5 seconds."
-  (run-with-idle-timer 1.2 t 'garbage-collect))
-(gc-idle-timer)
-
 ;; opt out of custom and lockfiles
 (setq custom-file (make-temp-file "emacs-custom-"))
 (setq create-lockfiles nil)
@@ -40,11 +22,12 @@
 (unless package-archive-contents
   (package-refresh-contents))
 
-;; don't complain about bytecomp errors in a window
-;; (add-to-list 'display-buffer-alist
-;; 			 '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
-;; 			   (display-buffer-no-window)
-;; 			   (allow-no-window . t)))
+;; emacs-31 compat
+(use-package compat
+  :ensure t
+  :init
+  (require 'compat)
+  (require 'compat-31))
 
 ;; load my config files
 (defun loadc (file) (load (locate-user-emacs-file file)))

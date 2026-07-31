@@ -1,3 +1,38 @@
+;; add my lisp directory and its subdirectories to the load path
+(add-to-list 'load-path (locate-user-emacs-file "lisp"))
+
+;; stop garbage files
+(eval-and-compile ; ensure values don't differ at compile time.
+  (setq no-littering-etc-directory
+        (expand-file-name "junk/config/" user-emacs-directory))
+  (setq no-littering-var-directory
+        (expand-file-name "junk/data/" user-emacs-directory))
+  (require 'no-littering))
+
+;; put eln-cache in var
+(when (and (fboundp 'startup-redirect-eln-cache)
+           (fboundp 'native-comp-available-p)
+           (native-comp-available-p))
+  (startup-redirect-eln-cache
+   (convert-standard-filename
+    (expand-file-name "eln-cache/" no-littering-var-directory))))
+
+;; put elpa in var
+(setq package-user-dir
+      (expand-file-name "elpa/" no-littering-var-directory))
+
+;; improve garbage collection
+(defun my-minibuffer-setup-hook ()
+  (setq gc-cons-threshold most-positive-fixnum))
+(defun my-minibuffer-exit-hook ()
+  (setq gc-cons-threshold 800000000))
+(add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
+(add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
+(defun gc-idle-timer ()
+  "Trigger garbage collection when Emacs is idle for 0.5 seconds."
+  (run-with-idle-timer 1.2 t 'garbage-collect))
+(gc-idle-timer)
+
 ;; file handler optimization — skip regex matching on every load
 (defvar my--old-file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)

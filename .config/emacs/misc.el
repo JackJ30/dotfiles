@@ -38,8 +38,9 @@
 
 ;; proj
 (use-package proj
-  :vc ( :url "https://github.com/NAHTAIV3L/proj.el" :rev :newest )
-  :demand
+  :demand t
+  :ensure nil
+  :load-path "lisp/proj/"
   :config
   (global-set-key (kbd "C-x b") `proj-switch-to-buffer)
   (global-set-key (kbd "C-c b") `switch-to-buffer)
