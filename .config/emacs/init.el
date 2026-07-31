@@ -32,7 +32,7 @@
 (loadc "files.el")
 (loadc "misc.el")
 (loadc "windows.el")
-;; (loadc "ide.el")
+(loadc "ide.el")
 ;; (loadc "evil.el")
 ;; (loadc "lang.el")
 

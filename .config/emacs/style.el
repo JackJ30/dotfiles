@@ -17,6 +17,12 @@
 (use-package ansi-color
   :hook (compilation-filter . ansi-color-compilation-filter))
 
+;; ultra-scroll
+(use-package ultra-scroll
+  :ensure t
+  :config
+  (ultra-scroll-mode 1))
+
 ;; icons
 
 (use-package nerd-icons

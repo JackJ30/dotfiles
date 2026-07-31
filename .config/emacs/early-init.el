@@ -9,17 +9,28 @@
         (expand-file-name "junk/data/" user-emacs-directory))
   (require 'no-littering))
 
-;; put eln-cache in var
+;; put eln-cache in junk
 (when (and (fboundp 'startup-redirect-eln-cache)
            (fboundp 'native-comp-available-p)
            (native-comp-available-p))
   (startup-redirect-eln-cache
    (convert-standard-filename
-    (expand-file-name "eln-cache/" no-littering-var-directory))))
+    (no-littering-expand-var-file-name "eln-cache/"))))
 
-;; put elpa in var
-(setq package-user-dir
-      (expand-file-name "elpa/" no-littering-var-directory))
+;; put elpa in junk
+(setq package-user-dir (no-littering-expand-var-file-name "elpa/"))
+
+;; backups and autosaves in junk
+(let ((backup-dir (no-littering-expand-var-file-name "backups/"))
+      (auto-saves-dir (no-littering-expand-var-file-name "auto-saves/")))
+  (dolist (dir (list backup-dir auto-saves-dir))
+    (when (not (file-directory-p dir))
+      (make-directory dir t)))
+  (setq backup-directory-alist `(("." . ,backup-dir))
+        auto-save-file-name-transforms `((".*" ,auto-saves-dir t))
+        auto-save-list-file-prefix (concat auto-saves-dir ".saves-")
+        tramp-backup-directory-alist `((".*" . ,backup-dir))
+        tramp-auto-save-directory auto-saves-dir))
 
 ;; improve garbage collection
 (defun my-minibuffer-setup-hook ()
