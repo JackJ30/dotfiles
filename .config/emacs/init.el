@@ -42,6 +42,5 @@
 ;; (loadc "evil.el")
 ;; (loadc "lang.el")
 
-;; todo: minions for modeline, hl-line, terminal, capfs
-;; skipped: diminish, ansi color and rainbow
-;; delimiters, evil, rainbow, 
+;; todo: ultra scroll, dumb-jump, scroll-on-jump, hl-line, minions for modeline, terminal, fork theme and make some improvements
+;; skipped: diminish, evil, rainbow delimiters

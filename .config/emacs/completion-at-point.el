@@ -28,4 +28,13 @@
   (completion-preview-minimum-symbol-length 2)
   (completion-preview-ignore-case t))
 
+(use-package cape
+  :ensure t
+  :demand t
+  :init
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  (add-hook 'completion-at-point-functions #'cape-file)
+  :config
+  (advice-add 'eglot-completion-at-point :around  #'cape-wrap-buster))
+
 (setq completion-auto-help nil)

@@ -18,7 +18,7 @@
 (use-package mwim
   :ensure t
   :bind (("C-a" . mwim-beginning)
-		 ("C-e" . mwim-end-of-line)))
+         ("C-e" . mwim-end-of-line)))
 
 ;; expand keybind
 (use-package expand-region
@@ -33,3 +33,10 @@
 ;; delete selected region when you type new text
 (use-package delsel
   :hook (after-init . delete-selection-mode))
+
+;; indent
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (setq c-basic-offset 4)))

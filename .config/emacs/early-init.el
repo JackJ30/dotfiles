@@ -40,14 +40,25 @@
           (lambda ()
             (setq file-name-handler-alist my--old-file-name-handler-alist)))
 
-;; configure frame parameters
-(push '(menu-bar-lines . 0) default-frame-alist)
-(push '(tool-bar-lines . 0) default-frame-alist)
-(push '(vertical-scroll-bars) default-frame-alist)
-(push '(horizontal-scroll-bars) default-frame-alist)
+;; configure parameters for each frame created
+(modify-all-frames-parameters
+ '((menu-bar-lines . 0)
+   (tool-bar-lines . 0)
+   (vertical-scroll-bars)
+   (horizontal-scroll-bars)))
 (setq menu-bar-mode nil
       tool-bar-mode nil
       scroll-bar-mode nil)
+
+;; set fonts for each frame created
+;; using font - https://github.com/thep0y/monaco-nerd-font/releases/tag/v0.2.2
+(defun my--set-font (frame)
+  (let ((mono-spaced-font "Monaco Nerd Font Mono")
+        (proportionately-spaced-font "MonacoLigaturized Nerd Font"))
+    (set-face-attribute 'default nil :family mono-spaced-font :height 110)
+    (set-face-attribute 'fixed-pitch nil :family mono-spaced-font :height 1.0)
+    (set-face-attribute 'variable-pitch nil :family proportionately-spaced-font :height 1.0)))
+(add-hook 'after-make-frame-functions 'my--set-font)
 
 ;; performance
 (setq frame-resize-pixelwise t
@@ -73,13 +84,6 @@
 (set-keyboard-coding-system 'utf-8)
 (set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
-
-;; fonts - https://github.com/thep0y/monaco-nerd-font/releases/tag/v0.2.2
-(let ((mono-spaced-font "Monaco Nerd Font Mono")
-      (proportionately-spaced-font "MonacoLigaturized Nerd Font"))
-  (set-face-attribute 'default nil :family mono-spaced-font :height 105)
-  (set-face-attribute 'fixed-pitch nil :family mono-spaced-font :height 1.0)
-  (set-face-attribute 'variable-pitch nil :family proportionately-spaced-font :height 1.0))
 
 ;; native comp warnings
 (setq native-comp-async-report-warnings-errors 'silent)
