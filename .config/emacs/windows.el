@@ -19,6 +19,8 @@
      "\\*Compile-Log\\*"
      "\\*Async-native-compile-log\\*"
      help-mode
+     apropos-mode
+     ghostel-mode
      helpful-mode
      compilation-mode
      Man-mode))

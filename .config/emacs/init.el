@@ -35,6 +35,13 @@
 ;; (loadc "evil.el")
 ;; (loadc "lang.el")
 
-;; todo: integrated terminal, org config with modules, full screen popups, shackle
-;; todo styling: minions (modeline collapse), forked theme to enable: hl-line, spacious-padding, pulsar
+;; todo: integrated terminal, org config with modules, full screen popups, shackle, terminal at bottom
+;; todo styling: minions (modeline collapse), karthink's modeline, forked theme to enable: hl-line, spacious-padding, pulsar
 
+;; ghostel should have a terminal per project that has it's own open close keybind (showing on the bottom). It should also be able to be switched to the side with a keybind.
+;; I should be able to open a buffer as a "popup". also winner mode for going undo
+
+;; rss feeds -
+;;           - https://christiantietze.de/feeds/
+;;           - https://tonyarnold.com/posts_feed
+;;           - https://www.baldurbjarnason.com/feeds/
