@@ -40,3 +40,9 @@
 (add-hook 'c-mode-common-hook
           (lambda ()
             (setq c-basic-offset 4)))
+
+;; undo
+(use-package vundo
+  :ensure t)
+(global-set-key (kbd "C-/") 'undo-only)
+(global-set-key (kbd "C-?") 'undo-redo)

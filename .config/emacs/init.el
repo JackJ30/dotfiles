@@ -32,6 +32,7 @@
 (loadc "misc.el")
 (loadc "windows.el")
 (loadc "ide.el")
+(loadc "business.el")
 ;; (loadc "evil.el")
 ;; (loadc "lang.el")
 
@@ -45,3 +46,6 @@
 ;;           - https://christiantietze.de/feeds/
 ;;           - https://tonyarnold.com/posts_feed
 ;;           - https://www.baldurbjarnason.com/feeds/
+
+;; elfeed with reader mode
+;; tabspaces for projects, some kind of proj.el integration
