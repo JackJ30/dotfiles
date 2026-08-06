@@ -18,7 +18,7 @@
 (use-package consult
   :ensure t
   :custom
-  (consult-preview-key nil)
+  (consult-preview-key 'any)
   :bind (("M-y"   . 'consult-yank-pop)  ;; Paste by selecting the kill-ring
 	 ("M-s"   . 'consult-line)      ;; Search current buffer swiper
 	 ("C-c i" . 'consult-imenu)))   ;; Search the imenu

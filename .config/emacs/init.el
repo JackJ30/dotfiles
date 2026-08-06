@@ -38,6 +38,7 @@
 
 ;; todo: integrated terminal, org config with modules, full screen popups, shackle, terminal at bottom
 ;; todo styling: minions (modeline collapse), karthink's modeline, forked theme to enable: hl-line, spacious-padding, pulsar
+;; fixes: consult-line keeps doesn't preview until you move off first, cape dabbrev doesn't seem to be working
 
 ;; ghostel should have a terminal per project that has it's own open close keybind (showing on the bottom). It should also be able to be switched to the side with a keybind.
 ;; I should be able to open a buffer as a "popup". also winner mode for going undo
