@@ -41,7 +41,9 @@
 
 (use-package marginalia
   :ensure t
-  :hook (after-init . marginalia-mode))
+  :hook (after-init . marginalia-mode)
+  :custom
+  (marginalia-align-offset 5))
 
 (use-package orderless
   :ensure t

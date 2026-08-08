@@ -1,0 +1,122 @@
+#!/bin/sh
+set -e
+
+# parse flags
+while getopts "ng" opt; do
+  case "$opt" in
+      n) NET=1 ;;
+      g) GRAPHICS=1 ;;
+    \?)  exit 1 ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+if [ -z "$@" ]; then
+    echo "Please enter a command"
+    exit 1
+fi
+
+args=""
+a() { args="$args $@"; }
+
+runcmds=""
+r() { runcmds="$runcmds $@;"; }
+
+# root fs setup
+a     --symlink usr/bin /bin
+a     --symlink bin /sbin
+a     --symlink usr/lib /lib
+a     --symlink usr/lib64 /lib64
+a     --proc /proc
+a     --dev /dev
+a     --tmpfs /tmp
+
+# binaries and libraries
+a     --ro-bind /usr/lib /usr/lib/
+a     --ro-bind /usr/lib64 /usr/lib64/
+a     --ro-bind /usr/bin /usr/bin/
+a     --ro-bind /usr/libexec /usr/libexec/
+
+# linker config
+a     --ro-bind /etc/ld.so.conf /etc/ld.so.conf
+a     --ro-bind /etc/ld.so.cache /etc/ld.so.cache
+a     --ro-bind /etc/ld.so.conf.d/ /etc/ld.so.conf.d/
+
+# terminfo
+a     --ro-bind /usr/share/terminfo /usr/share/terminfo/
+
+# bwrap config
+a     --unshare-all
+a     --as-pid-1
+a     --die-with-parent
+a     --new-session
+a     --hostname "localhost"
+
+# environment setup
+a     --clearenv
+a     --setenv TERM "xterm"
+
+
+# create passwd and groups for user
+uid=$(id -u)
+r     "echo 'user::$uid:$uid::/home/user' > /etc/passwd"
+r     "echo 'user::$uid:' > /etc/group"
+a     --uid $uid --gid $uid
+
+# create user home directory (it's the current working directory)
+a     --setenv HOME "/home/user"
+a     --bind "$PWD" "/home/user"
+
+# networking option
+if [ "${NET:-0}" -eq "1" ]; then
+    a     --share-net
+    a     --ro-bind /etc/resolv.conf /etc/resolv.conf
+    a     --ro-bind /etc/ssl /etc/ssl
+    
+    # certificates
+    a     --ro-bind /etc/ca-certificates.conf /etc/ca-certificates.conf
+    a     --ro-bind /etc/ca-certificates /etc/ca-certificates/
+    a     --ro-bind /usr/share/ca-certificates /usr/share/ca-certificates/
+fi
+
+# graphics option
+if [ "${GRAPHICS:-0}" -eq "1" ]; then
+    # create xdg runtime dir
+    new_xdg_rundir="/run/user/$uid" 
+    r     "mkdir -p $new_xdg_rundir"
+    a     --setenv XDG_RUNTIME_DIR "$new_xdg_rundir"
+
+    # add wayland-0 and dri
+    a     --ro-bind "$XDG_RUNTIME_DIR/wayland-0" "$new_xdg_rundir/wayland-0"
+    a     --dev-bind /dev/dri /dev/dri
+    a     --dev-bind /sys/dev/char/ /sys/dev/char
+    a     --ro-bind /sys/devices/pci0000:00 /sys/devices/pci0000:00/
+
+    # xwayland x server
+    a     --ro-bind "/tmp/.X11-unix" "/tmp/.X11-unix/"
+    a     --setenv DISPLAY ":0"
+
+    # add pulse audio
+    a     --ro-bind "$XDG_RUNTIME_DIR/pulse" "$new_xdg_rundir/pulse/"
+
+    # add usr share resources needed for graphical apps
+    a     --ro-bind /usr/share/X11/locale/ /usr/share/X11/locale/
+    a     --ro-bind /usr/share/X11/xkb /usr/share/X11/xkb/
+    a     --ro-bind /usr/share/libdrm /usr/share/libdrm/
+    a     --ro-bind /usr/share/drirc.d /usr/share/drirc.d/
+    a     --ro-bind /usr/share/glvnd /usr/share/glvnd/
+    a     --ro-bind /usr/share/fonts/ /usr/share/fonts/
+fi
+
+# run bubblewrap
+bwrap $args sh -c "$runcmds $@"
+
+# todo
+# - [x] custom user setup with userid and an /etc/passwd
+# - [x] opt in to allow wayland access
+# - [ ] support working directories with spaces
+# - [ ] tini as PID 1 for reaping children. (or you could remove the --as-pid-1 but that would expose the bwrap arguments to sandbox)
+# - [ ] find a way to make bash not complain about no job control, or remove --new-session (but address the TIOCSTI in the room)
+# - [ ] user runs under a proper root user who owns things
+
+# useful examples: https://wiki.archlinux.org/title/Bubblewrap/Examples#Firefox
